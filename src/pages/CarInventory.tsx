@@ -92,11 +92,13 @@ const CarInventory: React.FC = () => {
         offset: (currentPage - 1) * pageSize,
         search: searchTerm || undefined
       });
-      setCars(response.cars);
-      setTotalCars(response.total);
+      setCars(response.cars || []);
+      setTotalCars(response.total || 0);
     } catch (error) {
       showError('Failed to load cars');
       console.error('Error loading cars:', error);
+      setCars([]);
+      setTotalCars(0);
     } finally {
       setLoading(false);
     }
@@ -105,20 +107,37 @@ const CarInventory: React.FC = () => {
   const loadCarOptions = async () => {
     try {
       const response = await CarApiService.getCarOptions();
-      setCarOptions(response.options);
+      // Defensive: Ensure all nested arrays exist
+      const options = response.options || {};
+      setCarOptions({
+        brands: options.brands || [],
+        colors: options.colors || [],
+        transmissions: options.transmissions || [],
+        car_types: options.car_types || []
+      });
     } catch (error) {
       showError('Failed to load car options');
       console.error('Error loading car options:', error);
+      // Defensive: Reset to empty structure on error
+      setCarOptions({
+        brands: [],
+        colors: [],
+        transmissions: [],
+        car_types: []
+      });
     }
   };
 
   const loadModelsForBrand = async (brandId: number) => {
     try {
       const response = await CarApiService.getModelsByBrand(brandId);
-      setAvailableModels(response.models);
+      // Defensive: Ensure models is always an array
+      setAvailableModels(response.models || []);
     } catch (error) {
       showError('Failed to load models');
       console.error('Error loading models:', error);
+      // Defensive: Reset to empty array on error
+      setAvailableModels([]);
     }
   };
 
