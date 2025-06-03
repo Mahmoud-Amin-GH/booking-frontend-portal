@@ -117,7 +117,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   const backdropClasses = `
     fixed inset-0 z-50
-    bg-black/50
+    bg-black/60
     flex items-center justify-center
     p-4
     ${size === 'fullscreen' ? 'p-0' : ''}
@@ -125,7 +125,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   const modalClasses = `
     relative w-full ${sizeClasses[size]}
-    bg-md-sys-color-surface-container-high
+    bg-white
     rounded-lg
     shadow-xl
     max-h-[90vh] overflow-hidden

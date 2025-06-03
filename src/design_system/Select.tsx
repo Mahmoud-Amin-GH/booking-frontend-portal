@@ -184,22 +184,22 @@ export const Select: React.FC<SelectProps> = ({
 
   const dropdownClasses = `
     absolute top-full left-0 right-0 mt-1 z-50
-    bg-md-sys-color-surface-container
+    bg-white
     border border-md-sys-color-outline-variant
     rounded-lg
-    shadow-lg
+    shadow-xl
     max-h-60 overflow-y-auto
     ${isOpen ? 'block' : 'hidden'}
   `;
 
   const optionClasses = (option: SelectOption, index: number) => `
     px-4 py-3 cursor-pointer
-    text-md-sys-color-on-surface
-    hover:bg-md-sys-color-surface-container-high
+    text-gray-900
+    hover:bg-gray-50
     transition-colors duration-150
     ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}
-    ${option.value === value ? 'bg-md-sys-color-primary-container text-md-sys-color-on-primary-container' : ''}
-    ${index === focusedIndex ? 'bg-md-sys-color-surface-container-highest' : ''}
+    ${option.value === value ? 'bg-blue-50 text-blue-900 font-medium' : ''}
+    ${index === focusedIndex ? 'bg-gray-100' : ''}
     ${index === 0 ? 'rounded-t-lg' : ''}
     ${index === filteredOptions.length - 1 ? 'rounded-b-lg' : ''}
   `;
@@ -259,24 +259,24 @@ export const Select: React.FC<SelectProps> = ({
 
         <div ref={dropdownRef} className={dropdownClasses} role="listbox">
           {searchable && (
-            <div className="p-2 border-b border-md-sys-color-outline-variant">
+            <div className="p-2 border-b border-gray-200">
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchTerm}
                 onChange={handleSearchChange}
                 placeholder={t('common.search')}
-                className="w-full px-3 py-2 bg-md-sys-color-surface-container-highest border border-md-sys-color-outline rounded text-md-sys-color-on-surface placeholder-md-sys-color-on-surface-variant focus:outline-none focus:ring-2 focus:ring-md-sys-color-primary focus:border-md-sys-color-primary"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           )}
           
           {loading ? (
-            <div className="p-4 text-center text-md-sys-color-on-surface-variant">
+            <div className="p-4 text-center text-gray-600">
               {t('common.loading')}...
             </div>
           ) : filteredOptions.length === 0 ? (
-            <div className="p-4 text-center text-md-sys-color-on-surface-variant">
+            <div className="p-4 text-center text-gray-600">
               {searchTerm ? t('common.noResults') : t('common.noOptions')}
             </div>
           ) : (
