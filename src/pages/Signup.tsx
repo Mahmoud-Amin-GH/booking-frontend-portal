@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Input, Button, Alert, Typography, Form, Icon } from '../design_system';
 import PhoneInput from '../components/PhoneInput';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '../contexts/LanguageContext';
 import { authAPI, validateKuwaitiPhone } from '../services/api';
 
 interface SignupFormData {
@@ -17,6 +18,7 @@ interface SignupFormData {
 const Signup: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isRTL } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -167,8 +169,8 @@ const Signup: React.FC = () => {
             <Button
               variant="text"
               onClick={() => navigate('/login')}
-              icon={<Icon name="arrow-left" />}
-              iconPosition="end"
+              icon={<Icon name={isRTL ? "arrow-right" : "arrow-left"} />}
+              iconPosition="start"
             >
               {t('auth.switchToLogin')}
             </Button>

@@ -258,7 +258,7 @@ export const Select: React.FC<SelectProps> = ({
               </button>
             )}
             <Icon
-              name={isOpen ? 'arrow-left' : 'arrow-right'}
+              name={isOpen ? 'arrow-left' : (isRTL ? 'arrow-left' : 'arrow-right')}
               size="small"
               className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
             />

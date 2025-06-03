@@ -37,7 +37,7 @@ import {
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { language } = useLanguage();
+  const { language, isRTL } = useLanguage();
   const showSuccess = useSuccessToast();
   const showError = useErrorToast();
 
@@ -410,7 +410,7 @@ const CarInventory: React.FC = () => {
               <Button 
                 variant="outlined" 
                 onClick={handleLogout}
-                icon={<Icon name="arrow-right" />}
+                icon={<Icon name={isRTL ? "arrow-left" : "arrow-right"} />}
                 iconPosition="end"
               >
                 {t('auth.logout')}

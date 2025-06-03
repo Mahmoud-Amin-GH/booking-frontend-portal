@@ -3,11 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Typography, Button, Icon } from '../design_system';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
 
 const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isRTL } = useLanguage();
 
   const handleLogout = () => {
     clearAuthToken();
@@ -95,7 +97,7 @@ const Dashboard: React.FC = () => {
               <Button 
                 variant="outlined" 
                 onClick={handleLogout}
-                icon={<Icon name="arrow-right" />}
+                icon={<Icon name={isRTL ? "arrow-left" : "arrow-right"} />}
                 iconPosition="end"
               >
                 {t('auth.logout')}
@@ -153,7 +155,7 @@ const Dashboard: React.FC = () => {
               <div className="mt-6">
                 <Button 
                   variant="text" 
-                  icon={<Icon name="arrow-right" />} 
+                  icon={<Icon name={isRTL ? "arrow-left" : "arrow-right"} />} 
                   iconPosition="end"
                   onClick={() => handleNavigateToSection(index)}
                 >

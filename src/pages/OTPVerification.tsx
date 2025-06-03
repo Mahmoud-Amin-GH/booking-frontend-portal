@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Input, Button, Alert, Typography, Form, Icon } from '../design_system';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useLanguage } from '../contexts/LanguageContext';
 import { authAPI } from '../services/api';
 
 interface OTPFormData {
@@ -13,11 +14,13 @@ interface OTPFormData {
 const OTPVerification: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isRTL } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [phone, setPhone] = useState<string>('');
   const [countdown, setCountdown] = useState(0);
+  const [otp, setOtp] = useState('');
 
   const {
     register,
@@ -93,9 +96,9 @@ const OTPVerification: React.FC = () => {
       <header className="w-full p-6 flex justify-between items-center">
         <Button
           variant="text"
-          icon={<Icon name="arrow-left" />}
+          onClick={() => navigate('/login')}
+          icon={<Icon name={isRTL ? "arrow-right" : "arrow-left"} />}
           iconPosition="start"
-          onClick={() => navigate(-1)}
         >
           {t('auth.back')}
         </Button>

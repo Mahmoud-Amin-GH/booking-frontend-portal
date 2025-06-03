@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Input, Button, Alert, Typography, Form, Icon } from '../design_system';
 import PhoneInput from '../components/PhoneInput';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { authAPI, validateKuwaitiPhone } from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useErrorToast } from '../design_system';
 
 interface LoginFormData {
   phone: string;
@@ -15,6 +17,8 @@ interface LoginFormData {
 const Login: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { isRTL } = useLanguage();
+  const showError = useErrorToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -139,7 +143,7 @@ const Login: React.FC = () => {
             <Button
               variant="text"
               onClick={() => navigate('/signup')}
-              icon={<Icon name="arrow-right" />}
+              icon={<Icon name={isRTL ? "arrow-left" : "arrow-right"} />}
               iconPosition="end"
             >
               {t('auth.switchToSignup')}
