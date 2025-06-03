@@ -66,6 +66,7 @@ const resources = {
       "common.previous": "Previous",
       "common.next": "Next",
       "common.pageOfTotal": "Page {{current}} of {{total}}",
+      "common.actions": "Actions",
       
       // Dashboard
       "dashboard.welcome": "Welcome to your car rental management portal",
@@ -200,6 +201,7 @@ const resources = {
       "common.previous": "السابق",
       "common.next": "التالي",
       "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
+      "common.actions": "الإجراءات",
       
       // Dashboard - Arabic
       "dashboard.welcome": "مرحباً بك في بوابة إدارة تأجير السيارات",

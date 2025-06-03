@@ -424,39 +424,113 @@ const CarInventory: React.FC = () => {
             {searchTerm ? t('cars.noSearchResults') : t('cars.noCars')}
           </div>
         ) : (
-          <div className="divide-y divide-md-sys-color-outline-variant">
-            {cars.map((car) => (
-              <div key={car.id} className="p-4 hover:bg-md-sys-color-surface-container-high transition-colors">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-md-sys-color-on-surface">
-                      {formatCarDisplayName(car)}
-                    </h3>
-                    <div className="mt-1 text-sm text-md-sys-color-on-surface-variant space-y-1">
-                      <p>{car.trim_level && `${car.trim_level} • `}{car.seats} {t('cars.seats')} • {car.color_name}</p>
-                      <p>{t(`cars.transmission.${car.transmission}`)} • {t(`cars.carType.${car.car_type}`)}</p>
-                      <p>{t('cars.available')}: {car.available_count}</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 ml-4">
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => openEditModal(car)}
-                    >
-                      {t('common.edit')}
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => openDeleteDialog(car)}
-                    >
-                      {t('common.delete')}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-full">
+              <thead className="bg-md-sys-color-surface-container-high">
+                <tr className="border-b border-md-sys-color-outline-variant">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
+                    {t('cars.brand')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
+                    {t('cars.model')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden sm:table-cell">
+                    {t('cars.year')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden md:table-cell">
+                    {t('cars.seats')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden lg:table-cell">
+                    {t('cars.color')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden lg:table-cell">
+                    {t('cars.transmission')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden xl:table-cell">
+                    {t('cars.carType')}
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
+                    {t('cars.available')}
+                  </th>
+                  <th className="px-4 py-3 text-right text-sm font-medium text-md-sys-color-on-surface">
+                    {t('common.actions')}
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-md-sys-color-outline-variant">
+                {cars.map((car) => (
+                  <tr key={car.id} className="hover:bg-md-sys-color-surface-container-high transition-colors">
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface font-medium">
+                      {car.brand_name}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface">
+                      <div>
+                        {car.model_name}
+                        {car.trim_level && (
+                          <div className="text-xs text-md-sys-color-on-surface-variant">
+                            {car.trim_level}
+                          </div>
+                        )}
+                        {/* Show additional info on mobile when columns are hidden */}
+                        <div className="text-xs text-md-sys-color-on-surface-variant mt-1 sm:hidden">
+                          {car.year} • {car.seats} seats
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden sm:table-cell">
+                      {car.year}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden md:table-cell">
+                      {car.seats}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden lg:table-cell">
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-4 h-4 rounded-full border border-md-sys-color-outline"
+                          style={{ backgroundColor: carOptions?.colors.find(c => c.id === car.color_id)?.hex_code || '#ccc' }}
+                        />
+                        {car.color_name}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden lg:table-cell">
+                      {t(`cars.transmission.${car.transmission}`)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden xl:table-cell">
+                      {t(`cars.carType.${car.car_type}`)}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface">
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        car.available_count > 0 
+                          ? 'bg-md-sys-color-primary-container text-md-sys-color-on-primary-container' 
+                          : 'bg-md-sys-color-error-container text-md-sys-color-on-error-container'
+                      }`}>
+                        {car.available_count}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex justify-end gap-1 sm:gap-2">
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => openEditModal(car)}
+                          className="text-xs sm:text-sm"
+                        >
+                          {t('common.edit')}
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() => openDeleteDialog(car)}
+                          className="text-xs sm:text-sm"
+                        >
+                          {t('common.delete')}
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
