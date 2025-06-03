@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { 
   Button, 
   Input, 
@@ -9,9 +10,13 @@ import {
   ConfirmDialog,
   useSuccessToast,
   useErrorToast,
-  SelectOption
+  SelectOption,
+  Typography,
+  Icon
 } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import { clearAuthToken } from '../services/api';
 import {
   CarApiService,
   Car,
@@ -31,6 +36,7 @@ import {
 
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { language } = useLanguage();
   const showSuccess = useSuccessToast();
   const showError = useErrorToast();
@@ -290,9 +296,14 @@ const CarInventory: React.FC = () => {
     setIsDeleteDialogOpen(true);
   };
 
+  const handleLogout = () => {
+    clearAuthToken();
+    navigate('/login');
+  };
+
   // Form component
   const CarForm = () => (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {formErrors.length > 0 && (
         <div className="p-4 bg-md-sys-color-error-container text-md-sys-color-on-error-container rounded-lg">
           <ul className="list-disc list-inside space-y-1">
@@ -303,7 +314,7 @@ const CarInventory: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
         <Select
           label={t('cars.brand')}
           options={brandOptions}
@@ -385,231 +396,259 @@ const CarInventory: React.FC = () => {
   const totalPages = Math.ceil(totalCars / pageSize);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-md-sys-color-on-surface">
-            {t('dashboard.carInventory')}
-          </h1>
-          <p className="text-md-sys-color-on-surface-variant">
-            {t('dashboard.carInventoryDesc')}
-          </p>
+    <div className="min-h-screen bg-surface-container-lowest">
+      {/* Top Navigation - Same as Dashboard */}
+      <header className="bg-surface-bright shadow-elevation-1">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Typography variant="title-large" color="primary">
+              {t('dashboard.portalTitle')}
+            </Typography>
+            
+            <div className="flex items-center gap-4">
+              <LanguageSwitcher />
+              <Button 
+                variant="outlined" 
+                onClick={handleLogout}
+                icon={<Icon name="arrow-right" />}
+                iconPosition="end"
+              >
+                {t('auth.logout')}
+              </Button>
+            </div>
+          </div>
         </div>
-        <Button onClick={openAddModal}>
-          {t('dashboard.addNewCar')}
-        </Button>
-      </div>
+      </header>
 
-      {/* Search */}
-      <div className="flex gap-4 items-center">
-        <div className="flex-1 max-w-md">
-          <Input
-            placeholder={t('cars.searchPlaceholder')}
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-md-sys-color-on-surface">
+                {t('dashboard.carInventory')}
+              </h1>
+              <p className="text-md-sys-color-on-surface-variant">
+                {t('dashboard.carInventoryDesc')}
+              </p>
+            </div>
+            <Button onClick={openAddModal}>
+              {t('dashboard.addNewCar')}
+            </Button>
+          </div>
+
+          {/* Search */}
+          <div className="flex gap-4 items-center">
+            <div className="flex-1 max-w-md">
+              <Input
+                placeholder={t('cars.searchPlaceholder')}
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Car List */}
+          <div className="bg-md-sys-color-surface-container rounded-lg overflow-hidden">
+            {loading ? (
+              <div className="p-8 text-center">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-md-sys-color-primary"></div>
+                <p className="mt-2 text-md-sys-color-on-surface-variant">{t('common.loading')}...</p>
+              </div>
+            ) : cars.length === 0 ? (
+              <div className="p-8 text-center text-md-sys-color-on-surface-variant">
+                {searchTerm ? t('cars.noSearchResults') : t('cars.noCars')}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-full">
+                  <thead className="bg-md-sys-color-surface-container-high">
+                    <tr className="border-b border-md-sys-color-outline-variant">
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
+                        {t('cars.brand')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
+                        {t('cars.model')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden sm:table-cell">
+                        {t('cars.year')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden md:table-cell">
+                        {t('cars.seats')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden lg:table-cell">
+                        {t('cars.color')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden lg:table-cell">
+                        {t('cars.transmission')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden xl:table-cell">
+                        {t('cars.carType')}
+                      </th>
+                      <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
+                        {t('cars.available')}
+                      </th>
+                      <th className="px-4 py-3 text-right text-sm font-medium text-md-sys-color-on-surface">
+                        {t('common.actions')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-md-sys-color-outline-variant">
+                    {cars.map((car) => (
+                      <tr key={car.id} className="hover:bg-md-sys-color-surface-container-high transition-colors">
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface font-medium">
+                          {car.brand_name}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface">
+                          <div>
+                            {car.model_name}
+                            {car.trim_level && (
+                              <div className="text-xs text-md-sys-color-on-surface-variant">
+                                {car.trim_level}
+                              </div>
+                            )}
+                            {/* Show additional info on mobile when columns are hidden */}
+                            <div className="text-xs text-md-sys-color-on-surface-variant mt-1 sm:hidden">
+                              {car.year} • {car.seats} seats
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden sm:table-cell">
+                          {car.year}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden md:table-cell">
+                          {car.seats}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden lg:table-cell">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-4 h-4 rounded-full border border-md-sys-color-outline"
+                              style={{ backgroundColor: carOptions?.colors.find(c => c.id === car.color_id)?.hex_code || '#ccc' }}
+                            />
+                            {car.color_name}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden lg:table-cell">
+                          {t(`cars.transmission.${car.transmission}`)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden xl:table-cell">
+                          {t(`cars.carType.${car.car_type}`)}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-md-sys-color-on-surface">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            car.available_count > 0 
+                              ? 'bg-md-sys-color-primary-container text-md-sys-color-on-primary-container' 
+                              : 'bg-md-sys-color-error-container text-md-sys-color-on-error-container'
+                          }`}>
+                            {car.available_count}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <div className="flex justify-end gap-1 sm:gap-2">
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => openEditModal(car)}
+                              className="text-xs sm:text-sm"
+                            >
+                              {t('common.edit')}
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              onClick={() => openDeleteDialog(car)}
+                              className="text-xs sm:text-sm"
+                            >
+                              {t('common.delete')}
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4">
+              <Button
+                variant="outlined"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => prev - 1)}
+              >
+                {t('common.previous')}
+              </Button>
+              <span className="text-md-sys-color-on-surface-variant">
+                {t('common.pageOfTotal', { current: currentPage, total: totalPages })}
+              </span>
+              <Button
+                variant="outlined"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+              >
+                {t('common.next')}
+              </Button>
+            </div>
+          )}
+
+          {/* Add Modal */}
+          <Modal
+            isOpen={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+            title={t('cars.addNewCar')}
+            size="large"
+            actions={
+              <>
+                <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
+                  {t('common.cancel')}
+                </Button>
+                <Button onClick={handleSubmit} isLoading={isSubmitting}>
+                  {t('common.add')}
+                </Button>
+              </>
+            }
+          >
+            <CarForm />
+          </Modal>
+
+          {/* Edit Modal */}
+          <Modal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            title={t('cars.editCar')}
+            size="large"
+            actions={
+              <>
+                <Button variant="text" onClick={() => setIsEditModalOpen(false)}>
+                  {t('common.cancel')}
+                </Button>
+                <Button onClick={handleSubmit} isLoading={isSubmitting}>
+                  {t('common.save')}
+                </Button>
+              </>
+            }
+          >
+            <CarForm />
+          </Modal>
+
+          {/* Delete Confirmation */}
+          <ConfirmDialog
+            isOpen={isDeleteDialogOpen}
+            onClose={() => setIsDeleteDialogOpen(false)}
+            onConfirm={handleDelete}
+            title={t('cars.deleteCar')}
+            message={t('cars.deleteConfirmation', {
+              car: carToDelete ? formatCarDisplayName(carToDelete) : ''
+            })}
+            confirmText={t('common.delete')}
+            variant="danger"
           />
         </div>
-      </div>
-
-      {/* Car List */}
-      <div className="bg-md-sys-color-surface-container rounded-lg overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-md-sys-color-primary"></div>
-            <p className="mt-2 text-md-sys-color-on-surface-variant">{t('common.loading')}...</p>
-          </div>
-        ) : cars.length === 0 ? (
-          <div className="p-8 text-center text-md-sys-color-on-surface-variant">
-            {searchTerm ? t('cars.noSearchResults') : t('cars.noCars')}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-full">
-              <thead className="bg-md-sys-color-surface-container-high">
-                <tr className="border-b border-md-sys-color-outline-variant">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
-                    {t('cars.brand')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
-                    {t('cars.model')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden sm:table-cell">
-                    {t('cars.year')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden md:table-cell">
-                    {t('cars.seats')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden lg:table-cell">
-                    {t('cars.color')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden lg:table-cell">
-                    {t('cars.transmission')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface hidden xl:table-cell">
-                    {t('cars.carType')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-md-sys-color-on-surface">
-                    {t('cars.available')}
-                  </th>
-                  <th className="px-4 py-3 text-right text-sm font-medium text-md-sys-color-on-surface">
-                    {t('common.actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-md-sys-color-outline-variant">
-                {cars.map((car) => (
-                  <tr key={car.id} className="hover:bg-md-sys-color-surface-container-high transition-colors">
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface font-medium">
-                      {car.brand_name}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface">
-                      <div>
-                        {car.model_name}
-                        {car.trim_level && (
-                          <div className="text-xs text-md-sys-color-on-surface-variant">
-                            {car.trim_level}
-                          </div>
-                        )}
-                        {/* Show additional info on mobile when columns are hidden */}
-                        <div className="text-xs text-md-sys-color-on-surface-variant mt-1 sm:hidden">
-                          {car.year} • {car.seats} seats
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden sm:table-cell">
-                      {car.year}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden md:table-cell">
-                      {car.seats}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden lg:table-cell">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-4 h-4 rounded-full border border-md-sys-color-outline"
-                          style={{ backgroundColor: carOptions?.colors.find(c => c.id === car.color_id)?.hex_code || '#ccc' }}
-                        />
-                        {car.color_name}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden lg:table-cell">
-                      {t(`cars.transmission.${car.transmission}`)}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface hidden xl:table-cell">
-                      {t(`cars.carType.${car.car_type}`)}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-md-sys-color-on-surface">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                        car.available_count > 0 
-                          ? 'bg-md-sys-color-primary-container text-md-sys-color-on-primary-container' 
-                          : 'bg-md-sys-color-error-container text-md-sys-color-on-error-container'
-                      }`}>
-                        {car.available_count}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-1 sm:gap-2">
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => openEditModal(car)}
-                          className="text-xs sm:text-sm"
-                        >
-                          {t('common.edit')}
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => openDeleteDialog(car)}
-                          className="text-xs sm:text-sm"
-                        >
-                          {t('common.delete')}
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-4">
-          <Button
-            variant="outlined"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(prev => prev - 1)}
-          >
-            {t('common.previous')}
-          </Button>
-          <span className="text-md-sys-color-on-surface-variant">
-            {t('common.pageOfTotal', { current: currentPage, total: totalPages })}
-          </span>
-          <Button
-            variant="outlined"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(prev => prev + 1)}
-          >
-            {t('common.next')}
-          </Button>
-        </div>
-      )}
-
-      {/* Add Modal */}
-      <Modal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        title={t('cars.addNewCar')}
-        size="large"
-        actions={
-          <>
-            <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSubmit} isLoading={isSubmitting}>
-              {t('common.add')}
-            </Button>
-          </>
-        }
-      >
-        <CarForm />
-      </Modal>
-
-      {/* Edit Modal */}
-      <Modal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        title={t('cars.editCar')}
-        size="large"
-        actions={
-          <>
-            <Button variant="text" onClick={() => setIsEditModalOpen(false)}>
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSubmit} isLoading={isSubmitting}>
-              {t('common.save')}
-            </Button>
-          </>
-        }
-      >
-        <CarForm />
-      </Modal>
-
-      {/* Delete Confirmation */}
-      <ConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleDelete}
-        title={t('cars.deleteCar')}
-        message={t('cars.deleteConfirmation', {
-          car: carToDelete ? formatCarDisplayName(carToDelete) : ''
-        })}
-        confirmText={t('common.delete')}
-        variant="danger"
-      />
+      </main>
     </div>
   );
 };

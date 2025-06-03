@@ -42,9 +42,10 @@ export const Select: React.FC<SelectProps> = ({
   onSearch,
   className = '',
 }) => {
-  const { language } = useLanguage();
+  const { language, isRTL } = useLanguage();
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const selectRef = useRef<HTMLDivElement>(null);
@@ -68,6 +69,10 @@ export const Select: React.FC<SelectProps> = ({
 
   // Get selected option
   const selectedOption = options.find(option => option.value === value);
+  
+  // Determine if label should float
+  const hasValue = selectedOption !== undefined;
+  const isFloating = isFocused || hasValue || isOpen;
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -160,33 +165,41 @@ export const Select: React.FC<SelectProps> = ({
     setFocusedIndex(-1);
   };
 
-  const baseClasses = `
-    relative w-full min-w-0
-    ${className}
-  `;
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const triggerClasses = `
-    relative w-full h-14 px-4 py-3
-    bg-md-sys-color-surface-container-highest
+    relative w-full h-14 px-4 py-5 pb-2
+    bg-transparent
     border border-md-sys-color-outline
-    rounded-lg
+    rounded-xs
     text-md-sys-color-on-surface
-    placeholder-md-sys-color-on-surface-variant
     cursor-pointer
-    transition-all duration-200
+    transition-all duration-250
     focus:outline-none focus:ring-2 focus:ring-md-sys-color-primary focus:border-md-sys-color-primary
-    hover:bg-md-sys-color-surface-container-high
+    hover:border-md-sys-color-on-surface-variant
     ${disabled ? 'opacity-50 cursor-not-allowed bg-md-sys-color-surface-variant' : ''}
-    ${error ? 'border-md-sys-color-error' : ''}
-    ${isOpen ? 'border-md-sys-color-primary ring-2 ring-md-sys-color-primary' : ''}
-    flex items-center justify-between
+    ${error ? 'border-md-sys-color-error focus:border-md-sys-color-error focus:ring-md-sys-color-error/20' : ''}
+    ${isOpen || isFocused ? 'border-md-sys-color-primary ring-2 ring-md-sys-color-primary/20' : ''}
+    flex items-start justify-between
+  `;
+
+  const labelStyles = `
+    absolute ${isRTL ? 'right-0' : 'left-0'} top-0 origin-top-${isRTL ? 'right' : 'left'} transition-all duration-250 pointer-events-none select-none
+    ${isFloating ? 'text-label-small px-4 pt-2 transform scale-75' : 'text-body-xs px-4 pt-4'}
+    ${error ? 'text-md-sys-color-error' : (isFocused || isOpen) ? 'text-md-sys-color-primary' : 'text-md-sys-color-on-surface-variant'}
   `;
 
   const dropdownClasses = `
     absolute top-full left-0 right-0 mt-1 z-50
     bg-white
     border border-md-sys-color-outline-variant
-    rounded-lg
+    rounded-xs
     shadow-xl
     max-h-60 overflow-y-auto
     ${isOpen ? 'block' : 'hidden'}
@@ -200,31 +213,26 @@ export const Select: React.FC<SelectProps> = ({
     ${option.disabled ? 'opacity-50 cursor-not-allowed' : ''}
     ${option.value === value ? 'bg-blue-50 text-blue-900 font-medium' : ''}
     ${index === focusedIndex ? 'bg-gray-100' : ''}
-    ${index === 0 ? 'rounded-t-lg' : ''}
-    ${index === filteredOptions.length - 1 ? 'rounded-b-lg' : ''}
+    ${index === 0 ? 'rounded-t-xs' : ''}
+    ${index === filteredOptions.length - 1 ? 'rounded-b-xs' : ''}
   `;
 
   return (
-    <div className={baseClasses}>
-      {label && (
-        <label className="block text-sm font-medium text-md-sys-color-on-surface mb-2">
-          {label}
-          {required && <span className="text-md-sys-color-error ml-1">*</span>}
-        </label>
-      )}
-      
+    <div className="w-full space-y-1">
       <div ref={selectRef} className="relative">
         <div
           className={triggerClasses}
           onClick={toggleDropdown}
           onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           tabIndex={disabled ? -1 : 0}
           role="combobox"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
           aria-label={label}
         >
-          <span className="flex-1 text-left truncate">
+          <div className="flex-1 text-left truncate pt-1">
             {loading ? (
               <span className="text-md-sys-color-on-surface-variant">
                 {t('common.loading')}...
@@ -233,12 +241,12 @@ export const Select: React.FC<SelectProps> = ({
               getOptionLabel(selectedOption)
             ) : (
               <span className="text-md-sys-color-on-surface-variant">
-                {placeholder || t('common.select')}
+                {!isFloating && placeholder ? placeholder : ''}
               </span>
             )}
-          </span>
+          </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pt-1">
             {clearable && selectedOption && !disabled && (
               <button
                 type="button"
@@ -255,6 +263,14 @@ export const Select: React.FC<SelectProps> = ({
               className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
             />
           </div>
+
+          {/* Floating Label */}
+          {label && (
+            <label className={labelStyles}>
+              {label}
+              {required && <span className="text-md-sys-color-error ml-1">*</span>}
+            </label>
+          )}
         </div>
 
         <div ref={dropdownRef} className={dropdownClasses} role="listbox">
@@ -266,7 +282,7 @@ export const Select: React.FC<SelectProps> = ({
                 value={searchTerm}
                 onChange={handleSearchChange}
                 placeholder={t('common.search')}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-xs text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           )}
@@ -296,11 +312,11 @@ export const Select: React.FC<SelectProps> = ({
       </div>
 
       {error && (
-        <p className="mt-1 text-sm text-md-sys-color-error flex items-center gap-1">
-          <Icon name="close" size="small" />
+        <div className={`px-4 text-label-small ${isRTL ? 'text-right' : 'text-left'} text-md-sys-color-error mt-1`}>
+          <Icon name="close" size="small" className="inline mr-1" />
           {error}
-        </p>
+        </div>
       )}
     </div>
   );
-}; 
+};
