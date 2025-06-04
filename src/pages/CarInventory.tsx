@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { 
   Button, 
   Input, 
@@ -35,12 +35,22 @@ import {
 } from '../services/carApi';
 import CarFormSteps from '../components/CarFormSteps';
 
+// Inventory context type from DashboardLayout
+interface InventoryContext {
+  isEmpty: boolean;
+  isLoading: boolean;
+  refreshStatus: () => void;
+}
+
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { language, isRTL } = useLanguage();
   const showSuccess = useSuccessToast();
   const showError = useErrorToast();
+  
+  // Get inventory context from outlet
+  const inventoryContext = useOutletContext<InventoryContext>();
 
   // State management
   const [cars, setCars] = useState<Car[]>([]);
@@ -247,6 +257,11 @@ const CarInventory: React.FC = () => {
         await CarApiService.createCar(formData as CarFormData);
         showSuccess('Car added successfully');
         setIsAddModalOpen(false);
+        
+        // Refresh inventory status to potentially enable navigation
+        if (inventoryContext?.refreshStatus) {
+          inventoryContext.refreshStatus();
+        }
       }
       
       resetForm();
@@ -269,6 +284,11 @@ const CarInventory: React.FC = () => {
       setIsDeleteDialogOpen(false);
       setCarToDelete(null);
       loadCars(); // Refresh the list
+      
+      // Refresh inventory status in case this was the last car
+      if (inventoryContext?.refreshStatus) {
+        inventoryContext.refreshStatus();
+      }
     } catch (error) {
       showError('Failed to delete car');
       console.error('Error deleting car:', error);

@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Typography, Button, Icon } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CarApiService } from '../services/carApi';
+
+// Inventory context type from DashboardLayout
+interface InventoryContext {
+  isEmpty: boolean;
+  isLoading: boolean;
+  refreshStatus: () => void;
+}
 
 const DashboardOverview: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
+  
+  // Get inventory context from outlet
+  const inventoryContext = useOutletContext<InventoryContext>();
+
   const [statsLoading, setStatsLoading] = useState(true);
   const [carStats, setCarStats] = useState({
     totalCars: 0,

@@ -9,9 +9,10 @@ import { clearAuthToken } from '../services/api';
 interface SidebarProps {
   isCollapsed: boolean;
   onToggle: () => void;
+  disabledItems?: string[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle, disabledItems = [] }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -51,6 +52,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
     return location.pathname.startsWith(path);
   };
 
+  const handleNavClick = (item: typeof navigationItems[0]) => {
+    // Prevent navigation if item is disabled
+    if (disabledItems.includes(item.key)) {
+      return;
+    }
+    navigate(item.path);
+  };
+
   return (
     <div 
       className={`fixed left-0 top-0 h-full bg-surface border-r border-outline-variant transition-all duration-300 z-40 ${
@@ -75,13 +84,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggle }) => {
       {/* Navigation */}
       <nav className="p-4 space-y-2">
         {navigationItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const isActiveItem = isActive(item.path);
+          const isDisabled = disabledItems.includes(item.key);
+          
           return (
             <Button
               key={item.key}
-              variant={isActive ? 'filled' : 'text'}
-              onClick={() => navigate(item.path)}
-              className={`w-full ${isCollapsed ? 'justify-center px-2' : `justify-start gap-3 px-4 ${isRTL ? 'flex-row-reverse' : ''}`}`}
+              variant={isActiveItem ? 'filled' : 'text'}
+              onClick={() => handleNavClick(item)}
+              disabled={isDisabled}
+              className={`w-full ${isCollapsed ? 'justify-center px-2' : `justify-start gap-3 px-4 ${isRTL ? 'flex-row-reverse' : ''}`} ${
+                isDisabled ? 'opacity-50 cursor-not-allowed hover:bg-transparent' : ''
+              }`}
               data-tour={item.tourTarget}
             >
               <Icon name={item.icon} size="small" />

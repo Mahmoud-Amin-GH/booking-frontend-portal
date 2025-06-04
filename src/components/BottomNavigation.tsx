@@ -4,7 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { Button, Icon, Typography } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const BottomNavigation: React.FC = () => {
+interface BottomNavigationProps {
+  disabledItems?: string[];
+}
+
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ disabledItems = [] }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,36 +42,53 @@ const BottomNavigation: React.FC = () => {
     return location.pathname.startsWith(path);
   };
 
+  const handleNavClick = (item: typeof navigationItems[0]) => {
+    // Prevent navigation if item is disabled
+    if (disabledItems.includes(item.key)) {
+      return;
+    }
+    navigate(item.path);
+  };
+
   return (
     <div className={`
       fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant z-40
       md:hidden flex items-center justify-around py-2 px-4
     `}>
-      {navigationItems.map((item) => (
-        <Button
-          key={item.key}
-          variant="text"
-          size="small"
-          onClick={() => navigate(item.path)}
-          className={`
-            flex flex-col items-center gap-1 py-2 px-3 min-w-0
-            ${isActive(item.path) ? 'text-primary' : 'text-on-surface-variant'}
-          `}
-        >
-          <Icon 
-            name={item.icon} 
-            size="small" 
-            className={isActive(item.path) ? 'text-primary' : 'text-on-surface-variant'}
-          />
-          <Typography 
-            variant="label-small" 
-            color={isActive(item.path) ? 'primary' : 'on-surface-variant'}
-            className="text-center leading-tight"
+      {navigationItems.map((item) => {
+        const isActiveItem = isActive(item.path);
+        const isDisabled = disabledItems.includes(item.key);
+        
+        return (
+          <Button
+            key={item.key}
+            variant="text"
+            size="small"
+            onClick={() => handleNavClick(item)}
+            disabled={isDisabled}
+            className={`
+              flex flex-col items-center gap-1 py-2 px-3 min-w-0
+              ${isActiveItem ? 'text-primary' : 'text-on-surface-variant'}
+              ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+            `}
           >
-            {item.label}
-          </Typography>
-        </Button>
-      ))}
+            <Icon 
+              name={item.icon} 
+              size="small" 
+              className={`${isActiveItem ? 'text-primary' : 'text-on-surface-variant'} ${
+                isDisabled ? 'opacity-50' : ''
+              }`}
+            />
+            <Typography 
+              variant="label-small" 
+              color={isActiveItem ? 'primary' : 'on-surface-variant'}
+              className={`text-center leading-tight ${isDisabled ? 'opacity-50' : ''}`}
+            >
+              {item.label}
+            </Typography>
+          </Button>
+        );
+      })}
     </div>
   );
 };
