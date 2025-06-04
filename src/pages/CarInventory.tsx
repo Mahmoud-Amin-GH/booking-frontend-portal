@@ -511,8 +511,12 @@ const CarInventory: React.FC = () => {
   );
 
   // Bulk Actions Bar
-  const BulkActionsBar = () => (
-    selectedCars.size > 0 && (
+  const BulkActionsBar = () => {
+    if (selectedCars.size === 0) {
+      return null;
+    }
+
+    return (
       <div className="bg-primary-50 border border-primary-200 rounded-lg p-4 mb-4">
         <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
           <Typography variant="body-medium">
@@ -531,8 +535,8 @@ const CarInventory: React.FC = () => {
           </div>
         </div>
       </div>
-    )
-  );
+    );
+  };
 
   const totalPages = Math.ceil(totalCars / pageSize);
 
