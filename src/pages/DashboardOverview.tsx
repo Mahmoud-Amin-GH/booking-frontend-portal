@@ -47,43 +47,95 @@ const DashboardOverview: React.FC = () => {
     }
   };
 
+  // Enhanced stat cards with trend indicators and better visual design
+  const StatCard = ({ title, value, subtitle, icon, color, trend, action }: {
+    title: string;
+    value: string | number;
+    subtitle: string;
+    icon: any;
+    color: string;
+    trend?: { direction: 'up' | 'down' | 'same'; value: number };
+    action: () => void;
+  }) => (
+    <div
+      className="bg-surface rounded-lg border border-outline-variant p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+      onClick={action}
+    >
+      <div className={`flex items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <div className={`p-3 rounded-lg ${color} transition-transform group-hover:scale-110`}>
+          <Icon name={icon} size="medium" />
+        </div>
+        {trend && (
+          <div className={`text-sm flex items-center gap-1 ${
+            trend.direction === 'up' ? 'text-green-600' : 
+            trend.direction === 'down' ? 'text-red-600' : 'text-on-surface-variant'
+          }`}>
+            <Icon 
+              name={trend.direction === 'up' ? 'arrow-right' : trend.direction === 'down' ? 'arrow-left' : 'arrow-right'} 
+              size="small" 
+            />
+            {t(`stats.trend.${trend.direction}`, { value: trend.value })}
+          </div>
+        )}
+      </div>
+      <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
+        <Typography variant="headline-large" color="on-surface" className="font-bold mb-1">
+          {statsLoading ? (
+            <div className="w-16 h-8 bg-outline animate-pulse rounded"></div>
+          ) : (
+            value
+          )}
+        </Typography>
+        <Typography variant="label-medium" color="on-surface-variant" className="mb-1">
+          {title}
+        </Typography>
+        <Typography variant="body-small" color="on-surface-variant">
+          {subtitle}
+        </Typography>
+      </div>
+    </div>
+  );
+
   const statCards = [
     {
-      title: t('dashboard.carInventory'),
+      title: t('stats.totalVehicles'),
       value: carStats.totalCars,
-      subtitle: t('cars.noCars'),
+      subtitle: 'In your fleet',
       icon: 'user' as const,
-      color: 'bg-primary-100 text-primary-700',
+      color: 'bg-blue-100 text-blue-700',
+      trend: { direction: 'up' as const, value: 12 },
       action: () => navigate('/dashboard/cars'),
     },
     {
-      title: t('cars.available'),
+      title: t('stats.availableNow'),
       value: carStats.availableCars,
-      subtitle: 'Total available vehicles',
+      subtitle: 'Ready for rental',
       icon: 'check' as const,
       color: 'bg-green-100 text-green-700',
+      trend: { direction: 'same' as const, value: 0 },
       action: () => navigate('/dashboard/cars'),
     },
     {
-      title: t('cars.brand'),
+      title: t('stats.totalBrands'),
       value: carStats.brands,
-      subtitle: 'Different brands',
+      subtitle: 'Different manufacturers',
       icon: 'phone' as const,
-      color: 'bg-blue-100 text-blue-700',
+      color: 'bg-purple-100 text-purple-700',
+      trend: { direction: 'up' as const, value: 5 },
       action: () => navigate('/dashboard/cars'),
     },
     {
-      title: t('dashboard.officeConfigs'),
+      title: t('stats.revenue'),
       value: '—',
       subtitle: 'Coming soon',
       icon: 'email' as const,
-      color: 'bg-purple-100 text-purple-700',
+      color: 'bg-orange-100 text-orange-700',
       action: () => navigate('/dashboard/office-configs'),
     },
   ];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-8">
       {/* Header */}
       <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
         <Typography variant="headline-medium" color="on-surface" className="font-bold mb-2">
@@ -94,31 +146,10 @@ const DashboardOverview: React.FC = () => {
         </Typography>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Enhanced Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {statCards.map((card, index) => (
-          <div
-            key={index}
-            className="bg-surface rounded-lg border border-outline-variant p-6 hover:shadow-md transition-shadow cursor-pointer"
-            onClick={card.action}
-          >
-            <div className={`flex items-start justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <div className={`${isRTL ? 'text-right' : 'text-left'} flex-1`}>
-                <Typography variant="label-medium" color="on-surface-variant" className="mb-2">
-                  {card.title}
-                </Typography>
-                <Typography variant="headline-small" color="on-surface" className="font-bold mb-1">
-                  {statsLoading ? '...' : card.value}
-                </Typography>
-                <Typography variant="body-small" color="on-surface-variant">
-                  {card.subtitle}
-                </Typography>
-              </div>
-              <div className={`${card.color} p-3 rounded-lg`}>
-                <Icon name={card.icon} size="medium" />
-              </div>
-            </div>
-          </div>
+          <StatCard key={index} {...card} />
         ))}
       </div>
 
@@ -132,7 +163,7 @@ const DashboardOverview: React.FC = () => {
             variant="outlined"
             size="large"
             onClick={() => navigate('/dashboard/cars')}
-            className={`justify-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`justify-start gap-3 hover:bg-primary-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <Icon name="user" size="small" />
             <span>{t('dashboard.addNewCar')}</span>
@@ -142,7 +173,7 @@ const DashboardOverview: React.FC = () => {
             variant="outlined"
             size="large"
             onClick={() => navigate('/dashboard/cars')}
-            className={`justify-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`justify-start gap-3 hover:bg-green-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <Icon name="check" size="small" />
             <span>{t('dashboard.viewReports')}</span>
@@ -152,10 +183,10 @@ const DashboardOverview: React.FC = () => {
             variant="outlined"
             size="large"
             onClick={() => navigate('/dashboard/office-configs')}
-            className={`justify-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`justify-start gap-3 hover:bg-purple-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <Icon name="phone" size="small" />
-            <span>{t('dashboard.officeConfigs')}</span>
+            <span>{t('nav.settings')}</span>
           </Button>
         </div>
       </div>
@@ -165,23 +196,32 @@ const DashboardOverview: React.FC = () => {
         <Typography variant="title-medium" color="on-surface" className="font-medium mb-4">
           Recent Activity
         </Typography>
-        <div className="space-y-3">
-          <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className="w-2 h-2 bg-primary-600 rounded-full"></div>
-            <Typography variant="body-medium" color="on-surface-variant">
+        <div className="space-y-4">
+          <div className={`flex items-center gap-3 p-3 rounded-lg bg-primary-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className="w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
+            <Typography variant="body-medium" color="on-surface">
               System initialized and ready for inventory management
             </Typography>
-          </div>
-          <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-            <Typography variant="body-medium" color="on-surface-variant">
-              Car inventory system is operational
+            <Typography variant="body-small" color="on-surface-variant" className="ml-auto">
+              Just now
             </Typography>
           </div>
-          <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-3 p-3 rounded-lg bg-green-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+            <Typography variant="body-medium" color="on-surface">
+              Car inventory system is operational
+            </Typography>
+            <Typography variant="body-small" color="on-surface-variant" className="ml-auto">
+              2 min ago
+            </Typography>
+          </div>
+          <div className={`flex items-center gap-3 p-3 rounded-lg bg-blue-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-            <Typography variant="body-medium" color="on-surface-variant">
+            <Typography variant="body-medium" color="on-surface">
               Authentication system is secure and active
+            </Typography>
+            <Typography variant="body-small" color="on-surface-variant" className="ml-auto">
+              5 min ago
             </Typography>
           </div>
         </div>

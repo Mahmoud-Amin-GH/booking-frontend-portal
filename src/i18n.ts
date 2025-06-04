@@ -68,6 +68,52 @@ const resources = {
       "common.pageOfTotal": "Page {{current}} of {{total}}",
       "common.actions": "Actions",
       
+      // Navigation (new improved labels)
+      "nav.overview": "Overview",
+      "nav.inventory": "Inventory", 
+      "nav.settings": "Settings",
+      
+      // Onboarding
+      "onboarding.welcome": "Welcome to Car Rental Portal",
+      "onboarding.step1Title": "Navigate with Ease",
+      "onboarding.step1Content": "Use this sidebar to navigate between different sections. Click the arrow to collapse it.",
+      "onboarding.step2Title": "Manage Your Fleet",
+      "onboarding.step2Content": "Add and manage your car inventory from the Inventory section.",
+      "onboarding.step3Title": "Quick Actions", 
+      "onboarding.step3Content": "Use search and filters to quickly find specific cars in your inventory.",
+      "onboarding.skip": "Skip Tour",
+      "onboarding.next": "Next",
+      "onboarding.finish": "Get Started",
+      
+      // Enhanced Empty States
+      "empty.noInventory": "Your inventory is empty",
+      "empty.noInventoryDesc": "Start by adding your first car to begin managing your rental inventory",
+      "empty.addFirstCar": "Add Your First Car",
+      "empty.noSearchResults": "No cars match your search",
+      "empty.noSearchResultsDesc": "Try adjusting your search terms or filters",
+      "empty.clearFilters": "Clear Filters",
+      
+      // Form Enhancement
+      "form.step": "Step {{current}} of {{total}}",
+      "form.basicInfo": "Basic Information",
+      "form.specifications": "Specifications", 
+      "form.availability": "Availability & Pricing",
+      "form.selectBrandFirst": "Please select a brand first",
+      "form.quickEdit": "Quick Edit",
+      "form.bulkActions": "Bulk Actions",
+      "form.selectedItems": "{{count}} items selected",
+      "form.bulkEdit": "Edit Selected",
+      "form.deleteSelected": "Delete Selected",
+      
+      // Stats and Trends
+      "stats.totalVehicles": "Total Vehicles",
+      "stats.availableNow": "Available Now",
+      "stats.totalBrands": "Total Brands",
+      "stats.revenue": "Monthly Revenue",
+      "stats.trend.up": "↗ {{value}}% vs last month",
+      "stats.trend.down": "↘ {{value}}% vs last month",
+      "stats.trend.same": "→ No change",
+      
       // Dashboard
       "dashboard.welcome": "Welcome to your car rental management portal",
       "dashboard.portalTitle": "Car Rental Portal",
@@ -202,6 +248,52 @@ const resources = {
       "common.next": "التالي",
       "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
       "common.actions": "الإجراءات",
+      
+      // Navigation - Arabic
+      "nav.overview": "نظرة عامة",
+      "nav.inventory": "المخزون",
+      "nav.settings": "الإعدادات",
+      
+      // Onboarding - Arabic
+      "onboarding.welcome": "مرحباً ببوابة تأجير السيارات",
+      "onboarding.step1Title": "تنقل بسهولة",
+      "onboarding.step1Content": "استخدم الشريط الجانبي للتنقل بين الأقسام المختلفة. انقر على السهم لطي الشريط.",
+      "onboarding.step2Title": "إدارة أسطولك",
+      "onboarding.step2Content": "أضف وأدر مخزون سياراتك من قسم المخزون.",
+      "onboarding.step3Title": "الإجراءات السريعة",
+      "onboarding.step3Content": "استخدم البحث والمرشحات للعثور بسرعة على سيارات معينة في مخزونك.",
+      "onboarding.skip": "تخطي الجولة",
+      "onboarding.next": "التالي",
+      "onboarding.finish": "ابدأ الآن",
+      
+      // Enhanced Empty States - Arabic
+      "empty.noInventory": "مخزونك فارغ",
+      "empty.noInventoryDesc": "ابدأ بإضافة سيارتك الأولى لبدء إدارة مخزون التأجير الخاص بك",
+      "empty.addFirstCar": "أضف سيارتك الأولى",
+      "empty.noSearchResults": "لا توجد سيارات تطابق بحثك",
+      "empty.noSearchResultsDesc": "جرب تعديل مصطلحات البحث أو المرشحات",
+      "empty.clearFilters": "مسح المرشحات",
+      
+      // Form Enhancement - Arabic
+      "form.step": "الخطوة {{current}} من {{total}}",
+      "form.basicInfo": "المعلومات الأساسية",
+      "form.specifications": "المواصفات",
+      "form.availability": "التوفر والتسعير",
+      "form.selectBrandFirst": "يرجى اختيار العلامة التجارية أولاً",
+      "form.quickEdit": "تعديل سريع",
+      "form.bulkActions": "الإجراءات المجمعة",
+      "form.selectedItems": "{{count}} عناصر محددة",
+      "form.bulkEdit": "تعديل المحدد",
+      "form.deleteSelected": "حذف المحدد",
+      
+      // Stats and Trends - Arabic
+      "stats.totalVehicles": "إجمالي المركبات",
+      "stats.availableNow": "متاح الآن",
+      "stats.totalBrands": "إجمالي العلامات التجارية",
+      "stats.revenue": "الإيرادات الشهرية",
+      "stats.trend.up": "↗ {{value}}% مقارنة بالشهر الماضي",
+      "stats.trend.down": "↘ {{value}}% مقارنة بالشهر الماضي",
+      "stats.trend.same": "→ لا يوجد تغيير",
       
       // Dashboard - Arabic
       "dashboard.welcome": "مرحباً بك في بوابة إدارة تأجير السيارات",

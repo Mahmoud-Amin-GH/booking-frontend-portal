@@ -12,20 +12,20 @@ const BottomNavigation: React.FC = () => {
 
   const navigationItems = [
     {
-      key: 'dashboard',
-      label: t('common.dashboard'),
+      key: 'overview',
+      label: t('nav.overview'),
       icon: 'check' as const,
       path: '/dashboard',
     },
     {
-      key: 'cars',
-      label: t('dashboard.carInventory'),
+      key: 'inventory',
+      label: t('nav.inventory'),
       icon: 'user' as const,
       path: '/dashboard/cars',
     },
     {
-      key: 'office-configs',
-      label: t('dashboard.officeConfigs'),
+      key: 'settings',
+      label: t('nav.settings'),
       icon: 'phone' as const,
       path: '/dashboard/office-configs',
     },

@@ -33,6 +33,7 @@ import {
   validateCarForm,
   formatCarDisplayName
 } from '../services/carApi';
+import CarFormSteps from '../components/CarFormSteps';
 
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ const CarInventory: React.FC = () => {
   const [totalCars, setTotalCars] = useState(0);
   const [carOptions, setCarOptions] = useState<CarOptions | null>(null);
   const [availableModels, setAvailableModels] = useState<Model[]>([]);
+  const [selectedCars, setSelectedCars] = useState<Set<number>>(new Set());
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -71,6 +73,7 @@ const CarInventory: React.FC = () => {
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [useProgressiveForm, setUseProgressiveForm] = useState(true);
 
   const pageSize = 10;
 
@@ -100,6 +103,7 @@ const CarInventory: React.FC = () => {
       });
       setCars(response.cars || []);
       setTotalCars(response.total || 0);
+      setSelectedCars(new Set()); // Clear selection when loading new data
     } catch (error) {
       showError('Failed to load cars');
       console.error('Error loading cars:', error);
@@ -203,6 +207,25 @@ const CarInventory: React.FC = () => {
     setCurrentPage(1); // Reset to first page when searching
   };
 
+  // Handle bulk selection
+  const handleSelectCar = (carId: number, checked: boolean) => {
+    const newSelected = new Set(selectedCars);
+    if (checked) {
+      newSelected.add(carId);
+    } else {
+      newSelected.delete(carId);
+    }
+    setSelectedCars(newSelected);
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedCars(new Set(cars.map(car => car.id)));
+    } else {
+      setSelectedCars(new Set());
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async () => {
     const errors = validateCarForm(formData);
@@ -301,96 +324,215 @@ const CarInventory: React.FC = () => {
     navigate('/login');
   };
 
-  // Form component
-  const CarForm = () => (
-    <div className="space-y-6">
-      {formErrors.length > 0 && (
-        <div className="p-4 bg-md-sys-color-error-container text-md-sys-color-on-error-container rounded-lg">
-          <ul className="list-disc list-inside space-y-1">
-            {formErrors.map((error, index) => (
-              <li key={index} className="text-sm">{error}</li>
-            ))}
-          </ul>
+  const handleFormDataChange = (newData: Partial<CarFormData>) => {
+    setFormData(newData);
+  };
+
+  // Form component - now with option for progressive form
+  const CarForm = () => {
+    if (useProgressiveForm) {
+      return (
+        <CarFormSteps
+          formData={formData}
+          onFormDataChange={handleFormDataChange}
+          brandOptions={brandOptions}
+          modelOptions={modelOptions}
+          colorOptions={colorOptions}
+          transmissionOptions={transmissionOptions}
+          carTypeOptions={carTypeOptions}
+          onSubmit={handleSubmit}
+          onCancel={() => setIsAddModalOpen(false)}
+          isSubmitting={isSubmitting}
+          formErrors={formErrors}
+        />
+      );
+    }
+
+    // Original single-step form as fallback
+    return (
+      <div className="space-y-6">
+        {formErrors.length > 0 && (
+          <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+            <ul className="list-disc list-inside space-y-1">
+              {formErrors.map((error, index) => (
+                <li key={index} className="text-sm">{error}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <Select
+            label={t('cars.brand')}
+            options={brandOptions}
+            value={formData.brand_id}
+            onChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) }))}
+            required
+          />
+
+          <Select
+            label={t('cars.model')}
+            options={modelOptions}
+            value={formData.model_id}
+            onChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) }))}
+            disabled={!formData.brand_id || modelOptions.length === 0}
+            placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')}
+            required
+          />
+
+          <NumberInput
+            label={t('cars.year')}
+            value={formData.year}
+            onChange={(value) => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
+            min={1900}
+            max={2030}
+            required
+          />
+
+          <NumberInput
+            label={t('cars.seats')}
+            value={formData.seats}
+            onChange={(value) => setFormData(prev => ({ ...prev, seats: Number(value) || 0 }))}
+            min={1}
+            max={12}
+            required
+          />
+
+          <Select
+            label={t('cars.color')}
+            options={colorOptions}
+            value={formData.color_id}
+            onChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) }))}
+            required
+          />
+
+          <Input
+            label={t('cars.trimLevel')}
+            value={formData.trim_level}
+            onChange={(e) => setFormData(prev => ({ ...prev, trim_level: e.target.value }))}
+            placeholder={t('cars.trimLevelPlaceholder')}
+          />
+
+          <NumberInput
+            label={t('cars.availableCount')}
+            value={formData.available_count}
+            onChange={(value) => setFormData(prev => ({ ...prev, available_count: Number(value) || 0 }))}
+            min={0}
+            required
+          />
+
+          <Select
+            label={t('cars.transmission')}
+            options={transmissionOptions}
+            value={formData.transmission}
+            onChange={(value) => setFormData(prev => ({ ...prev, transmission: value as any }))}
+            required
+          />
+
+          <Select
+            label={t('cars.carType')}
+            options={carTypeOptions}
+            value={formData.car_type}
+            onChange={(value) => setFormData(prev => ({ ...prev, car_type: value as any }))}
+            required
+          />
         </div>
-      )}
+      </div>
+    );
+  };
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <Select
-          label={t('cars.brand')}
-          options={brandOptions}
-          value={formData.brand_id}
-          onChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) }))}
-          required
-        />
-
-        <Select
-          label={t('cars.model')}
-          options={modelOptions}
-          value={formData.model_id}
-          onChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) }))}
-          disabled={!formData.brand_id || modelOptions.length === 0}
-          placeholder={!formData.brand_id ? t('cars.selectBrandFirst') : t('common.select')}
-          required
-        />
-
-        <NumberInput
-          label={t('cars.year')}
-          value={formData.year}
-          onChange={(value) => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
-          min={1900}
-          max={2030}
-          required
-        />
-
-        <NumberInput
-          label={t('cars.seats')}
-          value={formData.seats}
-          onChange={(value) => setFormData(prev => ({ ...prev, seats: Number(value) || 0 }))}
-          min={1}
-          max={12}
-          required
-        />
-
-        <Select
-          label={t('cars.color')}
-          options={colorOptions}
-          value={formData.color_id}
-          onChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) }))}
-          required
-        />
-
-        <Input
-          label={t('cars.trimLevel')}
-          value={formData.trim_level}
-          onChange={(e) => setFormData(prev => ({ ...prev, trim_level: e.target.value }))}
-          placeholder={t('cars.trimLevelPlaceholder')}
-        />
-
-        <NumberInput
-          label={t('cars.availableCount')}
-          value={formData.available_count}
-          onChange={(value) => setFormData(prev => ({ ...prev, available_count: Number(value) || 0 }))}
-          min={0}
-          required
-        />
-
-        <Select
-          label={t('cars.transmission')}
-          options={transmissionOptions}
-          value={formData.transmission}
-          onChange={(value) => setFormData(prev => ({ ...prev, transmission: value as any }))}
-          required
-        />
-
-        <Select
-          label={t('cars.carType')}
-          options={carTypeOptions}
-          value={formData.car_type}
-          onChange={(value) => setFormData(prev => ({ ...prev, car_type: value as any }))}
-          required
-        />
+  // Mobile Card Component
+  const CarCard = ({ car }: { car: Car }) => (
+    <div className="bg-surface rounded-lg border border-outline-variant p-4 md:hidden space-y-3">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
+            <Icon name="user" size="small" className="text-primary-600" />
+          </div>
+          <div>
+            <Typography variant="body-medium" className="font-medium">
+              {car.brand_name} {car.model_name}
+            </Typography>
+            <Typography variant="body-small" color="on-surface-variant">
+              {car.year} • {car.seats} seats • {car.color_name}
+            </Typography>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+            car.available_count > 0 
+              ? 'bg-green-100 text-green-800' 
+              : 'bg-red-100 text-red-800'
+          }`}>
+            {car.available_count}
+          </span>
+        </div>
+      </div>
+      
+      <div className="flex justify-between items-center pt-2 border-t border-outline-variant">
+        <div className="flex gap-2">
+          <Typography variant="body-small" color="on-surface-variant">
+            {t(`cars.transmission.${car.transmission}`)} • {t(`cars.carType.${car.car_type}`)}
+          </Typography>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="text" size="small" onClick={() => openEditModal(car)}>
+            {t('common.edit')}
+          </Button>
+          <Button variant="text" size="small" onClick={() => openDeleteDialog(car)} className="text-error">
+            {t('common.delete')}
+          </Button>
+        </div>
       </div>
     </div>
+  );
+
+  // Enhanced Empty State Component
+  const EmptyInventoryState = () => (
+    <div className="text-center py-16">
+      <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
+        <Icon name="user" size="large" className="text-primary-600" />
+      </div>
+      <Typography variant="headline-small" className="mb-2">
+        {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
+      </Typography>
+      <Typography variant="body-medium" color="on-surface-variant" className="mb-6 max-w-md mx-auto">
+        {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
+      </Typography>
+      {searchTerm ? (
+        <Button variant="outlined" onClick={() => handleSearch('')}>
+          {t('empty.clearFilters')}
+        </Button>
+      ) : (
+        <Button onClick={openAddModal}>
+          {t('empty.addFirstCar')}
+        </Button>
+      )}
+    </div>
+  );
+
+  // Bulk Actions Bar
+  const BulkActionsBar = () => (
+    selectedCars.size > 0 && (
+      <div className="bg-primary-50 border border-primary-200 rounded-lg p-4 mb-4">
+        <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Typography variant="body-medium">
+            {t('form.selectedItems', { count: selectedCars.size })}
+          </Typography>
+          <div className="flex gap-2">
+            <Button variant="outlined" size="small">
+              {t('form.bulkEdit')}
+            </Button>
+            <Button variant="outlined" size="small" className="text-error">
+              {t('form.deleteSelected')}
+            </Button>
+            <Button variant="text" size="small" onClick={() => setSelectedCars(new Set())}>
+              {t('common.clear')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
   );
 
   const totalPages = Math.ceil(totalCars / pageSize);
@@ -401,7 +543,7 @@ const CarInventory: React.FC = () => {
       <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
           <Typography variant="headline-medium" color="on-surface" className="font-bold mb-2">
-            {t('dashboard.carInventory')}
+            {t('nav.inventory')}
           </Typography>
           <Typography variant="body-large" color="on-surface-variant">
             {t('dashboard.carInventoryDesc')}
@@ -419,113 +561,152 @@ const CarInventory: React.FC = () => {
             placeholder={t('cars.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
+            data-tour="search"
           />
         </div>
       </div>
 
+      {/* Bulk Actions */}
+      <BulkActionsBar />
+
       {/* Car List */}
-      <div className="bg-surface rounded-lg border border-outline-variant overflow-hidden">
-        {loading ? (
-          <div className="p-8 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <p className="mt-2 text-on-surface-variant">{t('common.loading')}...</p>
-          </div>
-        ) : cars.length === 0 ? (
-          <div className="p-8 text-center text-on-surface-variant">
-            {searchTerm ? t('cars.noSearchResults') : t('cars.noCars')}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-full">
-              <thead className="bg-surface-container-high">
-                <tr className="border-b border-outline-variant">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
-                    {t('cars.brand')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
-                    {t('cars.model')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden sm:table-cell">
-                    {t('cars.year')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden md:table-cell">
-                    {t('cars.seats')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden lg:table-cell">
-                    {t('cars.color')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden lg:table-cell">
-                    {t('cars.transmission')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden xl:table-cell">
-                    {t('cars.carType')}
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
-                    {t('cars.available')}
-                  </th>
-                  <th className="px-4 py-3 text-right text-sm font-medium text-on-surface">
-                    {t('common.actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant">
-                {cars.map((car) => (
-                  <tr key={car.id} className="hover:bg-surface-container-highest">
-                    <td className="px-4 py-4 text-sm text-on-surface">
-                      {car.brand_name || 'Unknown Brand'}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-on-surface">
-                      {car.model_name || 'Unknown Model'}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-on-surface-variant hidden sm:table-cell">
-                      {car.year}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-on-surface-variant hidden md:table-cell">
-                      {car.seats}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-on-surface-variant hidden lg:table-cell">
-                      {car.color_name || 'Unknown Color'}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-on-surface-variant hidden lg:table-cell">
-                      {t(`cars.transmission.${car.transmission}`)}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-on-surface-variant hidden xl:table-cell">
-                      {t(`cars.carType.${car.car_type}`)}
-                    </td>
-                    <td className="px-4 py-4 text-sm">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                        car.available_count > 0 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {car.available_count}
-                      </span>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="text"
-                          size="small"
-                          onClick={() => openEditModal(car)}
-                        >
-                          {t('common.edit')}
-                        </Button>
-                        <Button
-                          variant="text"
-                          size="small"
-                          onClick={() => openDeleteDialog(car)}
-                          className="text-error"
-                        >
-                          {t('common.delete')}
-                        </Button>
-                      </div>
-                    </td>
+      <div className="space-y-4">
+        {/* Mobile Cards */}
+        <div className="md:hidden space-y-4">
+          {loading ? (
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="bg-surface rounded-lg border border-outline-variant p-4 animate-pulse">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-outline rounded-lg"></div>
+                    <div className="space-y-2 flex-1">
+                      <div className="h-4 bg-outline rounded w-3/4"></div>
+                      <div className="h-3 bg-outline rounded w-1/2"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : cars.length === 0 ? (
+            <EmptyInventoryState />
+          ) : (
+            cars.map((car) => <CarCard key={car.id} car={car} />)
+          )}
+        </div>
+
+        {/* Desktop Table */}
+        <div className="bg-surface rounded-lg border border-outline-variant overflow-hidden hidden md:block">
+          {loading ? (
+            <div className="p-8 text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p className="mt-2 text-on-surface-variant">{t('common.loading')}...</p>
+            </div>
+          ) : cars.length === 0 ? (
+            <EmptyInventoryState />
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-full">
+                <thead className="bg-surface-container-high">
+                  <tr className="border-b border-outline-variant">
+                    <th className="px-4 py-3 text-left">
+                      <input
+                        type="checkbox"
+                        checked={selectedCars.size === cars.length && cars.length > 0}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                        className="rounded border-outline-variant"
+                      />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
+                      Vehicle
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden sm:table-cell">
+                      {t('cars.year')}
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden md:table-cell">
+                      {t('cars.seats')}
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden lg:table-cell">
+                      {t('cars.transmission')}
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
+                      {t('cars.available')}
+                    </th>
+                    <th className="px-4 py-3 text-right text-sm font-medium text-on-surface">
+                      {t('common.actions')}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody className="divide-y divide-outline-variant">
+                  {cars.map((car) => (
+                    <tr key={car.id} className="hover:bg-surface-container-highest group transition-colors">
+                      <td className="px-4 py-4">
+                        <input
+                          type="checkbox"
+                          checked={selectedCars.has(car.id)}
+                          onChange={(e) => handleSelectCar(car.id, e.target.checked)}
+                          className="rounded border-outline-variant"
+                        />
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
+                            <Icon name="user" size="small" className="text-primary-600" />
+                          </div>
+                          <div>
+                            <Typography variant="body-medium" className="font-medium">
+                              {car.brand_name} {car.model_name}
+                            </Typography>
+                            <Typography variant="body-small" color="on-surface-variant">
+                              {car.color_name} • {t(`cars.carType.${car.car_type}`)}
+                            </Typography>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-on-surface-variant hidden sm:table-cell">
+                        {car.year}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-on-surface-variant hidden md:table-cell">
+                        {car.seats}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-on-surface-variant hidden lg:table-cell">
+                        {t(`cars.transmission.${car.transmission}`)}
+                      </td>
+                      <td className="px-4 py-4 text-sm">
+                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
+                          car.available_count > 0 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {car.available_count} available
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-right">
+                        <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => openEditModal(car)}
+                            className="hover:bg-blue-50"
+                          >
+                            {t('form.quickEdit')}
+                          </Button>
+                          <Button
+                            variant="text"
+                            size="small"
+                            onClick={() => openDeleteDialog(car)}
+                            className="text-error hover:bg-red-50"
+                          >
+                            {t('common.delete')}
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Pagination */}
@@ -561,7 +742,7 @@ const CarInventory: React.FC = () => {
         onClose={() => setIsAddModalOpen(false)}
         title={t('cars.addNewCar')}
         size="large"
-        actions={
+        actions={!useProgressiveForm ? (
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
               {t('common.cancel')}
@@ -573,7 +754,7 @@ const CarInventory: React.FC = () => {
               {isSubmitting ? t('common.loading') : t('common.save')}
             </Button>
           </div>
-        }
+        ) : undefined}
       >
         <CarForm />
       </Modal>
