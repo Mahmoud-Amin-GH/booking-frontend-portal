@@ -45,12 +45,19 @@ const Signup: React.FC = () => {
 
       const response = await authAPI.signup(data);
       
-      // Store user ID for OTP verification
-      localStorage.setItem('temp_user_id', response.user_id?.toString() || '');
-      localStorage.setItem('temp_phone', data.phone);
-      
-      // Navigate to OTP verification
-      navigate('/verify-otp');
+      // Check if we got a token (development mode)
+      if (response.token) {
+        // Development mode - user is auto-verified, navigate to dashboard
+        navigate('/dashboard');
+      } else {
+        // Production mode - go through OTP verification
+        // Store user ID for OTP verification
+        localStorage.setItem('temp_user_id', response.user_id?.toString() || '');
+        localStorage.setItem('temp_phone', data.phone);
+        
+        // Navigate to OTP verification
+        navigate('/verify-otp');
+      }
     } catch (err: any) {
       setError(err.response?.data?.error || t('error.signupFailed'));
     } finally {
