@@ -182,7 +182,100 @@ const resources = {
       "cars.carType.coupe": "Coupe",
       "cars.carType.convertible": "Convertible",
       "cars.carType.pickup": "Pickup",
-      "cars.carType.van": "Van"
+      "cars.carType.van": "Van",
+      
+      // Office Configurations
+      "officeConfigs.title": "Office Configurations",
+      "officeConfigs.description": "Configure your office settings, service options, and delivery preferences",
+      "officeConfigs.saveSuccess": "Office configurations saved successfully",
+      "officeConfigs.loadError": "Failed to load office configurations",
+      "officeConfigs.saveError": "Failed to save office configurations",
+      
+      // Categories
+      "officeConfigs.locationCoverage": "Location Coverage",
+      "officeConfigs.locationCoverageDesc": "Select districts and areas where your service is available",
+      "officeConfigs.serviceOptions": "Service Options",
+      "officeConfigs.serviceOptionsDesc": "Configure available services for your customers",
+      "officeConfigs.deliveryPickup": "Delivery & Pickup",
+      "officeConfigs.deliveryPickupDesc": "Set delivery and pickup options",
+      
+      // Kuwait Districts - Al Asimah Governorate
+      "officeConfigs.locations.kuwaitCity": "Kuwait City",
+      "officeConfigs.locations.dasman": "Dasman",
+      "officeConfigs.locations.sharq": "Sharq",
+      "officeConfigs.locations.mirqab": "Mirqab",
+      "officeConfigs.locations.jiblaAliSalem": "Jibla Ali Salem",
+      "officeConfigs.locations.daiya": "Daiya",
+      "officeConfigs.locations.faiha": "Faiha",
+      "officeConfigs.locations.shamiya": "Shamiya",
+      "officeConfigs.locations.nuzha": "Nuzha",
+      "officeConfigs.locations.wattan": "Adailiya",
+      "officeConfigs.locations.bneid": "Bneid al-Qar",
+      
+      // Hawalli Governorate
+      "officeConfigs.locations.hawalli": "Hawalli",
+      "officeConfigs.locations.salmiya": "Salmiya",
+      "officeConfigs.locations.shaab": "Shaab",
+      "officeConfigs.locations.rumaithiya": "Rumaithiya",
+      "officeConfigs.locations.bayan": "Bayan",
+      "officeConfigs.locations.mishref": "Mishref",
+      "officeConfigs.locations.salwa": "Salwa",
+      "officeConfigs.locations.jabriiya": "Jabriiya",
+      "officeConfigs.locations.surra": "Surra",
+      
+      // Farwaniya Governorate
+      "officeConfigs.locations.farwaniya": "Farwaniya",
+      "officeConfigs.locations.jleeb": "Jleeb Al-Shuyoukh",
+      "officeConfigs.locations.rabiya": "Rabiya",
+      "officeConfigs.locations.andalous": "Andalous",
+      "officeConfigs.locations.rehab": "Rehab",
+      "officeConfigs.locations.khairan": "Khairan",
+      "officeConfigs.locations.sabahiya": "Sabahiya",
+      "officeConfigs.locations.riggae": "Riggae",
+      
+      // Ahmadi Governorate
+      "officeConfigs.locations.ahmadi": "Ahmadi",
+      "officeConfigs.locations.fahaheel": "Fahaheel",
+      "officeConfigs.locations.fintas": "Fintas",
+      "officeConfigs.locations.mangaf": "Mangaf",
+      "officeConfigs.locations.mahboula": "Mahboula",
+      "officeConfigs.locations.sabahAlAhmad": "Sabah Al-Ahmad",
+      "officeConfigs.locations.wafra": "Wafra",
+      
+      // Mubarak Al-Kabeer Governorate
+      "officeConfigs.locations.mubarakAlKabeer": "Mubarak Al-Kabeer",
+      "officeConfigs.locations.qurain": "Qurain",
+      "officeConfigs.locations.abuFutaira": "Abu Futaira",
+      "officeConfigs.locations.adan": "Adan",
+      "officeConfigs.locations.qusor": "Qusor",
+      "officeConfigs.locations.sabhan": "Sabhan",
+      
+      // Jahra Governorate
+      "officeConfigs.locations.jahra": "Jahra",
+      "officeConfigs.locations.qasr": "Qasr",
+      "officeConfigs.locations.warah": "Warah",
+      "officeConfigs.locations.nasseem": "Nasseem",
+      "officeConfigs.locations.sulaibiya": "Sulaibiya",
+      
+      // Service Options
+      "officeConfigs.services.24hours": "24 Hours Service",
+      "officeConfigs.services.24hoursDesc": "Round-the-clock availability for rentals and support",
+      "officeConfigs.services.fullInsurance": "Full Insurance Coverage",
+      "officeConfigs.services.fullInsuranceDesc": "Comprehensive insurance coverage for all vehicles",
+      "officeConfigs.services.roadAssistance": "Road Assistance",
+      "officeConfigs.services.roadAssistanceDesc": "Emergency roadside assistance and support",
+      "officeConfigs.services.withDriver": "Professional Driver Available",
+      "officeConfigs.services.withDriverDesc": "Professional chauffeur service available",
+      
+      // Delivery Options
+      "officeConfigs.delivery.airportDelivery": "Airport Delivery",
+      "officeConfigs.delivery.airportDeliveryDesc": "Pick up and drop off at Kuwait International Airport",
+      "officeConfigs.delivery.homeDelivery": "Home Delivery",
+      "officeConfigs.delivery.homeDeliveryDesc": "Convenient delivery and pickup at customer location",
+      "officeConfigs.delivery.noConditions": "No Prerequisites",
+      "officeConfigs.delivery.noConditionsDesc": "Rent without additional requirements or guarantees",
+      "officeConfigs.delivery.freeCancellation": "Free Cancellation",
+      "officeConfigs.delivery.freeCancellationDesc": "Cancel reservations without penalty"
     }
   },
   ar: {
@@ -363,7 +456,100 @@ const resources = {
       "cars.carType.coupe": "كوبي",
       "cars.carType.convertible": "متحول",
       "cars.carType.pickup": "بيك أب",
-      "cars.carType.van": "فان"
+      "cars.carType.van": "فان",
+      
+      // Office Configurations
+      "officeConfigs.title": "إعدادات المكتب",
+      "officeConfigs.description": "تكوين إعدادات مكتبك، خيارات الخدمة، وتفضيلات التوصيل",
+      "officeConfigs.saveSuccess": "تم حفظ إعدادات المكتب بنجاح",
+      "officeConfigs.loadError": "فشل تحميل إعدادات المكتب",
+      "officeConfigs.saveError": "فشل حفظ إعدادات المكتب",
+      
+      // Categories
+      "officeConfigs.locationCoverage": "تغطية الموقع",
+      "officeConfigs.locationCoverageDesc": "اختر المناطق والمناطق التي تكون خدمتك متاحة فيها",
+      "officeConfigs.serviceOptions": "خيارات الخدمة",
+      "officeConfigs.serviceOptionsDesc": "تكوين الخدمات المتاحة لعملائك",
+      "officeConfigs.deliveryPickup": "التوصيل والتجميع",
+      "officeConfigs.deliveryPickupDesc": "تعيين خيارات التوصيل والتجميع",
+      
+      // Kuwait Districts - Al Asimah Governorate
+      "officeConfigs.locations.kuwaitCity": "الكويت المدنية",
+      "officeConfigs.locations.dasman": "دسمان",
+      "officeConfigs.locations.sharq": "الشرق",
+      "officeConfigs.locations.mirqab": "ميرقب",
+      "officeConfigs.locations.jiblaAliSalem": "جبل علي سالم",
+      "officeConfigs.locations.daiya": "ديا",
+      "officeConfigs.locations.faiha": "فيهة",
+      "officeConfigs.locations.shamiya": "شمية",
+      "officeConfigs.locations.nuzha": "نزهة",
+      "officeConfigs.locations.wattan": "عديلية",
+      "officeConfigs.locations.bneid": "بنيد القر",
+      
+      // Hawalli Governorate
+      "officeConfigs.locations.hawalli": "حولي",
+      "officeConfigs.locations.salmiya": "سالمية",
+      "officeConfigs.locations.shaab": "شعب",
+      "officeConfigs.locations.rumaithiya": "رمطية",
+      "officeConfigs.locations.bayan": "بيان",
+      "officeConfigs.locations.mishref": "مشرف",
+      "officeConfigs.locations.salwa": "سلوى",
+      "officeConfigs.locations.jabriiya": "جبرية",
+      "officeConfigs.locations.surra": "سرة",
+      
+      // Farwaniya Governorate
+      "officeConfigs.locations.farwaniya": "فروانية",
+      "officeConfigs.locations.jleeb": "جليب الشيوخ",
+      "officeConfigs.locations.rabiya": "ربية",
+      "officeConfigs.locations.andalous": "أندلوس",
+      "officeConfigs.locations.rehab": "رحب",
+      "officeConfigs.locations.khairan": "خيران",
+      "officeConfigs.locations.sabahiya": "سباحية",
+      "officeConfigs.locations.riggae": "رجاج",
+      
+      // Ahmadi Governorate
+      "officeConfigs.locations.ahmadi": "أحمدي",
+      "officeConfigs.locations.fahaheel": "فهاهل",
+      "officeConfigs.locations.fintas": "فنطاس",
+      "officeConfigs.locations.mangaf": "منغف",
+      "officeConfigs.locations.mahboula": "محبولة",
+      "officeConfigs.locations.sabahAlAhmad": "سبح الأحمد",
+      "officeConfigs.locations.wafra": "وفرة",
+      
+      // Mubarak Al-Kabeer Governorate
+      "officeConfigs.locations.mubarakAlKabeer": "مبارك الكبير",
+      "officeConfigs.locations.qurain": "قرين",
+      "officeConfigs.locations.abuFutaira": "أبو فتحيرة",
+      "officeConfigs.locations.adan": "عدن",
+      "officeConfigs.locations.qusor": "قصور",
+      "officeConfigs.locations.sabhan": "سبحان",
+      
+      // Jahra Governorate
+      "officeConfigs.locations.jahra": "جهراء",
+      "officeConfigs.locations.qasr": "قصر",
+      "officeConfigs.locations.warah": "وراء",
+      "officeConfigs.locations.nasseem": "نسيم",
+      "officeConfigs.locations.sulaibiya": "سليبية",
+      
+      // Service Options
+      "officeConfigs.services.24hours": "خدمة 24 ساعة",
+      "officeConfigs.services.24hoursDesc": "التوفر الدائم للإيجارات والدعم",
+      "officeConfigs.services.fullInsurance": "تغطية تأمين شامل",
+      "officeConfigs.services.fullInsuranceDesc": "تغطية تأمين شامل لجميع المركبات",
+      "officeConfigs.services.roadAssistance": "مساعدة الطريق",
+      "officeConfigs.services.roadAssistanceDesc": "مساعدة طريقية مستعجلة ودعم",
+      "officeConfigs.services.withDriver": "سائق محترف متاح",
+      "officeConfigs.services.withDriverDesc": "خدمة سائق محترف متاح",
+      
+      // Delivery Options
+      "officeConfigs.delivery.airportDelivery": "التوصيل من المطار",
+      "officeConfigs.delivery.airportDeliveryDesc": "جلب وإنزال من مطار الكويت الدولي",
+      "officeConfigs.delivery.homeDelivery": "التوصيل من المنزل",
+      "officeConfigs.delivery.homeDeliveryDesc": "التوصيل والتجميع المريح في موقع العميل",
+      "officeConfigs.delivery.noConditions": "غير موجه",
+      "officeConfigs.delivery.noConditionsDesc": "إيجار بدون متطلبات إضافية أو تضامن",
+      "officeConfigs.delivery.freeCancellation": "إلغاء مجاني",
+      "officeConfigs.delivery.freeCancellationDesc": "إلغاء الحجوزات بدون عقوبة"
     }
   }
 };

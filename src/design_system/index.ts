@@ -41,9 +41,11 @@ export { Select } from './Select';
 export { Modal, ConfirmDialog } from './Modal';
 export { ToastProvider, useToast, useSuccessToast, useErrorToast, useWarningToast, useInfoToast } from './Toast';
 export { NumberInput } from './NumberInput';
+export { default as Accordion } from './Accordion';
 
 // Types
 export type { SelectProps, SelectOption } from './Select';
 export type { ModalProps, ConfirmDialogProps } from './Modal';
 export type { ToastItem, ToastProviderProps } from './Toast';
-export type { NumberInputProps } from './NumberInput'; 
+export type { NumberInputProps } from './NumberInput';
+export type { AccordionProps } from './Accordion'; 

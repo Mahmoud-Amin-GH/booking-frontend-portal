@@ -8,6 +8,8 @@ Language Switcher -> N/A
 RTL Support -> N/A
 Icon -> https://www.figma.com/design/2ikSLwMnZaK48zDtz254qT/Web-%7C-Shared-components?node-id=479-8967
 Checkbox/Toggle -> https://www.figma.com/design/2ikSLwMnZaK48zDtz254qT/Web-%7C-Shared-components?node-id=1895-30509
+Accordion
+OfficeConfigSection
 
 Tokens:
 Colors -> https://www.figma.com/design/2ikSLwMnZaK48zDtz254qT/Web-%7C-Shared-components?node-id=1-4
