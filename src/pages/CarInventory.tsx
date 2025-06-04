@@ -33,7 +33,6 @@ import {
   validateCarForm,
   formatCarDisplayName
 } from '../services/carApi';
-import CarFormSteps from '../components/CarFormSteps';
 
 // Inventory context type from DashboardLayout
 interface InventoryContext {
@@ -83,7 +82,6 @@ const CarInventory: React.FC = () => {
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [useProgressiveForm, setUseProgressiveForm] = useState(true);
 
   const pageSize = 10;
 
@@ -348,27 +346,8 @@ const CarInventory: React.FC = () => {
     setFormData(newData);
   };
 
-  // Form component - now with option for progressive form
+  // Original single-step form component
   const CarForm = () => {
-    if (useProgressiveForm) {
-      return (
-        <CarFormSteps
-          formData={formData}
-          onFormDataChange={handleFormDataChange}
-          brandOptions={brandOptions}
-          modelOptions={modelOptions}
-          colorOptions={colorOptions}
-          transmissionOptions={transmissionOptions}
-          carTypeOptions={carTypeOptions}
-          onSubmit={handleSubmit}
-          onCancel={() => setIsAddModalOpen(false)}
-          isSubmitting={isSubmitting}
-          formErrors={formErrors}
-        />
-      );
-    }
-
-    // Original single-step form as fallback
     return (
       <div className="space-y-6">
         {formErrors.length > 0 && (
@@ -762,7 +741,7 @@ const CarInventory: React.FC = () => {
         onClose={() => setIsAddModalOpen(false)}
         title={t('cars.addNewCar')}
         size="large"
-        actions={!useProgressiveForm ? (
+        actions={
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
               {t('common.cancel')}
@@ -774,7 +753,7 @@ const CarInventory: React.FC = () => {
               {isSubmitting ? t('common.loading') : t('common.save')}
             </Button>
           </div>
-        ) : undefined}
+        }
       >
         <CarForm />
       </Modal>
