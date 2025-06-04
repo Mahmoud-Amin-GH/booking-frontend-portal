@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Typography, Button, Accordion, useSuccessToast, useErrorToast } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import OfficeConfigSection from '../components/OfficeConfigSection';
+import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
 
-interface OfficeConfigData {
+interface OfficeConfigState {
   locations: Record<string, boolean>;
   services: Record<string, boolean>;
   delivery: Record<string, boolean>;
@@ -18,7 +19,7 @@ const OfficeConfigs: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [configs, setConfigs] = useState<OfficeConfigData>({
+  const [configs, setConfigs] = useState<OfficeConfigState>({
     locations: {},
     services: {},
     delivery: {},
@@ -133,30 +134,46 @@ const OfficeConfigs: React.FC = () => {
 
   // Initialize configurations with all options disabled
   useEffect(() => {
-    const initializeConfigs = () => {
-      const initialConfigs: OfficeConfigData = {
-        locations: {},
-        services: {},
-        delivery: {},
-      };
+    const initializeConfigs = async () => {
+      try {
+        const apiConfigs = await OfficeConfigsApiService.getOfficeConfigs();
+        
+        // Convert API response to local state format
+        setConfigs({
+          locations: apiConfigs.location_configs || {},
+          services: apiConfigs.service_configs || {},
+          delivery: apiConfigs.delivery_configs || {},
+        });
+      } catch (error) {
+        console.error('Error loading office configurations:', error);
+        showError(t('officeConfigs.loadError'));
+        
+        // Initialize with empty configs on error
+        const initialConfigs: OfficeConfigState = {
+          locations: {},
+          services: {},
+          delivery: {},
+        };
 
-      // Initialize all location options as disabled
-      locationOptions.forEach(option => {
-        initialConfigs.locations[option.key] = false;
-      });
+        // Initialize all location options as disabled
+        locationOptions.forEach(option => {
+          initialConfigs.locations[option.key] = false;
+        });
 
-      // Initialize all service options as disabled
-      serviceOptions.forEach(option => {
-        initialConfigs.services[option.key] = false;
-      });
+        // Initialize all service options as disabled
+        serviceOptions.forEach(option => {
+          initialConfigs.services[option.key] = false;
+        });
 
-      // Initialize all delivery options as disabled
-      deliveryOptions.forEach(option => {
-        initialConfigs.delivery[option.key] = false;
-      });
+        // Initialize all delivery options as disabled
+        deliveryOptions.forEach(option => {
+          initialConfigs.delivery[option.key] = false;
+        });
 
-      setConfigs(initialConfigs);
-      setIsLoading(false);
+        setConfigs(initialConfigs);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     initializeConfigs();
@@ -197,8 +214,13 @@ const OfficeConfigs: React.FC = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // TODO: Replace with actual API call when backend is ready
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      const request: UpdateOfficeConfigsRequest = {
+        location_configs: configs.locations,
+        service_configs: configs.services,
+        delivery_configs: configs.delivery,
+      };
+      
+      await OfficeConfigsApiService.updateOfficeConfigs(request);
       
       showSuccess(t('officeConfigs.saveSuccess'));
     } catch (error) {
@@ -210,7 +232,7 @@ const OfficeConfigs: React.FC = () => {
   };
 
   // Convert option arrays to format expected by OfficeConfigSection
-  const formatOptionsForSection = (options: typeof locationOptions, configType: keyof OfficeConfigData) => {
+  const formatOptionsForSection = (options: typeof locationOptions, configType: keyof OfficeConfigState) => {
     return options.map(option => ({
       ...option,
       enabled: configs[configType][option.key] || false,
