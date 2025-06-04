@@ -24,65 +24,15 @@ const OfficeConfigs: React.FC = () => {
     delivery: {},
   });
 
-  // Define configuration options
+  // Define configuration options - Main Districts Only
   const locationOptions = [
-    // Al Asimah Governorate
+    // Main Districts (one per governorate)
     { key: 'kuwaitCity', labelKey: 'officeConfigs.locations.kuwaitCity' },
-    { key: 'dasman', labelKey: 'officeConfigs.locations.dasman' },
-    { key: 'sharq', labelKey: 'officeConfigs.locations.sharq' },
-    { key: 'mirqab', labelKey: 'officeConfigs.locations.mirqab' },
-    { key: 'jiblaAliSalem', labelKey: 'officeConfigs.locations.jiblaAliSalem' },
-    { key: 'daiya', labelKey: 'officeConfigs.locations.daiya' },
-    { key: 'faiha', labelKey: 'officeConfigs.locations.faiha' },
-    { key: 'shamiya', labelKey: 'officeConfigs.locations.shamiya' },
-    { key: 'nuzha', labelKey: 'officeConfigs.locations.nuzha' },
-    { key: 'wattan', labelKey: 'officeConfigs.locations.wattan' },
-    { key: 'bneid', labelKey: 'officeConfigs.locations.bneid' },
-    
-    // Hawalli Governorate
     { key: 'hawalli', labelKey: 'officeConfigs.locations.hawalli' },
-    { key: 'salmiya', labelKey: 'officeConfigs.locations.salmiya' },
-    { key: 'shaab', labelKey: 'officeConfigs.locations.shaab' },
-    { key: 'rumaithiya', labelKey: 'officeConfigs.locations.rumaithiya' },
-    { key: 'bayan', labelKey: 'officeConfigs.locations.bayan' },
-    { key: 'mishref', labelKey: 'officeConfigs.locations.mishref' },
-    { key: 'salwa', labelKey: 'officeConfigs.locations.salwa' },
-    { key: 'jabriiya', labelKey: 'officeConfigs.locations.jabriiya' },
-    { key: 'surra', labelKey: 'officeConfigs.locations.surra' },
-    
-    // Farwaniya Governorate
     { key: 'farwaniya', labelKey: 'officeConfigs.locations.farwaniya' },
-    { key: 'jleeb', labelKey: 'officeConfigs.locations.jleeb' },
-    { key: 'rabiya', labelKey: 'officeConfigs.locations.rabiya' },
-    { key: 'andalous', labelKey: 'officeConfigs.locations.andalous' },
-    { key: 'rehab', labelKey: 'officeConfigs.locations.rehab' },
-    { key: 'khairan', labelKey: 'officeConfigs.locations.khairan' },
-    { key: 'sabahiya', labelKey: 'officeConfigs.locations.sabahiya' },
-    { key: 'riggae', labelKey: 'officeConfigs.locations.riggae' },
-    
-    // Ahmadi Governorate
     { key: 'ahmadi', labelKey: 'officeConfigs.locations.ahmadi' },
-    { key: 'fahaheel', labelKey: 'officeConfigs.locations.fahaheel' },
-    { key: 'fintas', labelKey: 'officeConfigs.locations.fintas' },
-    { key: 'mangaf', labelKey: 'officeConfigs.locations.mangaf' },
-    { key: 'mahboula', labelKey: 'officeConfigs.locations.mahboula' },
-    { key: 'sabahAlAhmad', labelKey: 'officeConfigs.locations.sabahAlAhmad' },
-    { key: 'wafra', labelKey: 'officeConfigs.locations.wafra' },
-    
-    // Mubarak Al-Kabeer Governorate
     { key: 'mubarakAlKabeer', labelKey: 'officeConfigs.locations.mubarakAlKabeer' },
-    { key: 'qurain', labelKey: 'officeConfigs.locations.qurain' },
-    { key: 'abuFutaira', labelKey: 'officeConfigs.locations.abuFutaira' },
-    { key: 'adan', labelKey: 'officeConfigs.locations.adan' },
-    { key: 'qusor', labelKey: 'officeConfigs.locations.qusor' },
-    { key: 'sabhan', labelKey: 'officeConfigs.locations.sabhan' },
-    
-    // Jahra Governorate
     { key: 'jahra', labelKey: 'officeConfigs.locations.jahra' },
-    { key: 'qasr', labelKey: 'officeConfigs.locations.qasr' },
-    { key: 'warah', labelKey: 'officeConfigs.locations.warah' },
-    { key: 'nasseem', labelKey: 'officeConfigs.locations.nasseem' },
-    { key: 'sulaibiya', labelKey: 'officeConfigs.locations.sulaibiya' },
   ];
 
   const serviceOptions = [
@@ -315,18 +265,6 @@ const OfficeConfigs: React.FC = () => {
         >
           {isSaving ? t('common.loading') : t('common.save')}
         </Button>
-      </div>
-
-      {/* Development Note */}
-      <div className="bg-surface-variant rounded-lg p-6 mt-8">
-        <Typography 
-          variant="body-small" 
-          color="on-surface-variant" 
-          className={`${isRTL ? 'text-right' : 'text-left'} italic`}
-        >
-          💡 {t('common.loading')} Note: This page is functional but currently saves configurations locally. 
-          Backend API integration will be implemented in the next phase to persist configurations to the database.
-        </Typography>
       </div>
     </div>
   );

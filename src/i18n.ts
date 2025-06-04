@@ -193,7 +193,7 @@ const resources = {
       
       // Categories
       "officeConfigs.locationCoverage": "Location Coverage",
-      "officeConfigs.locationCoverageDesc": "Select districts and areas where your service is available",
+      "officeConfigs.locationCoverageDesc": "Select districts where your service is available",
       "officeConfigs.serviceOptions": "Service Options",
       "officeConfigs.serviceOptionsDesc": "Configure available services for your customers",
       "officeConfigs.deliveryPickup": "Delivery & Pickup",
@@ -467,7 +467,7 @@ const resources = {
       
       // Categories
       "officeConfigs.locationCoverage": "تغطية الموقع",
-      "officeConfigs.locationCoverageDesc": "اختر المناطق والمناطق التي تكون خدمتك متاحة فيها",
+      "officeConfigs.locationCoverageDesc": "اختر المناطق التي تكون خدمتك متاحة فيها",
       "officeConfigs.serviceOptions": "خيارات الخدمة",
       "officeConfigs.serviceOptionsDesc": "تكوين الخدمات المتاحة لعملائك",
       "officeConfigs.deliveryPickup": "التوصيل والتجميع",
