@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Icon from './Icon';
-import Typography from './Typography';
+import Icon from '../primitives/Icon';
+import Typography from '../primitives/Typography';
 
 export interface AccordionProps {
   title: string;

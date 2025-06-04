@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import Icon from './Icon';
-import Button from './Button';
-import { useLanguage } from '../contexts/LanguageContext';
+import Icon from '../primitives/Icon';
+import Button from '../primitives/Button';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { useTranslation } from 'react-i18next';
 
 export interface ModalProps {

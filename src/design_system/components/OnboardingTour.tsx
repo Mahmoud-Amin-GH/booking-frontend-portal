@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Icon } from '../design_system';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Typography, Button, Icon } from '../index';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface OnboardingStep {
   id: string;

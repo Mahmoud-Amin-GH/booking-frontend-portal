@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Icon from './Icon';
-import { useLanguage } from '../contexts/LanguageContext';
+import Icon from '../primitives/Icon';
+import { useLanguage } from '../../contexts/LanguageContext';
 import { useTranslation } from 'react-i18next';
 
 export interface SelectOption {

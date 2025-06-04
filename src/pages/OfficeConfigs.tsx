@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Accordion, useSuccessToast, useErrorToast } from '../design_system';
+import { Typography, Button, Accordion, useSuccessToast, useErrorToast, OfficeConfigSection } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
-import OfficeConfigSection from '../components/OfficeConfigSection';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
 
 interface OfficeConfigState {

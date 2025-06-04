@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Input, Button, Alert, Typography, Form, Icon } from '../design_system';
-import PhoneInput from '../components/PhoneInput';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useNavigate, Link } from 'react-router-dom';
+import { Input, Button, Alert, Typography, Form, Icon, PhoneInput, LanguageSwitcher } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { authAPI, validateKuwaitiPhone } from '../services/api';
 

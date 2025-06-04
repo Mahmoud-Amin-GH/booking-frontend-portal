@@ -12,10 +12,10 @@ import {
   useErrorToast,
   SelectOption,
   Typography,
-  Icon
+  Icon,
+  LanguageSwitcher
 } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
-import LanguageSwitcher from '../components/LanguageSwitcher';
 import { clearAuthToken } from '../services/api';
 import {
   CarApiService,

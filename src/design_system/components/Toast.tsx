@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Icon from './Icon';
-import { useLanguage } from '../contexts/LanguageContext';
+import Icon from '../primitives/Icon';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export interface ToastItem {
   id: string;

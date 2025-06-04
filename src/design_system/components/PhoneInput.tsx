@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLanguage } from '../contexts/LanguageContext';
-import { Icon, Typography } from '../design_system';
-import { formatKuwaitiPhone } from '../services/api';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { Icon, Typography } from '../index';
+import { formatKuwaitiPhone } from '../../services/api';
 
 interface PhoneInputProps {
   value: string;

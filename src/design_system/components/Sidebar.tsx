@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Icon, Typography } from '../design_system';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Button, Icon, Typography } from '../index';
+import { useLanguage } from '../../contexts/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import { clearAuthToken } from '../services/api';
+import { clearAuthToken } from '../../services/api';
 
 interface SidebarProps {
   isCollapsed: boolean;

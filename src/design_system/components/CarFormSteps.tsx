@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Icon, Input, Select, NumberInput, SelectOption } from '../design_system';
-import { useLanguage } from '../contexts/LanguageContext';
-import { CarFormData } from '../services/carApi';
+import { Typography, Button, Icon, Input, Select, NumberInput, SelectOption } from '../index';
+import { useLanguage } from '../../contexts/LanguageContext';
+import { CarFormData } from '../../services/carApi';
 
 interface CarFormStepsProps {
   formData: Partial<CarFormData>;

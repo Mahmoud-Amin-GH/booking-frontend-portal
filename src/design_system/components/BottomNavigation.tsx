@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Button, Icon, Typography } from '../design_system';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Button, Icon, Typography } from '../index';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface BottomNavigationProps {
   disabledItems?: string[];

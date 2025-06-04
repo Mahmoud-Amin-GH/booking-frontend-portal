@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Checkbox, Typography } from '../design_system';
-import { useLanguage } from '../contexts/LanguageContext';
+import { Checkbox, Typography } from '../index';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ConfigOption {
   key: string;

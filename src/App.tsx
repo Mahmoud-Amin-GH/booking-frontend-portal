@@ -8,7 +8,7 @@ import OTPVerification from './pages/OTPVerification';
 import DashboardOverview from './pages/DashboardOverview';
 import CarInventory from './pages/CarInventory';
 import OfficeConfigs from './pages/OfficeConfigs';
-import DashboardLayout from './components/DashboardLayout';
+import { DashboardLayout } from './design_system';
 import './i18n'; // Initialize i18n
 
 function App() {

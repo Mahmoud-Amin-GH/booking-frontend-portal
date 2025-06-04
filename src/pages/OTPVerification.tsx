@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Input, Button, Alert, Typography, Form, Icon } from '../design_system';
-import LanguageSwitcher from '../components/LanguageSwitcher';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Button, Input, Alert, Typography, Icon, LanguageSwitcher, Form } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { authAPI } from '../services/api';
 
