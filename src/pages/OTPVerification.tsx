@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Box, Container, Paper, Avatar } from '@mui/material';
-import { Button, Input, Alert, Typography, Icon } from '../design_system/mui';
+import { Button, Input, Alert, Typography, Icon } from '../design_system';
 import { LanguageSwitcher, Form } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { authAPI } from '../services/api';

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Container, Paper } from '@mui/material';
-import { Button, Input, Alert, Typography, Icon, PhoneInput } from '../design_system/mui';
+import { Button, Input, Alert, Typography, Icon, PhoneInput } from '../design_system';
 import { LanguageSwitcher, Form } from '../design_system';
 import { authAPI, validateKuwaitiPhone } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';

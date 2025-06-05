@@ -57,13 +57,6 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
       value={cleanPhoneValue}
       onChange={handleInputChange}
       error={Boolean(error)}
-      helperText={
-        error || (
-          <Typography variant="label-small" color="on-surface-variant">
-            {t('common.kuwait')} • {t('common.phoneFormat')}
-          </Typography>
-        )
-      }
       placeholder={placeholder}
       variant={variant}
       size={size}
