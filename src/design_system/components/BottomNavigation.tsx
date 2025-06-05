@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Paper } from '@mui/material';
 import { Button, Icon, Typography } from '../index';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -51,10 +52,24 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ disabledItems = [] 
   };
 
   return (
-    <div className={`
-      fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant z-40
-      md:hidden flex items-center justify-around py-2 px-4
-    `}>
+    <Paper
+      elevation={8}
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 40,
+        display: { xs: 'flex', md: 'none' },
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        py: 1,
+        px: 2,
+        borderTop: 1,
+        borderColor: 'divider',
+        backgroundColor: 'background.paper',
+      }}
+    >
       {navigationItems.map((item) => {
         const isActiveItem = isActive(item.path);
         const isDisabled = disabledItems.includes(item.key);
@@ -66,30 +81,42 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ disabledItems = [] 
             size="small"
             onClick={() => handleNavClick(item)}
             disabled={isDisabled}
-            className={`
-              flex flex-col items-center gap-1 py-2 px-3 min-w-0
-              ${isActiveItem ? 'text-primary' : 'text-on-surface-variant'}
-              ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
-            `}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 0.5,
+              py: 1,
+              px: 1.5,
+              minWidth: 0,
+              color: isActiveItem ? 'primary.main' : 'text.secondary',
+              opacity: isDisabled ? 0.5 : 1,
+              cursor: isDisabled ? 'not-allowed' : 'pointer',
+            }}
           >
             <Icon 
               name={item.icon} 
               size="small" 
-              className={`${isActiveItem ? 'text-primary' : 'text-on-surface-variant'} ${
-                isDisabled ? 'opacity-50' : ''
-              }`}
+              sx={{
+                color: isActiveItem ? 'primary.main' : 'text.secondary',
+                opacity: isDisabled ? 0.5 : 1,
+              }}
             />
             <Typography 
               variant="label-small" 
               color={isActiveItem ? 'primary' : 'on-surface-variant'}
-              className={`text-center leading-tight ${isDisabled ? 'opacity-50' : ''}`}
+              sx={{ 
+                textAlign: 'center',
+                lineHeight: 1.2,
+                opacity: isDisabled ? 0.5 : 1,
+              }}
             >
               {item.label}
             </Typography>
           </Button>
         );
       })}
-    </div>
+    </Paper>
   );
 };
 

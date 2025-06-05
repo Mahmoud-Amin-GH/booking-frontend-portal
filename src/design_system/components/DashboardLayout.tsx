@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
 import Sidebar from './Sidebar';
@@ -60,7 +61,7 @@ const DashboardLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       {/* Sidebar for desktop */}
       <Sidebar 
         isCollapsed={isSidebarCollapsed} 
@@ -70,14 +71,16 @@ const DashboardLayout: React.FC = () => {
       />
       
       {/* Main content area */}
-      <div className={`
-        transition-all duration-300 ease-in-out
-        ${isSidebarCollapsed ? (isRTL ? 'mr-16' : 'ml-16') : (isRTL ? 'mr-64' : 'ml-64')}
-        md:${isSidebarCollapsed ? (isRTL ? 'mr-16' : 'ml-16') : (isRTL ? 'mr-64' : 'ml-64')}
-        pb-20 md:pb-0
-      `}>
+      <Box 
+        sx={{
+          transition: 'margin 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+          marginLeft: isRTL ? 0 : (isSidebarCollapsed ? 8 : 32),
+          marginRight: isRTL ? (isSidebarCollapsed ? 8 : 32) : 0,
+          paddingBottom: { xs: 10, md: 0 },
+        }}
+      >
         <Outlet context={inventoryContext} />
-      </div>
+      </Box>
       
       {/* Bottom navigation for mobile */}
       <BottomNavigation disabledItems={disabledNavItems} />
@@ -88,7 +91,7 @@ const DashboardLayout: React.FC = () => {
         onComplete={handleOnboardingComplete}
         onSkip={handleOnboardingSkip}
       />
-    </div>
+    </Box>
   );
 };
 

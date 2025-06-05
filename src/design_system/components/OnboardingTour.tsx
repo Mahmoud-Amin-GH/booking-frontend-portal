@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Box, Paper } from '@mui/material';
 import { Typography, Button, Icon } from '../index';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -158,76 +159,111 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isVisible, onComplete, 
   const currentStepData = steps[currentStep];
 
   return (
-    <div className="fixed inset-0 z-50">
+    <Box sx={{ position: 'fixed', inset: 0, zIndex: 50 }}>
       {/* Dark Overlay */}
-      <div
-        className={`absolute inset-0 bg-black transition-opacity duration-300 ${
-          overlayVisible ? 'opacity-50' : 'opacity-0'
-        }`}
+      <Box
         onClick={handleSkip}
+        sx={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          opacity: overlayVisible ? 1 : 0,
+          transition: 'opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+        }}
       />
       
       {/* Spotlight Highlight */}
       {currentStepData && (
-        <div
-          className="absolute pointer-events-none"
-          style={{
+        <Box
+          sx={{
+            position: 'absolute',
+            pointerEvents: 'none',
             top: highlightPos.top - 8,
             left: highlightPos.left - 8,
             width: highlightPos.width + 16,
             height: highlightPos.height + 16,
             boxShadow: '0 0 0 4px rgba(59, 130, 246, 0.5), 0 0 0 9999px rgba(0, 0, 0, 0.5)',
-            borderRadius: '12px',
-            transition: 'all 0.3s ease-in-out'
+            borderRadius: 1.5,
+            transition: 'all 0.3s ease-in-out',
           }}
         />
       )}
       
       {/* Tooltip */}
       {currentStepData && (
-        <div
-          className={`absolute bg-surface border border-outline-variant rounded-lg shadow-xl p-6 w-80 transition-all duration-300 ${
-            overlayVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}
-          style={{
+        <Paper
+          elevation={8}
+          sx={{
+            position: 'absolute',
             top: tooltipPos.top,
             left: tooltipPos.left,
+            width: 320,
+            p: 3,
+            borderRadius: 2,
+            opacity: overlayVisible ? 1 : 0,
+            transform: overlayVisible ? 'scale(1)' : 'scale(0.95)',
+            transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
           }}
         >
           {/* Header */}
-          <div className={`flex items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                <Typography variant="label-small" color="primary" className="font-bold">
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'space-between',
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+              mb: 2,
+            }}
+          >
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box 
+                sx={{ 
+                  width: 32, 
+                  height: 32, 
+                  backgroundColor: 'primary.50',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Typography variant="label-small" color="primary" sx={{ fontWeight: 'bold' }}>
                   {currentStep + 1}
                 </Typography>
-              </div>
+              </Box>
               <Typography variant="body-small" color="on-surface-variant">
                 {currentStep + 1} of {steps.length}
               </Typography>
-            </div>
+            </Box>
             <Button variant="text" size="small" onClick={handleSkip}>
               <Icon name="phone" size="small" />
             </Button>
-          </div>
+          </Box>
           
           {/* Content */}
-          <div className={`mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
-            <Typography variant="title-medium" color="on-surface" className="font-bold mb-2">
+          <Box sx={{ mb: 3, textAlign: isRTL ? 'right' : 'left' }}>
+            <Typography variant="title-medium" color="on-surface" sx={{ fontWeight: 'bold', mb: 1 }}>
               {currentStepData.title}
             </Typography>
             <Typography variant="body-medium" color="on-surface-variant">
               {currentStepData.content}
             </Typography>
-          </div>
+          </Box>
           
           {/* Actions */}
-          <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: isRTL ? 'row-reverse' : 'row',
+            }}
+          >
             <Button variant="text" onClick={handleSkip}>
               {t('onboarding.skip')}
             </Button>
             
-            <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <Box sx={{ display: 'flex', gap: 1, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
               {currentStep > 0 && (
                 <Button variant="outlined" size="small" onClick={prevStep}>
                   {t('common.previous')}
@@ -236,54 +272,90 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isVisible, onComplete, 
               <Button onClick={nextStep}>
                 {currentStep === steps.length - 1 ? t('onboarding.finish') : t('onboarding.next')}
               </Button>
-            </div>
-          </div>
+            </Box>
+          </Box>
           
           {/* Progress Indicators */}
-          <div className="flex justify-center gap-2 mt-4">
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mt: 2 }}>
             {steps.map((_, index) => (
-              <div
+              <Box
                 key={index}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentStep ? 'bg-primary' : 
-                  index < currentStep ? 'bg-primary-300' : 'bg-outline-variant'
-                }`}
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  backgroundColor: 
+                    index === currentStep ? 'primary.main' : 
+                    index < currentStep ? 'primary.300' : 'divider',
+                  transition: 'background-color 0.2s ease-in-out',
+                }}
               />
             ))}
-          </div>
-        </div>
+          </Box>
+        </Paper>
       )}
       
       {/* Welcome Modal for First Step */}
       {currentStep === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center p-4">
-          <div className={`bg-surface rounded-lg shadow-xl p-8 max-w-md w-full mx-auto transition-all duration-300 ${
-            overlayVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}>
-            <div className={`text-center mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
-              <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Icon name="check" size="large" className="text-primary-600" />
-              </div>
-              <Typography variant="headline-small" color="on-surface" className="font-bold mb-2">
+        <Box 
+          sx={{ 
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 2,
+          }}
+        >
+          <Paper
+            elevation={12}
+            sx={{
+              p: 4,
+              maxWidth: 448,
+              width: '100%',
+              mx: 'auto',
+              borderRadius: 2,
+              opacity: overlayVisible ? 1 : 0,
+              transform: overlayVisible ? 'scale(1)' : 'scale(0.95)',
+              transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          >
+            <Box sx={{ textAlign: isRTL ? 'right' : 'center', mb: 3 }}>
+              <Box 
+                sx={{ 
+                  width: 64,
+                  height: 64,
+                  backgroundColor: 'primary.50',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  mx: 'auto',
+                  mb: 2,
+                }}
+              >
+                <Icon name="check" size="large" sx={{ color: 'primary.main' }} />
+              </Box>
+              <Typography variant="headline-small" color="on-surface" sx={{ fontWeight: 'bold', mb: 1 }}>
                 {t('onboarding.welcome')}
               </Typography>
               <Typography variant="body-medium" color="on-surface-variant">
                 Let's take a quick tour to help you get started with managing your car rental inventory.
               </Typography>
-            </div>
+            </Box>
             
-            <div className={`flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <Button variant="text" onClick={handleSkip} className="flex-1">
+            <Box sx={{ display: 'flex', gap: 1.5, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+              <Button variant="text" onClick={handleSkip} sx={{ flex: 1 }}>
                 {t('onboarding.skip')}
               </Button>
-              <Button onClick={nextStep} className="flex-1">
+              <Button onClick={nextStep} sx={{ flex: 1 }}>
                 Start Tour
               </Button>
-            </div>
-          </div>
-        </div>
+            </Box>
+          </Paper>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

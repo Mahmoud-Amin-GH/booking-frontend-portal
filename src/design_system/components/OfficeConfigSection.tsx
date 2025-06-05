@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Box, Paper } from '@mui/material';
 import { Checkbox, Typography } from '../index';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -29,13 +30,13 @@ const OfficeConfigSection: React.FC<OfficeConfigSectionProps> = ({
   const { isRTL } = useLanguage();
 
   return (
-    <div className={`space-y-4 ${className}`}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }} className={className}>
       {/* Section Header */}
-      <div className={`mb-6 ${isRTL ? 'text-right' : 'text-left'}`}>
+      <Box sx={{ textAlign: isRTL ? 'right' : 'left' }}>
         <Typography 
           variant="title-medium" 
           color="on-surface" 
-          className="font-medium mb-2"
+          sx={{ fontWeight: 'medium', mb: 1 }}
         >
           {title}
         </Typography>
@@ -45,26 +46,43 @@ const OfficeConfigSection: React.FC<OfficeConfigSectionProps> = ({
         >
           {description}
         </Typography>
-      </div>
+      </Box>
 
       {/* Options Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <Box 
+        sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+          gap: 2
+        }}
+      >
         {options.map((option) => (
-          <div 
+          <Paper
             key={option.key}
-            className="bg-surface-container-lowest rounded-lg p-4 border border-outline-variant hover:border-outline transition-colors"
+            elevation={0}
+            sx={{
+              p: 3,
+              borderRadius: 2,
+              border: 1,
+              borderColor: 'divider',
+              backgroundColor: 'background.paper',
+              transition: 'border-color 0.2s ease-in-out',
+              '&:hover': {
+                borderColor: 'text.secondary',
+              },
+            }}
           >
             <Checkbox
               label={t(option.labelKey)}
               description={option.descriptionKey ? t(option.descriptionKey) : undefined}
               checked={option.enabled}
               onChange={(e) => onOptionChange(option.key, e.target.checked)}
-              className={isRTL ? 'text-right' : 'text-left'}
+              sx={{ textAlign: isRTL ? 'right' : 'left' }}
             />
-          </div>
+          </Paper>
         ))}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

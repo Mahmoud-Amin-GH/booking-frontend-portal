@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Box, Paper, Alert, Stack } from '@mui/material';
 import { Typography, Button, Icon, Input, Select, NumberInput, SelectOption } from '../index';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { CarFormData } from '../../services/carApi';
@@ -90,42 +91,55 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
 
   // Step Progress Indicator
   const StepProgress = () => (
-    <div className="flex justify-between items-center mb-8">
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
       {steps.map((step, index) => (
-        <div key={step.id} className="flex items-center flex-1">
-          <div className="flex flex-col items-center">
-            <div className={`
-              w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300
-              ${index <= currentStep 
-                ? 'bg-primary border-primary text-white' 
-                : 'bg-surface border-outline-variant text-on-surface-variant'
-              }
-            `}>
+        <Box key={step.id} sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: 2,
+                borderColor: index <= currentStep ? 'primary.main' : 'divider',
+                backgroundColor: index <= currentStep ? 'primary.main' : 'background.paper',
+                color: index <= currentStep ? 'primary.contrastText' : 'text.secondary',
+                transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            >
               {index < currentStep ? (
                 <Icon name="check" size="small" />
               ) : (
                 <Icon name={step.icon} size="small" />
               )}
-            </div>
-            <div className={`text-center mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+            </Box>
+            <Box sx={{ textAlign: isRTL ? 'right' : 'center', mt: 1 }}>
               <Typography 
                 variant="label-small" 
                 color={index <= currentStep ? 'primary' : 'on-surface-variant'}
-                className="font-medium"
+                sx={{ fontWeight: 'medium' }}
               >
                 {step.title}
               </Typography>
-            </div>
-          </div>
+            </Box>
+          </Box>
           {index < steps.length - 1 && (
-            <div className={`
-              flex-1 h-0.5 mx-4 transition-all duration-300
-              ${index < currentStep ? 'bg-primary' : 'bg-outline-variant'}
-            `} />
+            <Box
+              sx={{
+                flex: 1,
+                height: 2,
+                mx: 2,
+                backgroundColor: index < currentStep ? 'primary.main' : 'divider',
+                transition: 'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+            />
           )}
-        </div>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 
   // Step Content
@@ -133,8 +147,14 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
     switch (currentStep) {
       case 0: // Basic Information
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Stack spacing={3}>
+            <Box 
+              sx={{ 
+                display: 'grid', 
+                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                gap: 3
+              }}
+            >
               <Select
                 label={t('cars.brand')}
                 options={brandOptions}
@@ -168,14 +188,20 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
                 onChange={(e) => updateFormData({ trim_level: e.target.value })}
                 placeholder={t('cars.trimLevelPlaceholder')}
               />
-            </div>
-          </div>
+            </Box>
+          </Stack>
         );
 
       case 1: // Specifications
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Stack spacing={3}>
+            <Box 
+              sx={{ 
+                display: 'grid', 
+                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                gap: 3
+              }}
+            >
               <NumberInput
                 label={t('cars.seats')}
                 value={formData.seats}
@@ -208,14 +234,20 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
                 onChange={(value) => updateFormData({ car_type: value as any })}
                 required
               />
-            </div>
-          </div>
+            </Box>
+          </Stack>
         );
 
       case 2: // Availability & Pricing
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Stack spacing={3}>
+            <Box 
+              sx={{ 
+                display: 'grid', 
+                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                gap: 3
+              }}
+            >
               <NumberInput
                 label={t('cars.availableCount')}
                 value={formData.available_count}
@@ -225,51 +257,75 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
                 helperText="Number of vehicles available for rent"
               />
 
-              <div className="bg-surface-container-low rounded-lg p-4">
-                <Typography variant="label-medium" color="on-surface" className="mb-2">
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  backgroundColor: 'grey.50',
+                  border: 1,
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="label-medium" color="on-surface" sx={{ mb: 1 }}>
                   Pricing Configuration
                 </Typography>
                 <Typography variant="body-small" color="on-surface-variant">
                   Pricing options will be available in a future update. For now, focus on inventory management.
                 </Typography>
-              </div>
-            </div>
+              </Paper>
+            </Box>
 
             {/* Summary Card */}
-            <div className="bg-primary-50 border border-primary-200 rounded-lg p-6">
-              <Typography variant="title-small" color="primary" className="mb-4 font-medium">
+            <Paper
+              elevation={1}
+              sx={{
+                p: 3,
+                backgroundColor: 'primary.50',
+                border: 1,
+                borderColor: 'primary.200',
+                borderRadius: 2,
+              }}
+            >
+              <Typography variant="title-small" color="primary" sx={{ mb: 2, fontWeight: 'medium' }}>
                 Vehicle Summary
               </Typography>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
+              <Box 
+                sx={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 2
+                }}
+              >
+                <Box>
                   <Typography variant="body-small" color="on-surface-variant">Brand & Model</Typography>
                   <Typography variant="body-medium" color="on-surface">
                     {brandOptions.find(b => b.value === formData.brand_id)?.label || '—'} {' '}
                     {modelOptions.find(m => m.value === formData.model_id)?.label || '—'}
                   </Typography>
-                </div>
-                <div>
+                </Box>
+                <Box>
                   <Typography variant="body-small" color="on-surface-variant">Year & Seats</Typography>
                   <Typography variant="body-medium" color="on-surface">
                     {formData.year || '—'} • {formData.seats || '—'} seats
                   </Typography>
-                </div>
-                <div>
+                </Box>
+                <Box>
                   <Typography variant="body-small" color="on-surface-variant">Color & Type</Typography>
                   <Typography variant="body-medium" color="on-surface">
                     {colorOptions.find(c => c.value === formData.color_id)?.label || '—'} • {' '}
                     {carTypeOptions.find(ct => ct.value === formData.car_type)?.label || '—'}
                   </Typography>
-                </div>
-                <div>
+                </Box>
+                <Box>
                   <Typography variant="body-small" color="on-surface-variant">Transmission</Typography>
                   <Typography variant="body-medium" color="on-surface">
                     {transmissionOptions.find(t => t.value === formData.transmission)?.label || '—'}
                   </Typography>
-                </div>
-              </div>
-            </div>
-          </div>
+                </Box>
+              </Box>
+            </Paper>
+          </Stack>
         );
 
       default:
@@ -278,49 +334,60 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
   };
 
   return (
-    <div className="space-y-8">
+    <Stack spacing={4}>
       {/* Form Errors */}
       {formErrors.length > 0 && (
-        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
-          <Typography variant="body-small" className="font-medium mb-2">Please fix the following errors:</Typography>
-          <ul className="list-disc list-inside space-y-1">
+        <Alert severity="error" sx={{ borderRadius: 2 }}>
+          <Typography variant="body-small" sx={{ fontWeight: 'medium', mb: 1 }}>
+            Please fix the following errors:
+          </Typography>
+          <Box component="ul" sx={{ listStyle: 'disc', listStylePosition: 'inside', m: 0, pl: 0 }}>
             {formErrors.map((error, index) => (
-              <li key={index} className="text-sm">{error}</li>
+              <Box component="li" key={index} sx={{ fontSize: 'small' }}>
+                {error}
+              </Box>
             ))}
-          </ul>
-        </div>
+          </Box>
+        </Alert>
       )}
 
       {/* Step Progress */}
       <StepProgress />
 
       {/* Step Header */}
-      <div className={`text-center mb-8 ${isRTL ? 'text-right' : 'text-left'}`}>
-        <Typography variant="headline-small" color="on-surface" className="font-bold mb-2">
+      <Box sx={{ textAlign: isRTL ? 'right' : 'center', mb: 4 }}>
+        <Typography variant="headline-small" color="on-surface" sx={{ fontWeight: 'bold', mb: 1 }}>
           {steps[currentStep].title}
         </Typography>
         <Typography variant="body-medium" color="on-surface-variant">
           {t('form.step', { current: currentStep + 1, total: steps.length })} • {steps[currentStep].description}
         </Typography>
-      </div>
+      </Box>
 
       {/* Step Content */}
-      <div className="min-h-[300px]">
+      <Box sx={{ minHeight: 300 }}>
         {renderStepContent()}
-      </div>
+      </Box>
 
       {/* Navigation */}
-      <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
-        <div>
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexDirection: isRTL ? 'row-reverse' : 'row',
+        }}
+      >
+        <Box>
           {currentStep > 0 && (
             <Button variant="outlined" onClick={prevStep}>
-              <Icon name="arrow-left" size="small" className={isRTL ? 'rotate-180' : ''} />
+              <Icon name="arrow-left" size="small" sx={{ transform: isRTL ? 'rotate(180deg)' : 'none' }} />
               {t('common.previous')}
             </Button>
           )}
-        </div>
+        </Box>
 
-        <div className={`flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <Box sx={{ display: 'flex', gap: 1.5, flexDirection: isRTL ? 'row-reverse' : 'row' }}>
           <Button variant="text" onClick={onCancel}>
             {t('common.cancel')}
           </Button>
@@ -338,12 +405,12 @@ const CarFormSteps: React.FC<CarFormStepsProps> = ({
               disabled={!canProceed}
             >
               {t('common.next')}
-              <Icon name="arrow-right" size="small" className={isRTL ? 'rotate-180' : ''} />
+              <Icon name="arrow-right" size="small" sx={{ transform: isRTL ? 'rotate(180deg)' : 'none' }} />
             </Button>
           )}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Stack>
   );
 };
 
