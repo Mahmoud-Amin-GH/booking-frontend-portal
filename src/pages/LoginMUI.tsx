@@ -2,19 +2,19 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Paper } from '@mui/material';
-import { Button, Input, Alert, Typography, Icon, PhoneInput } from '../design_system/mui';
-import { LanguageSwitcher, Form } from '../design_system';
+import { Container, Paper, Box, Alert as MUIAlert } from '@mui/material';
+import { Button, Input, Typography, LanguageSwitcher } from '../design_system/mui';
 import { authAPI, validateKuwaitiPhone } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useErrorToast } from '../design_system';
+import * as Icons from '@mui/icons-material';
 
 interface LoginFormData {
   phone: string;
   password: string;
 }
 
-const Login: React.FC = () => {
+const LoginMUI: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
@@ -26,12 +26,8 @@ const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<LoginFormData>();
-
-  const phoneValue = watch('phone', '');
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -71,7 +67,6 @@ const Login: React.FC = () => {
     >
       {/* Header */}
       <Box
-        component="header"
         sx={{
           width: '100%',
           p: 3,
@@ -94,7 +89,7 @@ const Login: React.FC = () => {
         }}
       >
         <Container maxWidth="sm">
-          <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto' }}>
+          <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto', spacing: 4 }}>
             {/* Hero Section */}
             <Box sx={{ textAlign: 'center', mb: 4 }}>
               <Typography variant="display-medium" color="primary" gutterBottom>
@@ -112,28 +107,33 @@ const Login: React.FC = () => {
                 p: 4,
                 borderRadius: 3,
                 backgroundColor: 'background.paper',
-                mb: 4,
               }}
             >
               {error && (
-                <Alert 
-                  variant="error" 
-                  message={error}
-                  dismissible
-                  onDismiss={() => setError(null)}
-                />
+                <MUIAlert 
+                  severity="error" 
+                  onClose={() => setError(null)}
+                  sx={{ mb: 3 }}
+                >
+                  {error}
+                </MUIAlert>
               )}
 
               <Box
                 component="form"
                 onSubmit={handleSubmit(onSubmit)}
-                sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: error ? 3 : 0 }}
+                sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
               >
-                <PhoneInput
-                  value={phoneValue}
-                  onChange={(value) => setValue('phone', value)}
+                <Input
+                  label={t('auth.phone')}
+                  type="tel"
+                  placeholder="+965 XXXX XXXX"
+                  {...register('phone', {
+                    required: t('validation.required'),
+                    validate: (value) => validateKuwaitiPhone(value) || t('validation.phone'),
+                  })}
                   error={errors.phone?.message}
-                  required
+                  startIcon={<Icons.Phone />}
                 />
 
                 <Input
@@ -147,7 +147,7 @@ const Login: React.FC = () => {
                     },
                   })}
                   error={errors.password?.message}
-                  startIcon={<Icon name="lock" />}
+                  startIcon={<Icons.Lock />}
                   endIcon={
                     <Box
                       component="button"
@@ -165,7 +165,7 @@ const Login: React.FC = () => {
                         },
                       }}
                     >
-                      <Icon name={showPassword ? 'visibility-off' : 'visibility'} />
+                      {showPassword ? <Icons.VisibilityOff /> : <Icons.Visibility />}
                     </Box>
                   }
                 />
@@ -183,14 +183,14 @@ const Login: React.FC = () => {
             </Paper>
 
             {/* Footer */}
-            <Box sx={{ textAlign: 'center' }}>
+            <Box sx={{ textAlign: 'center', mt: 4, spacing: 2 }}>
               <Typography variant="body-2xs" color="on-surface-variant" gutterBottom>
                 {t('auth.dontHaveAccount')}
               </Typography>
               <Button
                 variant="text"
                 onClick={() => navigate('/signup')}
-                icon={<Icon name={isRTL ? "arrow-left" : "arrow-right"} />}
+                icon={isRTL ? <Icons.ArrowBack /> : <Icons.ArrowForward />}
                 iconPosition="end"
               >
                 {t('auth.switchToSignup')}
@@ -203,4 +203,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login; 
+export default LoginMUI; 

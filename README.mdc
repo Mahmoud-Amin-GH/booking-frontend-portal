@@ -33,11 +33,20 @@ This frontend represents a **complete, production-grade web application** with:
 
 ### **Design System Components**
 - **UI Library**: 15+ custom components (Button, Input, Select, Modal, etc.)
+- **Material UI Integration**: MUI components with custom theming (NEW)
 - **Typography**: Professional typography scale with Arabic font support
 - **Color System**: Semantic color tokens with dark/light theme support
 - **Spacing**: Consistent 8px grid system
 - **Icons**: Comprehensive icon library with consistent sizing
 - **Animations**: Smooth transitions and micro-interactions
+
+### **🎨 Material UI Integration (NEW)**
+- **Hybrid Approach**: MUI components with existing design system API
+- **Custom Theming**: Brand colors, RTL support, typography mapping
+- **Zero Breaking Changes**: Gradual migration strategy
+- **Demo Available**: Visit `/login-mui` to see MUI components in action
+- **Components Ready**: Button, Input, Typography, Alert, Checkbox
+- **Documentation**: Complete guide in `MUI_INTEGRATION_GUIDE.md`
 
 ## 📱 **COMPLETE FEATURE SET**
 

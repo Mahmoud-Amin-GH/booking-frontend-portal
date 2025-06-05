@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Button, Input, Alert, Typography, Icon, LanguageSwitcher, Form } from '../design_system';
+import { Box, Container, Paper, Avatar } from '@mui/material';
+import { Button, Input, Alert, Typography, Icon } from '../design_system/mui';
+import { LanguageSwitcher, Form } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { authAPI } from '../services/api';
 
@@ -90,9 +92,25 @@ const OTPVerification: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface-container-lowest flex flex-col">
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundColor: 'background.default',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {/* Header */}
-      <header className="w-full p-6 flex justify-between items-center">
+      <Box
+        component="header"
+        sx={{
+          width: '100%',
+          p: 3,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Button
           variant="text"
           onClick={() => navigate('/login')}
@@ -102,98 +120,137 @@ const OTPVerification: React.FC = () => {
           {t('auth.back')}
         </Button>
         <LanguageSwitcher />
-      </header>
+      </Box>
 
       {/* Main Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md space-y-8">
-          {/* Hero Section */}
-          <div className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mb-6">
-              <Icon name="phone" size="large" className="text-primary-600" />
-            </div>
-            
-            <Typography variant="display-small" color="primary">
-              {t('auth.verifyPhone')}
-            </Typography>
-            
-            <div className="space-y-2">
-              <Typography variant="body-medium" color="on-surface-variant">
-                {t('auth.enterOTP')}
-              </Typography>
-              <Typography variant="label-large" color="on-surface">
-                {phone}
-              </Typography>
-            </div>
-          </div>
-
-          {/* OTP Form */}
-          <Form variant="elevated" spacing="comfortable">
-            {error && (
-              <Alert 
-                variant="error" 
-                message={error}
-                dismissible
-                onDismiss={() => setError(null)}
-              />
-            )}
-
-            <div className="space-y-6">
-              <Input
-                label={t('auth.otp')}
-                type="text"
-                placeholder="000000"
-                maxLength={6}
-                {...register('code', {
-                  required: t('validation.required'),
-                  pattern: {
-                    value: /^\d{6}$/,
-                    message: t('placeholders.otpError'),
-                  },
-                })}
-                error={errors.code?.message}
-                className="text-center text-2xl tracking-[0.5em] font-mono"
-                helperText={t('placeholders.otpHelper')}
-              />
-
-              <Button
-                type="submit"
-                variant="filled"
-                size="large"
-                fullWidth
-                isLoading={isLoading}
-                onClick={handleSubmit(onSubmit)}
-                disabled={otpValue.length !== 6}
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          px: 3,
+          py: 6,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto' }}>
+            {/* Hero Section */}
+            <Box sx={{ textAlign: 'center', mb: 4 }}>
+              <Avatar
+                sx={{
+                  width: 64,
+                  height: 64,
+                  mx: 'auto',
+                  mb: 3,
+                  backgroundColor: 'primary.light',
+                  color: 'primary.main',
+                }}
               >
-                {t('auth.verify')}
-              </Button>
-            </div>
-          </Form>
-
-          {/* Resend Section */}
-          <div className="text-center space-y-4">
-            <Typography variant="body-2xs" color="on-surface-variant">
-              {t('auth.didntReceiveCode')}
-            </Typography>
-            
-            {countdown > 0 ? (
-              <Typography variant="body-2xs" color="on-surface-variant">
-                {t('auth.resendAvailable', { seconds: countdown })}
+                <Icon name="phone" />
+              </Avatar>
+              
+              <Typography variant="display-small" color="primary" gutterBottom>
+                {t('auth.verifyPhone')}
               </Typography>
-            ) : (
-              <Button
-                variant="text"
-                onClick={handleResendOTP}
-                isLoading={isResending}
-                disabled={isResending}
+              
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body-medium" color="on-surface-variant" gutterBottom>
+                  {t('auth.enterOTP')}
+                </Typography>
+                <Typography variant="label-large" color="on-surface">
+                  {phone}
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* OTP Form */}
+            <Paper
+              elevation={2}
+              sx={{
+                p: 4,
+                borderRadius: 3,
+                backgroundColor: 'background.paper',
+                mb: 4,
+              }}
+            >
+              {error && (
+                <Alert 
+                  variant="error" 
+                  message={error}
+                  dismissible
+                  onDismiss={() => setError(null)}
+                />
+              )}
+
+              <Box
+                component="form"
+                onSubmit={handleSubmit(onSubmit)}
+                sx={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: 3, 
+                  mt: error ? 3 : 0 
+                }}
               >
-                {t('auth.resendOTP')}
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+                <Input
+                  label={t('auth.otp')}
+                  type="text"
+                  placeholder="000000"
+                  {...register('code', {
+                    required: t('validation.required'),
+                    pattern: {
+                      value: /^\d{6}$/,
+                      message: t('placeholders.otpError'),
+                    },
+                    maxLength: {
+                      value: 6,
+                      message: t('placeholders.otpError'),
+                    },
+                  })}
+                  error={errors.code?.message}
+                  helperText={t('placeholders.otpHelper')}
+                  className="otp-input"
+                />
+
+                <Button
+                  type="submit"
+                  variant="filled"
+                  size="large"
+                  fullWidth
+                  isLoading={isLoading}
+                  disabled={otpValue.length !== 6}
+                >
+                  {t('auth.verify')}
+                </Button>
+              </Box>
+            </Paper>
+
+            {/* Resend Section */}
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography variant="body-2xs" color="on-surface-variant" gutterBottom>
+                {t('auth.didntReceiveCode')}
+              </Typography>
+              
+              {countdown > 0 ? (
+                <Typography variant="body-2xs" color="on-surface-variant">
+                  {t('auth.resendAvailable', { seconds: countdown })}
+                </Typography>
+              ) : (
+                <Button
+                  variant="text"
+                  onClick={handleResendOTP}
+                  isLoading={isResending}
+                  disabled={isResending}
+                >
+                  {t('auth.resendOTP')}
+                </Button>
+              )}
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+    </Box>
   );
 };
 
