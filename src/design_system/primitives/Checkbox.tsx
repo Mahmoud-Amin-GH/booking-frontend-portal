@@ -6,7 +6,7 @@ import {
   FormHelperText,
   Box
 } from '@mui/material';
-import Typography from './Typography';
+import Typography from '@mui/material/Typography';
 
 export interface CheckboxProps {
   label?: string;
@@ -85,8 +85,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
           label={
             <Box>
               {label && (
-                <Typography 
-                  variant={size === 'small' ? 'body-2xs' : 'body-xs'}
+                <Typography
                   color={hasError ? 'error' : disabled ? 'on-surface-muted' : 'on-surface'}
                   sx={{ lineHeight: 1.2 }}
                 >
@@ -94,8 +93,7 @@ const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
                 </Typography>
               )}
               {description && (
-                <Typography 
-                  variant="body-3xs"
+                <Typography
                   color={hasError ? 'error' : 'on-surface-variant'}
                   sx={{ 
                     mt: 0.5, 
