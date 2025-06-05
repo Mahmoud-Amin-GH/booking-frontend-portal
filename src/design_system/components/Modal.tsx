@@ -1,7 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import Icon from '../primitives/Icon';
+import React from 'react';
+import { 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogActions, 
+  IconButton,
+  Typography as MuiTypography,
+} from '@mui/material';
+import { Close } from '@mui/icons-material';
 import Button from '../primitives/Button';
+import Typography from '../primitives/Typography';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +24,7 @@ export interface ModalProps {
   closeOnEscape?: boolean;
   actions?: React.ReactNode;
   className?: string;
+  sx?: any;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -29,182 +38,126 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnEscape = true,
   actions,
   className = '',
+  sx,
 }) => {
   const { isRTL } = useLanguage();
   const { t } = useTranslation();
-  const modalRef = useRef<HTMLDivElement>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
 
-  // Handle escape key
-  useEffect(() => {
-    if (!isOpen || !closeOnEscape) return;
+  // Handle close events
+  const handleClose = (_event: any, reason?: string) => {
+    if (reason === 'backdropClick' && !closeOnBackdrop) return;
+    if (reason === 'escapeKeyDown' && !closeOnEscape) return;
+    onClose();
+  };
 
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, closeOnEscape, onClose]);
-
-  // Focus management
-  useEffect(() => {
-    if (isOpen) {
-      // Store current focus
-      previousFocusRef.current = document.activeElement as HTMLElement;
-      
-      // Focus modal content
-      modalRef.current?.focus();
-      
-      // Prevent body scroll
-      document.body.style.overflow = 'hidden';
-      
-      return () => {
-        // Restore body scroll
-        document.body.style.overflow = 'unset';
-        
-        // Restore focus
-        if (previousFocusRef.current) {
-          previousFocusRef.current.focus();
-        }
-      };
-    }
-  }, [isOpen]);
-
-  // Handle backdrop click
-  const handleBackdropClick = (event: React.MouseEvent) => {
-    if (closeOnBackdrop && event.target === event.currentTarget) {
-      onClose();
+  // Map size to MUI maxWidth
+  const getMaxWidth = () => {
+    switch (size) {
+      case 'small':
+        return 'sm';
+      case 'medium':
+        return 'md';
+      case 'large':
+        return 'lg';
+      case 'fullscreen':
+        return false;
+      default:
+        return 'md';
     }
   };
 
-  // Handle focus trap
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'Tab') {
-      const focusableElements = modalRef.current?.querySelectorAll(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      
-      if (focusableElements && focusableElements.length > 0) {
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-        
-        if (event.shiftKey) {
-          if (document.activeElement === firstElement) {
-            event.preventDefault();
-            lastElement.focus();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            event.preventDefault();
-            firstElement.focus();
-          }
-        }
-      }
-    }
-  };
-
-  if (!isOpen) return null;
-
-  const sizeClasses = {
-    small: 'max-w-sm',
-    medium: 'max-w-lg',
-    large: 'max-w-2xl',
-    fullscreen: 'max-w-none w-full h-full rounded-none',
-  };
-
-  const backdropClasses = `
-    fixed inset-0 z-50
-    bg-black/60
-    flex items-center justify-center
-    p-4
-    ${size === 'fullscreen' ? 'p-0' : ''}
-  `;
-
-  const modalClasses = `
-    relative w-full ${sizeClasses[size]}
-    bg-white
-    rounded-lg
-    shadow-xl
-    max-h-[90vh] overflow-hidden
-    flex flex-col
-    ${className}
-  `;
-
-  const headerClasses = `
-    flex items-center justify-between
-    px-6 py-4
-    border-b border-md-sys-color-outline-variant
-    ${!title && !showCloseButton ? 'hidden' : ''}
-  `;
-
-  const contentClasses = `
-    flex-1 overflow-y-auto
-    px-6 py-4
-  `;
-
-  const actionsClasses = `
-    flex items-center justify-end gap-3
-    px-6 py-4
-    border-t border-md-sys-color-outline-variant
-    ${isRTL ? 'flex-row-reverse' : ''}
-  `;
-
-  const modalContent = (
-    <div 
-      className={backdropClasses}
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={title ? 'modal-title' : undefined}
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      maxWidth={getMaxWidth()}
+      fullWidth
+      fullScreen={size === 'fullscreen'}
+      className={className}
+      sx={{
+        '& .MuiDialog-paper': {
+          borderRadius: 2, // rounded-lg
+          maxHeight: size === 'fullscreen' ? '100vh' : '90vh',
+          margin: size === 'fullscreen' ? 0 : 2,
+          ...sx,
+        },
+      }}
+      PaperProps={{
+        sx: {
+          display: 'flex',
+          flexDirection: 'column',
+        },
+      }}
     >
-      <div
-        ref={modalRef}
-        className={modalClasses}
-        onKeyDown={handleKeyDown}
-        tabIndex={-1}
-      >
-        {/* Header */}
-        <div className={headerClasses}>
+      {/* Header */}
+      {(title || showCloseButton) && (
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 3,
+            py: 2,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+          }}
+        >
           {title && (
-            <h2 
-              id="modal-title"
-              className="text-xl font-semibold text-md-sys-color-on-surface"
+            <MuiTypography
+              variant="h6"
+              component="h2"
+              sx={{
+                fontSize: '1.25rem',
+                fontWeight: 600,
+                color: 'text.primary',
+              }}
             >
               {title}
-            </h2>
+            </MuiTypography>
           )}
           
           {showCloseButton && (
-            <button
-              type="button"
+            <IconButton
               onClick={onClose}
-              className="p-2 -m-2 hover:bg-md-sys-color-surface-container-highest rounded-full transition-colors"
+              size="small"
+              sx={{ ml: 'auto' }}
               aria-label={t('common.close')}
             >
-              <Icon name="close" size="medium" />
-            </button>
+              <Close />
+            </IconButton>
           )}
-        </div>
+        </DialogTitle>
+      )}
 
-        {/* Content */}
-        <div className={contentClasses}>
-          {children}
-        </div>
+      {/* Content */}
+      <DialogContent
+        sx={{
+          flex: 1,
+          px: 3,
+          py: 2,
+          overflowY: 'auto',
+        }}
+      >
+        {children}
+      </DialogContent>
 
-        {/* Actions */}
-        {actions && (
-          <div className={actionsClasses}>
-            {actions}
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Actions */}
+      {actions && (
+        <DialogActions
+          sx={{
+            px: 3,
+            py: 2,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            gap: 1.5,
+            flexDirection: isRTL ? 'row-reverse' : 'row',
+          }}
+        >
+          {actions}
+        </DialogActions>
+      )}
+    </Dialog>
   );
-
-  return createPortal(modalContent, document.body);
 };
 
 // Convenience component for confirm dialogs
@@ -251,6 +204,15 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         onClick={handleConfirm}
         disabled={isLoading}
         isLoading={isLoading}
+        sx={{
+          ...(variant === 'danger' && {
+            backgroundColor: 'error.main',
+            color: 'error.contrastText',
+            '&:hover': {
+              backgroundColor: 'error.dark',
+            },
+          }),
+        }}
       >
         {confirmText || t('common.confirm')}
       </Button>
@@ -267,9 +229,12 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       closeOnBackdrop={!isLoading}
       closeOnEscape={!isLoading}
     >
-      <p className="text-md-sys-color-on-surface">
+      <Typography
+        variant="body-xs"
+        sx={{ color: 'text.primary' }}
+      >
         {message}
-      </p>
+      </Typography>
     </Modal>
   );
 }; 

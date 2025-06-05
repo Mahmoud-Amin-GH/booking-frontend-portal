@@ -131,7 +131,7 @@ const Login: React.FC = () => {
               >
                 <PhoneInput
                   value={phoneValue}
-                  onChange={(value) => setValue('phone', value)}
+                  onChange={(value: string) => setValue('phone', value)}
                   error={errors.phone?.message}
                   required
                 />

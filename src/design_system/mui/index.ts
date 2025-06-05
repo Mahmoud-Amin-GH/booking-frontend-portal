@@ -2,26 +2,26 @@
 // Maintains same API as original design system but uses Material-UI underneath
 
 // ===== MUI PRIMITIVES =====
-export { default as Button } from '../primitives/mui/Button';
-export type { ButtonProps } from '../primitives/mui/Button';
+export { default as Button } from '../primitives/Button';
+export type { ButtonProps } from '../primitives/Button';
 
-export { default as Input } from '../primitives/mui/Input';
-export type { InputProps } from '../primitives/mui/Input';
+export { default as Input } from '../primitives/Input';
+export type { InputProps } from '../primitives/Input';
 
-export { default as Typography } from '../primitives/mui/Typography';
-export type { TypographyProps, TypographyVariant, ColorVariant } from '../primitives/mui/Typography';
+export { default as Typography } from '../primitives/Typography';
+export type { TypographyProps } from '../primitives/Typography';
 
-export { default as Alert } from '../primitives/mui/Alert';
-export type { AlertProps } from '../primitives/mui/Alert';
+export { default as Alert } from '../primitives/Alert';
+export type { AlertProps } from '../primitives/Alert';
 
-export { default as Checkbox } from '../primitives/mui/Checkbox';
-export type { CheckboxProps } from '../primitives/mui/Checkbox';
+export { default as Checkbox } from '../primitives/Checkbox';
+export type { CheckboxProps } from '../primitives/Checkbox';
 
-export { default as Loader } from '../primitives/mui/Loader';
-export type { LoaderProps } from '../primitives/mui/Loader';
+export { default as Loader } from '../primitives/Loader';
+export type { LoaderProps } from '../primitives/Loader';
 
-export { default as Icon } from '../primitives/mui/Icon';
-export type { IconProps } from '../primitives/mui/Icon';
+export { default as Icon } from '../primitives/Icon';
+export type { IconProps } from '../primitives/Icon';
 
 // ===== KEEP EXISTING COMPLEX COMPONENTS (For now) =====
 // These will be migrated to MUI gradually
@@ -51,9 +51,11 @@ export { default as Sidebar } from '../components/Sidebar';
 export { default as DashboardLayout } from '../components/DashboardLayout';
 export { default as CarFormSteps } from '../components/CarFormSteps';
 export { default as OnboardingTour } from '../components/OnboardingTour';
-export { default as PhoneInput } from '../primitives/mui/PhoneInput';
+export { default as PhoneInput } from '../components/PhoneInput';
 export { default as LanguageSwitcher } from '../components/LanguageSwitcher';
 
 // Re-export commonly used types (keep same API)
 export type ButtonVariant = 'elevated' | 'filled' | 'outlined' | 'text';
-export type AlertVariant = 'info' | 'success' | 'warning' | 'error'; 
+export type AlertVariant = 'info' | 'success' | 'warning' | 'error';
+export type TypographyVariant = 'display-large' | 'display-medium' | 'display-small' | 'headline-large' | 'headline-medium' | 'headline-small' | 'title-large' | 'title-medium' | 'title-small' | 'label-large' | 'label-medium' | 'label-small' | 'body-large' | 'body-medium' | 'body-small' | 'body-xs' | 'body-2xs' | 'body-3xs';
+export type ColorVariant = 'primary' | 'on-primary' | 'primary-container' | 'on-primary-container' | 'secondary' | 'on-secondary' | 'secondary-container' | 'on-secondary-container' | 'tertiary' | 'on-tertiary' | 'tertiary-container' | 'on-tertiary-container' | 'error' | 'on-error' | 'error-container' | 'on-error-container' | 'surface' | 'on-surface' | 'surface-variant' | 'on-surface-variant' | 'outline' | 'outline-variant' | 'surface-bright' | 'surface-dim' | 'surface-container' | 'surface-container-low' | 'surface-container-high' | 'surface-container-highest' | 'on-surface-muted' | 'inherit'; 

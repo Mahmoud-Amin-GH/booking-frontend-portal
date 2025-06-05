@@ -1,11 +1,13 @@
 import React from 'react';
+import { CircularProgress, LinearProgress, Box } from '@mui/material';
 
 export interface LoaderProps {
   size?: 'small' | 'medium' | 'large';
   variant?: 'circular' | 'linear';
-  color?: 'primary' | 'on-surface' | 'inherit';
+  color?: 'primary' | 'secondary' | 'inherit';
   className?: string;
   label?: string;
+  sx?: any;
 }
 
 const Loader: React.FC<LoaderProps> = ({ 
@@ -13,78 +15,73 @@ const Loader: React.FC<LoaderProps> = ({
   variant = 'circular',
   color = 'primary',
   className = '',
-  label
+  label,
+  sx
 }) => {
-  // Size variants
-  const sizeStyles = {
-    small: {
-      circular: 'w-4 h-4 border-2',
-      linear: 'h-1',
-    },
-    medium: {
-      circular: 'w-6 h-6 border-2',
-      linear: 'h-1.5',
-    },
-    large: {
-      circular: 'w-8 h-8 border-[3px]',
-      linear: 'h-2',
-    },
+  // Size mapping for circular progress
+  const getSizeValue = (size: string): number => {
+    switch (size) {
+      case 'small': return 16;
+      case 'medium': return 24;
+      case 'large': return 32;
+      default: return 24;
+    }
   };
 
-  // Color variants
-  const colorStyles = {
-    primary: {
-      circular: 'border-primary-600 border-t-transparent',
-      linear: 'bg-primary-600',
-      track: 'bg-primary-200',
-    },
-    'on-surface': {
-      circular: 'border-on-surface border-t-transparent',
-      linear: 'bg-on-surface',
-      track: 'bg-on-surface/20',
-    },
-    inherit: {
-      circular: 'border-current border-t-transparent',
-      linear: 'bg-current',
-      track: 'bg-current/20',
-    },
+  // Linear progress height mapping
+  const getLinearHeight = (size: string): number => {
+    switch (size) {
+      case 'small': return 4;
+      case 'medium': return 6;
+      case 'large': return 8;
+      default: return 6;
+    }
   };
-
-  const sizeStyle = sizeStyles[size];
-  const colorStyle = colorStyles[color];
 
   if (variant === 'linear') {
     return (
-      <div className={`w-full ${className}`} role="progressbar" aria-label={label || 'Loading'}>
-        <div className={`relative w-full ${sizeStyle.linear} ${colorStyle.track} rounded-full overflow-hidden`}>
-          <div 
-            className={`
-              absolute top-0 left-0 h-full ${colorStyle.linear} rounded-full
-              animate-pulse
-            `}
-          />
-        </div>
-      </div>
+      <Box 
+        className={className}
+        sx={{ 
+          width: '100%',
+          ...sx 
+        }}
+        role="progressbar" 
+        aria-label={label || 'Loading'}
+      >
+        <LinearProgress
+          color={color === 'inherit' ? 'inherit' : color}
+          sx={{
+            height: getLinearHeight(size),
+            borderRadius: 1,
+            '& .MuiLinearProgress-bar': {
+              borderRadius: 1,
+            },
+          }}
+        />
+      </Box>
     );
   }
 
   // Circular variant
   return (
-    <div 
-      className={`
-        inline-flex items-center justify-center
-        ${className}
-      `}
+    <Box 
+      className={className}
+      sx={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...sx,
+      }}
       role="progressbar" 
       aria-label={label || 'Loading'}
     >
-      <div 
-        className={`
-          ${sizeStyle.circular} ${colorStyle.circular}
-          rounded-full animate-spin
-        `}
+      <CircularProgress
+        size={getSizeValue(size)}
+        color={color === 'inherit' ? 'inherit' : color}
+        thickness={size === 'large' ? 3.6 : 4}
       />
-    </div>
+    </Box>
   );
 };
 

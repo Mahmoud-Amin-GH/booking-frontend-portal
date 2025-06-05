@@ -1,27 +1,44 @@
 import React from 'react';
-import Input, { InputProps } from './Input';
+import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
+import { Add, Remove } from '@mui/icons-material';
+import { useLanguage } from '../../contexts/LanguageContext';
 
-export interface NumberInputProps extends Omit<InputProps, 'type' | 'value' | 'onChange'> {
+export interface NumberInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'onChange' | 'size' | 'color'> {
   value?: number | string;
   onChange: (value: number | '') => void;
+  label?: string;
+  error?: string;
+  helperText?: string;
   min?: number;
   max?: number;
   step?: number;
   allowDecimals?: boolean;
   showControls?: boolean;
+  variant?: 'outlined' | 'filled';
+  size?: 'small' | 'medium';
+  sx?: any;
 }
 
 export const NumberInput: React.FC<NumberInputProps> = ({
   value = '',
   onChange,
+  label,
+  error,
+  helperText,
   min,
   max,
   step = 1,
   allowDecimals = false,
   showControls = false,
-  error,
+  variant = 'outlined',
+  size = 'medium',
+  disabled,
+  placeholder,
+  sx,
   ...props
 }) => {
+  const { isRTL } = useLanguage();
+
   const formatValue = (val: number | string): string => {
     if (val === '' || val === undefined || val === null) return '';
     const numVal = Number(val);
@@ -67,20 +84,17 @@ export const NumberInput: React.FC<NumberInputProps> = ({
     }
 
     // Add back negative sign if needed (only at the beginning)
-    if (hasNegative && min !== undefined && min < 0) {
-      finalValue = '-' + finalValue;
-    } else if (hasNegative && (min === undefined || min < 0)) {
+    if (hasNegative && (min === undefined || min < 0)) {
       finalValue = '-' + finalValue;
     }
 
     // Convert to number if valid
     const numValue = Number(finalValue);
-    if (isNaN(numValue)) {
-      onChange('');
-      return;
+    if (isNaN(numValue) && finalValue !== '' && finalValue !== '-') {
+      return; // Don't update if invalid
     }
 
-    onChange(numValue);
+    onChange(finalValue === '' || finalValue === '-' ? '' : numValue);
   };
 
   const handleIncrement = () => {
@@ -130,38 +144,108 @@ export const NumberInput: React.FC<NumberInputProps> = ({
 
   // Create step controls if enabled
   const stepControls = showControls ? (
-    <div className="flex flex-col">
-      <button
-        type="button"
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        ml: 1,
+      }}
+    >
+      <IconButton
+        size="small"
         onClick={handleIncrement}
-        className="px-3 py-1 text-xs hover:bg-md-sys-color-surface-container-high transition-colors rounded-t border-l border-md-sys-color-outline"
-        disabled={max !== undefined && Number(value) >= max}
-        tabIndex={-1}
+        disabled={disabled || (max !== undefined && Number(value) >= max)}
+        sx={{
+          p: 0.25,
+          borderRadius: '4px 4px 0 0',
+          fontSize: '0.75rem',
+          minWidth: 0,
+          width: 20,
+          height: 16,
+        }}
       >
-        ▲
-      </button>
-      <button
-        type="button"
+        <Add fontSize="inherit" />
+      </IconButton>
+      <IconButton
+        size="small"
         onClick={handleDecrement}
-        className="px-3 py-1 text-xs hover:bg-md-sys-color-surface-container-high transition-colors rounded-b border-l border-t border-md-sys-color-outline"
-        disabled={min !== undefined && Number(value) <= min}
-        tabIndex={-1}
+        disabled={disabled || (min !== undefined && Number(value) <= min)}
+        sx={{
+          p: 0.25,
+          borderRadius: '0 0 4px 4px',
+          fontSize: '0.75rem',
+          minWidth: 0,
+          width: 20,
+          height: 16,
+        }}
       >
-        ▼
-      </button>
-    </div>
-  ) : undefined;
+        <Remove fontSize="inherit" />
+      </IconButton>
+    </Box>
+  ) : null;
 
   return (
-    <Input
+    <TextField
       {...props}
-      type="text"
-      inputMode="numeric"
+      label={label}
       value={formatValue(value)}
       onChange={handleInputChange}
       onBlur={handleBlur}
-      error={finalError}
-      endIcon={stepControls}
+      error={Boolean(finalError)}
+      helperText={finalError || helperText}
+      variant={variant}
+      size={size}
+      placeholder={placeholder}
+      disabled={disabled}
+      inputProps={{
+        inputMode: 'numeric',
+        pattern: allowDecimals ? '[0-9]*[.]?[0-9]*' : '[0-9]*',
+        min,
+        max,
+        step,
+      }}
+      InputProps={{
+        endAdornment: stepControls ? (
+          <InputAdornment position="end">
+            {stepControls}
+          </InputAdornment>
+        ) : null,
+      }}
+      sx={{
+        width: '100%',
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 1.5, // rounded-xs
+          minHeight: size === 'small' ? 48 : 56,
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'text.secondary',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'primary.main',
+            borderWidth: 2,
+          },
+          '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'error.main',
+          },
+        },
+        '& .MuiInputLabel-root': {
+          fontSize: size === 'small' ? '0.75rem' : '0.875rem',
+          '&.Mui-focused': {
+            color: 'primary.main',
+          },
+          '&.Mui-error': {
+            color: 'error.main',
+          },
+        },
+        '& .MuiFormHelperText-root': {
+          fontSize: '0.75rem',
+          textAlign: isRTL ? 'right' : 'left',
+          mx: 2,
+          '&.Mui-error': {
+            color: 'error.main',
+          },
+        },
+        ...sx,
+      }}
     />
   );
 }; 

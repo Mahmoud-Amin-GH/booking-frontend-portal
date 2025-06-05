@@ -1,5 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Icon from '../primitives/Icon';
+import React, { useState } from 'react';
+import {
+  Accordion as MuiAccordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import Typography from '../primitives/Typography';
 
 export interface AccordionProps {
@@ -11,6 +16,7 @@ export interface AccordionProps {
   titleClassName?: string;
   contentClassName?: string;
   onToggle?: (expanded: boolean) => void;
+  sx?: any;
 }
 
 const Accordion: React.FC<AccordionProps> = ({
@@ -22,75 +28,82 @@ const Accordion: React.FC<AccordionProps> = ({
   titleClassName = '',
   contentClassName = '',
   onToggle,
+  sx,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = useState<number>(0);
 
-  useEffect(() => {
-    if (contentRef.current) {
-      setContentHeight(contentRef.current.scrollHeight);
-    }
-  }, [children, isExpanded]);
-
-  const handleToggle = () => {
+  const handleToggle = (_event: React.SyntheticEvent, expanded: boolean) => {
     if (disabled) return;
     
-    const newExpanded = !isExpanded;
-    setIsExpanded(newExpanded);
-    onToggle?.(newExpanded);
+    setIsExpanded(expanded);
+    onToggle?.(expanded);
   };
 
   return (
-    <div className={`border border-outline-variant rounded-lg bg-surface overflow-hidden ${className}`}>
-      {/* Header */}
-      <button
-        type="button"
-        onClick={handleToggle}
-        disabled={disabled}
-        className={`
-          w-full px-6 py-4 flex items-center justify-between 
-          hover:bg-surface-container-highest active:bg-surface-container-highest
-          transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-600/20
-          ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
-          ${titleClassName}
-        `}
+    <MuiAccordion
+      expanded={isExpanded}
+      onChange={handleToggle}
+      disabled={disabled}
+      className={className}
+      sx={{
+        borderRadius: 2, // rounded-lg
+        border: '1px solid',
+        borderColor: 'divider',
+        backgroundColor: 'background.paper',
+        overflow: 'hidden',
+        '&:before': {
+          display: 'none', // Remove default MUI before element
+        },
+        '&.Mui-expanded': {
+          margin: 0, // Remove default MUI margin
+        },
+        ...sx,
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMore />}
+        className={titleClassName}
+        sx={{
+          px: 3,
+          py: 2,
+          '&:hover': {
+            backgroundColor: 'action.hover',
+          },
+          '&.Mui-focusVisible': {
+            backgroundColor: 'action.focus',
+          },
+          '& .MuiAccordionSummary-expandIconWrapper': {
+            transition: 'transform 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+            color: 'text.secondary',
+          },
+          '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+            transform: 'rotate(180deg)',
+          },
+        }}
       >
         <Typography 
           variant="title-medium" 
           color={disabled ? 'on-surface-variant' : 'on-surface'}
-          className="font-medium text-left"
+          sx={{ 
+            fontWeight: 500,
+            textAlign: 'left',
+          }}
         >
           {title}
         </Typography>
-        
-        <Icon 
-          name="arrow-right" 
-          size="small"
-          className={`
-            transition-transform duration-300 ease-in-out
-            ${isExpanded ? 'rotate-90' : 'rotate-0'}
-            ${disabled ? 'text-on-surface-variant' : 'text-on-surface-variant'}
-          `}
-        />
-      </button>
-
-      {/* Content */}
-      <div
-        style={{ 
-          height: isExpanded ? `${contentHeight}px` : '0px',
-          transition: 'height 300ms cubic-bezier(0.4, 0, 0.2, 1)'
+      </AccordionSummary>
+      
+      <AccordionDetails
+        className={contentClassName}
+        sx={{
+          px: 3,
+          pb: 3,
+          pt: 0,
         }}
-        className="overflow-hidden"
       >
-        <div 
-          ref={contentRef}
-          className={`px-6 pb-6 ${contentClassName}`}
-        >
-          {children}
-        </div>
-      </div>
-    </div>
+        {children}
+      </AccordionDetails>
+    </MuiAccordion>
   );
 };
 

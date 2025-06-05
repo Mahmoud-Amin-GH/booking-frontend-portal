@@ -1,15 +1,30 @@
-import React, { useId } from 'react';
+import React from 'react';
+import { 
+  Checkbox as MuiCheckbox, 
+  FormControl, 
+  FormControlLabel, 
+  FormHelperText,
+  Box
+} from '@mui/material';
 import Typography from './Typography';
 
-export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface CheckboxProps {
   label?: string;
   description?: string;
   error?: string;
   size?: 'small' | 'medium';
   indeterminate?: boolean;
+  checked?: boolean;
+  disabled?: boolean;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => void;
+  id?: string;
+  name?: string;
+  value?: string;
+  className?: string;
+  sx?: any;
 }
 
-const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
+const Checkbox = React.forwardRef<HTMLButtonElement, CheckboxProps>(
   ({ 
     label, 
     description,
@@ -19,102 +34,61 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
     className = '',
     disabled,
     checked,
+    sx,
     ...props 
   }, ref) => {
-    const id = useId();
-    const checkboxId = props.id || id;
     const hasError = Boolean(error);
 
-    // Size variants
-    const sizeStyles = {
-      small: {
-        container: 'h-4 w-4',
-        icon: 'w-3 h-3',
-        gap: 'gap-2',
-      },
-      medium: {
-        container: 'h-5 w-5',
-        icon: 'w-4 h-4',
-        gap: 'gap-3',
-      },
-    };
-
-    const sizeStyle = sizeStyles[size];
-
-    // Checkbox container styles
-    const checkboxStyles = `
-      relative inline-flex items-center justify-center flex-shrink-0
-      ${sizeStyle.container} rounded-xs border-2 transition-all duration-250
-      ${disabled ? 'cursor-not-allowed opacity-38' : 'cursor-pointer'}
-      ${hasError ? 'border-error' : 'border-outline hover:border-primary-600'}
-      ${checked || indeterminate ? 'bg-primary-600 border-primary-600' : 'bg-surface-bright'}
-      focus-within:ring-2 focus-within:ring-primary-600/20
-    `;
-
-    // Checkmark icon
-    const CheckmarkIcon = () => (
-      <svg 
-        className={`${sizeStyle.icon} text-surface-bright transition-all duration-200 ${
-          checked ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
-        }`} 
-        fill="none" 
-        viewBox="0 0 24 24" 
-        stroke="currentColor" 
-        strokeWidth={3}
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-      </svg>
+    const checkboxElement = (
+      <MuiCheckbox
+        ref={ref}
+        checked={checked}
+        indeterminate={indeterminate}
+        disabled={disabled}
+        size={size}
+        className={className}
+        sx={{
+          borderRadius: 1.5, // rounded-xs
+          color: hasError ? 'error.main' : 'divider',
+          '&:hover': {
+            backgroundColor: 'action.hover',
+          },
+          '&.Mui-checked': {
+            color: 'primary.main',
+          },
+          '&.Mui-indeterminate': {
+            color: 'primary.main',
+          },
+          '&.Mui-disabled': {
+            opacity: 0.38,
+          },
+          '&.Mui-focusVisible': {
+            outline: '2px solid',
+            outlineColor: 'primary.main',
+            outlineOffset: 2,
+          },
+          ...sx,
+        }}
+        {...props}
+      />
     );
 
-    // Indeterminate icon
-    const IndeterminateIcon = () => (
-      <svg 
-        className={`${sizeStyle.icon} text-surface-bright transition-all duration-200 ${
-          indeterminate ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
-        }`} 
-        fill="currentColor" 
-        viewBox="0 0 24 24"
-      >
-        <path d="M19 13H5v-2h14v2z" />
-      </svg>
-    );
+    // If no label or description, return just the checkbox
+    if (!label && !description) {
+      return checkboxElement;
+    }
 
     return (
-      <div className={`flex flex-col ${className}`}>
-        <label 
-          htmlFor={checkboxId}
-          className={`
-            inline-flex items-start ${sizeStyle.gap} cursor-pointer
-            ${disabled ? 'cursor-not-allowed' : ''}
-          `}
-        >
-          {/* Checkbox Container */}
-          <div className={checkboxStyles}>
-            {/* Hidden Native Input */}
-            <input
-              ref={ref}
-              id={checkboxId}
-              type="checkbox"
-              checked={checked}
-              disabled={disabled}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-              {...props}
-            />
-
-            {/* Custom Icons */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              {indeterminate ? <IndeterminateIcon /> : <CheckmarkIcon />}
-            </div>
-          </div>
-
-          {/* Label and Description */}
-          {(label || description) && (
-            <div className="flex-1 min-w-0">
+      <FormControl error={hasError} disabled={disabled}>
+        <FormControlLabel
+          control={checkboxElement}
+          label={
+            <Box>
               {label && (
                 <Typography 
                   variant={size === 'small' ? 'body-2xs' : 'body-xs'}
                   color={hasError ? 'error' : disabled ? 'on-surface-muted' : 'on-surface'}
-                  className="leading-tight"
+                  sx={{ lineHeight: 1.2 }}
                 >
                   {label}
                 </Typography>
@@ -123,24 +97,39 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
                 <Typography 
                   variant="body-3xs"
                   color={hasError ? 'error' : 'on-surface-variant'}
-                  className="mt-1 leading-tight"
+                  sx={{ 
+                    mt: 0.5, 
+                    lineHeight: 1.2,
+                    display: 'block'
+                  }}
                 >
                   {description}
                 </Typography>
               )}
-            </div>
-          )}
-        </label>
-
-        {/* Error Message */}
+            </Box>
+          }
+          sx={{
+            alignItems: 'flex-start',
+            ml: 0,
+            gap: size === 'small' ? 1 : 1.5,
+            '& .MuiFormControlLabel-label': {
+              ml: 0,
+            },
+          }}
+        />
+        
         {error && (
-          <div className="mt-1 pl-8">
-            <Typography variant="label-small" color="error">
-              {error}
-            </Typography>
-          </div>
+          <FormHelperText
+            sx={{
+              fontSize: '0.75rem',
+              ml: size === 'small' ? 4 : 5, // Align with label
+              mt: 0.5,
+            }}
+          >
+            {error}
+          </FormHelperText>
         )}
-      </div>
+      </FormControl>
     );
   }
 );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Typography as MuiTypography, TypographyProps as MuiTypographyProps } from '@mui/material';
 
 export interface TypographyProps {
   variant?: 
@@ -12,7 +13,32 @@ export interface TypographyProps {
   color?: 'primary' | 'on-surface' | 'on-surface-variant' | 'on-surface-muted' | 'error' | 'success' | 'warning';
   children: React.ReactNode;
   className?: string;
+  gutterBottom?: boolean;
+  sx?: any;
 }
+
+// Map custom variants to MUI variants
+const variantToMuiVariant: Record<string, MuiTypographyProps['variant']> = {
+  'display-large': 'h1',
+  'display-medium': 'h2', 
+  'display-small': 'h3',
+  'headline-large': 'h4',
+  'headline-medium': 'h5',
+  'headline-small': 'h6',
+  'title-large': 'subtitle1',
+  'title-medium': 'subtitle2',
+  'title-small': 'body1',
+  'body-large': 'body1',
+  'body-medium': 'body1',
+  'body-small': 'body2',
+  'body-xs': 'body2',
+  'body-2xs': 'caption',
+  'body-3xs': 'caption',
+  'label-large': 'button',
+  'label-medium': 'button',
+  'label-small': 'caption',
+  'overline': 'overline',
+};
 
 const variantToTagMap = {
   'display-large': 'h1',
@@ -36,47 +62,61 @@ const variantToTagMap = {
   'overline': 'span',
 } as const;
 
-const variantClasses = {
-  // Display variants (extracted from Figma)
-  'display-large': 'text-display-large',     // 48px/700
-  'display-medium': 'text-display-medium',   // 36px/700
-  'display-small': 'text-display-small',     // 30px/700
-  
-  // Headline variants
-  'headline-large': 'text-headline-large',   // 24px/700
-  'headline-medium': 'text-headline-medium', // 20px/700
-  'headline-small': 'text-headline-small',   // 18px/700
-  
-  // Title variants
-  'title-large': 'text-title-large',         // 16px/700
-  'title-medium': 'text-title-medium',       // 14px/700
-  'title-small': 'text-title-small',         // 12px/700
-  
-  // Body variants
-  'body-large': 'text-body-large',           // 24px/400
-  'body-medium': 'text-body-medium',         // 20px/400
-  'body-small': 'text-body-small',           // 18px/400
-  'body-xs': 'text-body-xs',                 // 16px/400
-  'body-2xs': 'text-body-2xs',               // 14px/400
-  'body-3xs': 'text-body-3xs',               // 12px/400
-  
-  // Label variants (Medium weight)
-  'label-large': 'text-label-large',         // 16px/500
-  'label-medium': 'text-label-medium',       // 14px/500
-  'label-small': 'text-label-small',         // 12px/500
-  
-  // Overline
-  'overline': 'text-overline uppercase tracking-wider', // 10px/500
+// Map custom colors to MUI theme colors
+const colorToMuiColor = {
+  primary: 'primary.main',
+  'on-surface': 'text.primary',
+  'on-surface-variant': 'text.secondary', 
+  'on-surface-muted': 'text.disabled',
+  error: 'error.main',
+  success: 'success.main', 
+  warning: 'warning.main',
 };
 
-const colorClasses = {
-  primary: 'text-primary-600',
-  'on-surface': 'text-on-surface',
-  'on-surface-variant': 'text-on-surface-variant',
-  'on-surface-muted': 'text-on-surface-muted',
-  error: 'text-error',
-  success: 'text-success',
-  warning: 'text-warning',
+// Custom size mapping for precise control
+const getCustomSx = (variant: string) => {
+  switch (variant) {
+    case 'display-large':
+      return { fontSize: '3rem', fontWeight: 700, lineHeight: 1.2 }; // 48px
+    case 'display-medium':
+      return { fontSize: '2.25rem', fontWeight: 700, lineHeight: 1.2 }; // 36px  
+    case 'display-small':
+      return { fontSize: '1.875rem', fontWeight: 700, lineHeight: 1.2 }; // 30px
+    case 'headline-large':
+      return { fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.3 }; // 24px
+    case 'headline-medium':
+      return { fontSize: '1.25rem', fontWeight: 700, lineHeight: 1.3 }; // 20px
+    case 'headline-small':
+      return { fontSize: '1.125rem', fontWeight: 700, lineHeight: 1.3 }; // 18px
+    case 'title-large':
+      return { fontSize: '1rem', fontWeight: 700, lineHeight: 1.4 }; // 16px
+    case 'title-medium':
+      return { fontSize: '0.875rem', fontWeight: 700, lineHeight: 1.4 }; // 14px
+    case 'title-small':
+      return { fontSize: '0.75rem', fontWeight: 700, lineHeight: 1.4 }; // 12px
+    case 'body-large':
+      return { fontSize: '1.5rem', fontWeight: 400, lineHeight: 1.5 }; // 24px
+    case 'body-medium':
+      return { fontSize: '1.25rem', fontWeight: 400, lineHeight: 1.5 }; // 20px
+    case 'body-small':
+      return { fontSize: '1.125rem', fontWeight: 400, lineHeight: 1.5 }; // 18px
+    case 'body-xs':
+      return { fontSize: '1rem', fontWeight: 400, lineHeight: 1.5 }; // 16px
+    case 'body-2xs':
+      return { fontSize: '0.875rem', fontWeight: 400, lineHeight: 1.5 }; // 14px
+    case 'body-3xs':
+      return { fontSize: '0.75rem', fontWeight: 400, lineHeight: 1.5 }; // 12px
+    case 'label-large':
+      return { fontSize: '1rem', fontWeight: 500, lineHeight: 1.4 }; // 16px
+    case 'label-medium':
+      return { fontSize: '0.875rem', fontWeight: 500, lineHeight: 1.4 }; // 14px
+    case 'label-small':
+      return { fontSize: '0.75rem', fontWeight: 500, lineHeight: 1.4 }; // 12px
+    case 'overline':
+      return { fontSize: '0.625rem', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1.4 }; // 10px
+    default:
+      return {};
+  }
 };
 
 const Typography: React.FC<TypographyProps> = ({ 
@@ -84,17 +124,32 @@ const Typography: React.FC<TypographyProps> = ({
   component,
   color = 'on-surface',
   children, 
-  className = '' 
+  className = '',
+  gutterBottom,
+  sx,
+  ...props
 }) => {
-  const Tag = component || variantToTagMap[variant] || 'p';
-  
-  const combinedClassName = `
-    ${variantClasses[variant]} 
-    ${colorClasses[color]} 
-    ${className}
-  `.trim();
+  const muiVariant = variantToMuiVariant[variant] || 'body2';
+  const componentTag = component || variantToTagMap[variant] || 'p';
+  const colorValue = colorToMuiColor[color];
+  const customSx = getCustomSx(variant);
 
-  return React.createElement(Tag, { className: combinedClassName }, children);
+  return (
+    <MuiTypography
+      variant={muiVariant}
+      component={componentTag}
+      className={className}
+      gutterBottom={gutterBottom}
+      sx={{
+        ...customSx,
+        ...(colorValue && { color: colorValue }),
+        ...sx,
+      }}
+      {...props}
+    >
+      {children}
+    </MuiTypography>
+  );
 };
 
 export default Typography; 

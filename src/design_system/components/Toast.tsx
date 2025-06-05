@@ -1,7 +1,18 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { createPortal } from 'react-dom';
-import Icon from '../primitives/Icon';
-import { useLanguage } from '../../contexts/LanguageContext';
+import React, { createContext, useContext, useState, useCallback } from 'react';
+import { 
+  Snackbar, 
+  Alert, 
+  Button, 
+  Box,
+  IconButton
+} from '@mui/material';
+import { 
+  CheckCircle, 
+  Error as ErrorIcon, 
+  Warning, 
+  Info, 
+  Close 
+} from '@mui/icons-material';
 
 export interface ToastItem {
   id: string;
@@ -56,13 +67,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
       // Limit the number of toasts
       return updated.slice(0, maxToasts);
     });
-
-    // Auto-dismiss toast
-    if (newToast.duration && newToast.duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, newToast.duration);
-    }
   }, [maxToasts]);
 
   const removeToast = useCallback((id: string) => {
@@ -71,156 +75,189 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 
   const contextValue = { showToast, removeToast };
 
-  const positionClasses = {
-    'top-right': 'top-4 right-4',
-    'top-left': 'top-4 left-4',
-    'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4',
-    'top-center': 'top-4 left-1/2 transform -translate-x-1/2',
-    'bottom-center': 'bottom-4 left-1/2 transform -translate-x-1/2',
+  // Convert position to MUI anchor origin
+  const getAnchorOrigin = (pos: string) => {
+    switch (pos) {
+      case 'top-right':
+        return { vertical: 'top' as const, horizontal: 'right' as const };
+      case 'top-left':
+        return { vertical: 'top' as const, horizontal: 'left' as const };
+      case 'bottom-right':
+        return { vertical: 'bottom' as const, horizontal: 'right' as const };
+      case 'bottom-left':
+        return { vertical: 'bottom' as const, horizontal: 'left' as const };
+      case 'top-center':
+        return { vertical: 'top' as const, horizontal: 'center' as const };
+      case 'bottom-center':
+        return { vertical: 'bottom' as const, horizontal: 'center' as const };
+      default:
+        return { vertical: 'top' as const, horizontal: 'right' as const };
+    }
   };
+
+  const anchorOrigin = getAnchorOrigin(position);
 
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      {toasts.length > 0 && (
-        <ToastContainer position={positionClasses[position]} toasts={toasts} />
-      )}
+      {toasts.map((toast, index) => (
+        <ToastSnackbar
+          key={toast.id}
+          toast={toast}
+          anchorOrigin={anchorOrigin}
+          index={index}
+          onRemove={removeToast}
+        />
+      ))}
     </ToastContext.Provider>
   );
 };
 
-interface ToastContainerProps {
-  position: string;
-  toasts: ToastItem[];
-}
-
-const ToastContainer: React.FC<ToastContainerProps> = ({ position, toasts }) => {
-  const { removeToast } = useToast();
-
-  const containerClasses = `
-    fixed ${position} z-50
-    flex flex-col gap-2
-    max-w-sm w-full
-    pointer-events-none
-  `;
-
-  const toastElements = toasts.map(toast => (
-    <Toast key={toast.id} toast={toast} onRemove={removeToast} />
-  ));
-
-  return createPortal(
-    <div className={containerClasses}>
-      {toastElements}
-    </div>,
-    document.body
-  );
-};
-
-interface ToastProps {
+interface ToastSnackbarProps {
   toast: ToastItem;
+  anchorOrigin: { vertical: 'top' | 'bottom'; horizontal: 'left' | 'center' | 'right' };
+  index: number;
   onRemove: (id: string) => void;
 }
 
-const Toast: React.FC<ToastProps> = ({ toast, onRemove }) => {
-  const { isRTL } = useLanguage();
-  const [isVisible, setIsVisible] = useState(false);
-  const [isRemoving, setIsRemoving] = useState(false);
-
-  // Animate in
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleRemove = () => {
-    setIsRemoving(true);
-    setTimeout(() => onRemove(toast.id), 300);
+const ToastSnackbar: React.FC<ToastSnackbarProps> = ({ 
+  toast, 
+  anchorOrigin, 
+  index, 
+  onRemove 
+}) => {
+  const handleClose = () => {
+    onRemove(toast.id);
   };
 
   const handleActionClick = () => {
     if (toast.action) {
       toast.action.onClick();
-      handleRemove();
+      handleClose();
     }
   };
 
-  const getIconName = () => {
+  const getIcon = () => {
     switch (toast.type) {
       case 'success':
-        return 'check';
+        return <CheckCircle fontSize="small" />;
       case 'error':
-        return 'close';
+        return <ErrorIcon fontSize="small" />;
       case 'warning':
-        return 'close'; // We'll use 'close' as a warning icon for now
+        return <Warning fontSize="small" />;
       case 'info':
-        return 'close'; // We'll use 'close' as an info icon for now
+        return <Info fontSize="small" />;
       default:
-        return 'close';
+        return null;
     }
   };
 
-  const getTypeClasses = () => {
+  const getSeverity = () => {
     switch (toast.type) {
       case 'success':
-        return 'bg-md-sys-color-primary-container text-md-sys-color-on-primary-container border-md-sys-color-primary';
+        return 'success' as const;
       case 'error':
-        return 'bg-md-sys-color-error-container text-md-sys-color-on-error-container border-md-sys-color-error';
+        return 'error' as const;
       case 'warning':
-        return 'bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container border-md-sys-color-tertiary';
+        return 'warning' as const;
       case 'info':
-        return 'bg-md-sys-color-secondary-container text-md-sys-color-on-secondary-container border-md-sys-color-secondary';
+        return 'info' as const;
       default:
-        return 'bg-md-sys-color-surface-container text-md-sys-color-on-surface border-md-sys-color-outline';
+        return 'info' as const;
     }
   };
 
-  const toastClasses = `
-    pointer-events-auto
-    flex items-start gap-3 p-4
-    rounded-lg border shadow-lg
-    transform transition-all duration-300 ease-out
-    ${getTypeClasses()}
-    ${isVisible && !isRemoving ? 'translate-x-0 opacity-100' : isRTL ? 'translate-x-full opacity-0' : '-translate-x-full opacity-0'}
-    ${isRemoving ? 'scale-95 opacity-0' : ''}
-  `;
+  // Calculate offset for stacked toasts
+  const offsetY = index * 60; // 60px spacing between toasts
+  const transformStyle = anchorOrigin.vertical === 'top' 
+    ? `translateY(${offsetY}px)` 
+    : `translateY(-${offsetY}px)`;
 
   return (
-    <div className={toastClasses}>
-      {/* Icon */}
-      <div className="flex-shrink-0 mt-0.5">
-        <Icon name={getIconName()} size="small" />
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        {toast.title && (
-          <p className="font-medium text-sm leading-5 mb-1">
-            {toast.title}
-          </p>
-        )}
-        <p className="text-sm leading-5">
-          {toast.message}
-        </p>
-        {toast.action && (
-          <button
-            onClick={handleActionClick}
-            className="mt-2 text-sm font-medium underline hover:no-underline focus:outline-none"
-          >
-            {toast.action.label}
-          </button>
-        )}
-      </div>
-
-      {/* Close button */}
-      <button
-        onClick={handleRemove}
-        className="flex-shrink-0 p-1 -m-1 rounded-full hover:bg-black/10 transition-colors"
-        aria-label="Close notification"
+    <Snackbar
+      open={true}
+      autoHideDuration={toast.duration || 5000}
+      onClose={handleClose}
+      anchorOrigin={anchorOrigin}
+      sx={{
+        transform: transformStyle,
+        position: 'fixed',
+        zIndex: 1400 + index, // Ensure proper stacking
+      }}
+    >
+      <Alert
+        onClose={handleClose}
+        severity={getSeverity()}
+        icon={getIcon()}
+        sx={{
+          width: '100%',
+          maxWidth: 400,
+          borderRadius: 1.5,
+          '& .MuiAlert-message': {
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 0.5,
+          },
+        }}
+        action={
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {toast.action && (
+              <Button
+                onClick={handleActionClick}
+                size="small"
+                sx={{
+                  fontSize: '0.75rem',
+                  textTransform: 'none',
+                  textDecoration: 'underline',
+                  '&:hover': {
+                    textDecoration: 'none',
+                  },
+                }}
+              >
+                {toast.action.label}
+              </Button>
+            )}
+            <IconButton
+              onClick={handleClose}
+              size="small"
+              sx={{
+                color: 'inherit',
+                p: 0.5,
+              }}
+              aria-label="Close notification"
+            >
+              <Close fontSize="small" />
+            </IconButton>
+          </Box>
+        }
       >
-        <Icon name="close" size="small" />
-      </button>
-    </div>
+        <Box>
+          {toast.title && (
+            <Box 
+              component="span" 
+              sx={{ 
+                fontWeight: 'medium', 
+                fontSize: '0.875rem', 
+                lineHeight: 1.25,
+                display: 'block',
+                mb: toast.message ? 0.25 : 0,
+              }}
+            >
+              {toast.title}
+            </Box>
+          )}
+          <Box 
+            component="span" 
+            sx={{ 
+              fontSize: '0.875rem', 
+              lineHeight: 1.25 
+            }}
+          >
+            {toast.message}
+          </Box>
+        </Box>
+      </Alert>
+    </Snackbar>
   );
 };
 

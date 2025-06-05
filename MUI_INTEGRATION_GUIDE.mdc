@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
 # Material UI Integration Guide
 
 ## 🎯 Overview
@@ -257,10 +262,10 @@ const { isRTL } = useLanguage();
 
 ## 🔗 Resources
 
-- [Material UI Documentation](https://mui.com/)
-- [Styling Guide](https://mui.com/system/styled/)
-- [Theming Guide](https://mui.com/customization/theming/)
-- [RTL Support](https://mui.com/guides/right-to-left/)
+- [Material UI Documentation](mdc:https:/mui.com)
+- [Styling Guide](mdc:https:/mui.com/system/styled)
+- [Theming Guide](mdc:https:/mui.com/customization/theming)
+- [RTL Support](mdc:https:/mui.com/guides/right-to-left)
 
 ---
 

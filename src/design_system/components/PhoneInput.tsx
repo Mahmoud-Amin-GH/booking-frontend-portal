@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../contexts/LanguageContext';
+import { TextField, InputAdornment, Box, Divider } from '@mui/material';
 import { Icon, Typography } from '../index';
 import { formatKuwaitiPhone } from '../../services/api';
 
@@ -10,6 +11,9 @@ interface PhoneInputProps {
   error?: string;
   placeholder?: string;
   required?: boolean;
+  variant?: 'outlined' | 'filled';
+  size?: 'small' | 'medium';
+  sx?: any;
 }
 
 const PhoneInput: React.FC<PhoneInputProps> = ({
@@ -18,10 +22,12 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   error,
   placeholder = "XXXX XXXX",
   required = false,
+  variant = 'outlined',
+  size = 'medium',
+  sx,
 }) => {
   const { t } = useTranslation();
   const { isRTL } = useLanguage();
-  const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -36,66 +42,91 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
     }
   };
 
-  const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(true);
-  };
+  // Get clean phone number without country code for display
+  const cleanPhoneValue = value.replace('+965 ', '');
 
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setIsFocused(false);
-  };
-
-  // Custom phone input with Material Design 3 styling and RTL support
   return (
-    <div className="w-full space-y-1">
-      {/* Label */}
-      <Typography 
-        variant="body-xs" 
-        color={error ? 'error' : isFocused ? 'primary' : 'on-surface-variant'}
-        className={`px-4 ${isRTL ? 'text-right' : 'text-left'}`}
-      >
-        {t('auth.phone')} {required && <span className="text-error">*</span>}
-      </Typography>
-
-      {/* Input Container */}
-      <div className={`
-        relative h-14 w-full rounded-xs border transition-all duration-250 bg-transparent
-        ${error ? 'border-error focus-within:border-error focus-within:ring-2 focus-within:ring-error/20' : 
-          isFocused ? 'border-primary-600 ring-2 ring-primary-600/20' : 
-          'border-outline hover:border-on-surface-variant focus-within:border-primary-600 focus-within:ring-2 focus-within:ring-primary-600/20'}
-      `}>
-        {/* Country Code Section - always at start (leading) */}
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2 border-r border-outline pr-3">
-          <Icon name="kuwait-flag" size="small" />
-          <Typography variant="body-xs" color="on-surface-variant">
-            +965
-          </Typography>
-        </div>
-
-        {/* Phone Number Input */}
-        <input
-          type="tel"
-          value={value.replace('+965 ', '')}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder={placeholder}
-          className="w-full h-full bg-transparent border-0 outline-none resize-none text-on-surface placeholder-on-surface-variant text-body-xs pl-20 pr-4 py-4 disabled:cursor-not-allowed"
-        />
-      </div>
-
-      {/* Helper Text / Error with RTL support */}
-      <div className={`px-4 space-y-1 ${isRTL ? 'text-right' : 'text-left'}`}>
-        {error ? (
-          <Typography variant="label-small" color="error">
-            {error}
-          </Typography>
-        ) : (
+    <TextField
+      type="tel"
+      label={
+        <>
+          {t('auth.phone')} 
+          {required && <span style={{ color: 'error.main' }}>*</span>}
+        </>
+      }
+      value={cleanPhoneValue}
+      onChange={handleInputChange}
+      error={Boolean(error)}
+      helperText={
+        error || (
           <Typography variant="label-small" color="on-surface-variant">
             {t('common.kuwait')} • {t('common.phoneFormat')}
           </Typography>
-        )}
-      </div>
-    </div>
+        )
+      }
+      placeholder={placeholder}
+      variant={variant}
+      size={size}
+      fullWidth
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              pr: 1.5,
+              borderRight: 1,
+              borderColor: 'divider',
+              mr: 1.5,
+            }}>
+              <Icon name="kuwait-flag" size="small" />
+              <Typography variant="body-xs" color="on-surface-variant">
+                +965
+              </Typography>
+            </Box>
+          </InputAdornment>
+        ),
+      }}
+      sx={{
+        width: '100%',
+        '& .MuiOutlinedInput-root': {
+          borderRadius: 1.5, // rounded-xs
+          minHeight: size === 'small' ? 48 : 56,
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'text.secondary',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'primary.main',
+            borderWidth: 2,
+          },
+          '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'error.main',
+          },
+        },
+        '& .MuiInputLabel-root': {
+          fontSize: size === 'small' ? '0.75rem' : '0.875rem',
+          '&.Mui-focused': {
+            color: 'primary.main',
+          },
+          '&.Mui-error': {
+            color: 'error.main',
+          },
+        },
+        '& .MuiFormHelperText-root': {
+          fontSize: '0.75rem',
+          textAlign: isRTL ? 'right' : 'left',
+          mx: 2,
+          '&.Mui-error': {
+            color: 'error.main',
+          },
+        },
+        '& .MuiInputAdornment-root': {
+          ml: 0,
+        },
+        ...sx,
+      }}
+    />
   );
 };
 
