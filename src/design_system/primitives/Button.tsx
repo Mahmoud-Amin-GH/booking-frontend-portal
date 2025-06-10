@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button as MuiButton, CircularProgress, Box } from '@mui/material';
+import { componentSpacing } from '../spacing';
 
 export interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'size' | 'color'> {
   variant?: 'elevated' | 'filled' | 'outlined' | 'text';
@@ -46,21 +47,21 @@ const Button: React.FC<ButtonProps> = ({
       case 'small':
         return {
           height: 32, // h-8
-          px: 1.5, // px-3
+          px: componentSpacing.button.paddingSmall, // 12px - semantic spacing
           fontSize: '0.75rem', // text-label-small
           minWidth: 64,
         };
       case 'medium':
         return {
           height: 40, // h-10
-          px: 2, // px-4  
+          px: componentSpacing.button.paddingMedium, // 16px - semantic spacing
           fontSize: '0.875rem', // text-label-medium
           minWidth: 80,
         };
       case 'large':
         return {
           height: 48, // h-12
-          px: 3, // px-6
+          px: componentSpacing.button.paddingLarge, // 24px - semantic spacing
           fontSize: '1rem', // text-label-large
           minWidth: 96,
         };
@@ -173,7 +174,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       {/* Start icon */}
       {shouldShowIcon && iconPosition === 'start' && (
-        <Box sx={{ mr: 1, display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ mr: componentSpacing.button.iconGap, display: 'flex', alignItems: 'center' }}>
           {iconElement}
         </Box>
       )}
@@ -185,7 +186,7 @@ const Button: React.FC<ButtonProps> = ({
       
       {/* End icon */}
       {shouldShowIcon && iconPosition === 'end' && (
-        <Box sx={{ ml: 1, display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ ml: componentSpacing.button.iconGap, display: 'flex', alignItems: 'center' }}>
           {iconElement}
         </Box>
       )}

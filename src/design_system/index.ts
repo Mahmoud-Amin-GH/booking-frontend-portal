@@ -62,4 +62,15 @@ export type TypographyVariant =
 
 export type ButtonVariant = 'elevated' | 'filled' | 'outlined' | 'text';
 export type AlertVariant = 'info' | 'success' | 'warning' | 'error';
-export type ColorVariant = 'primary' | 'on-surface' | 'on-surface-variant' | 'on-surface-muted' | 'error' | 'success' | 'warning'; 
+export type ColorVariant = 'primary' | 'on-surface' | 'on-surface-variant' | 'on-surface-muted' | 'error' | 'success' | 'warning';
+
+// ===== SPACING SYSTEM =====
+export { 
+  spacing, 
+  componentSpacing, 
+  responsiveSpacing, 
+  spacingUtils, 
+  spacingPresets,
+  BASE_SPACING 
+} from './spacing';
+export type { SpacingKey, ComponentSpacingKey, ResponsiveSpacingKey } from './spacing'; 

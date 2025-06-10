@@ -19,6 +19,82 @@ This frontend represents a **complete, production-grade web application** with:
 - ✅ **Mobile-responsive design** optimized for all devices
 - ✅ **Performance optimized** with code splitting and efficient rendering
 
+## 🚨 **CRITICAL DEVELOPMENT GUIDELINES**
+
+### ⚠️ **DO NOT CREATE CUSTOM COMPONENTS - USE MATERIAL UI**
+
+**🔒 MANDATORY RULE:** All UI components MUST use Material-UI (MUI) components. **Do not create custom components** from scratch.
+
+#### ✅ **CORRECT APPROACH:**
+```typescript
+// ✅ CORRECT: Use our design system (which wraps MUI components)
+import { Button, Typography, Input, Alert } from '../design_system';
+import { Container, Stack, Box, Paper } from '@mui/material'; // For layout
+
+// ✅ CORRECT: For new components, extend existing MUI components
+import { Button as MUIButton } from '@mui/material';
+const CustomButton = styled(MUIButton)(({ theme }) => ({
+  // Custom styling here
+}));
+```
+
+#### ❌ **INCORRECT APPROACH:**
+```typescript
+// ❌ WRONG: Don't create custom HTML-based components
+const CustomButton = ({ children }) => (
+  <div className="custom-button-class">
+    {children}
+  </div>
+);
+
+// ❌ WRONG: Don't use raw HTML for UI elements
+<div className="card">
+  <h2 className="title">Title</h2>
+  <p className="description">Description</p>
+</div>
+```
+
+#### 🎯 **WHY THIS RULE EXISTS:**
+1. **🏗️ Architectural Consistency** - Unified component behavior across the app
+2. **♿ Accessibility Built-in** - MUI components have ARIA support out of the box  
+3. **🎨 Design System Coherence** - Consistent theming and styling
+4. **🚀 Performance Optimized** - MUI components are optimized and tested
+5. **🛠️ Maintenance Simplified** - Easier to maintain and update
+6. **📱 Responsive by Default** - Built-in responsive design patterns
+
+#### 📋 **HOW TO ADD NEW COMPONENTS:**
+
+1. **Check existing design system first:**
+   ```bash
+   # Check what's available
+   ls src/design_system/primitives/
+   ls src/design_system/components/
+   ```
+
+2. **Use MUI components directly for layout:**
+   ```typescript
+   import { Box, Container, Paper, Stack } from '@mui/material';
+   ```
+
+3. **For new reusable components, wrap MUI:**
+   ```typescript
+   // src/design_system/components/NewComponent.tsx
+   import { Paper, Typography } from '@mui/material';
+   
+   export const NewComponent = ({ title, children }) => (
+     <Paper elevation={2} sx={{ p: 3 }}>
+       <Typography variant="h6" gutterBottom>{title}</Typography>
+       {children}
+     </Paper>
+   );
+   ```
+
+4. **Export from design system index:**
+   ```typescript
+   // src/design_system/index.ts
+   export { NewComponent } from './components/NewComponent';
+   ```
+
 ## 🏗️ **TECHNICAL ARCHITECTURE**
 
 ### **Core Technologies**
