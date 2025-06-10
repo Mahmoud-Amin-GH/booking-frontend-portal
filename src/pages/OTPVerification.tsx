@@ -35,11 +35,16 @@ const OTPVerification: React.FC = () => {
       return;
     }
 
-    // Start countdown
+    // Start countdown immediately
+    setCanResend(false);
+    setCountdown(30);
+
     const timer = setInterval(() => {
       setCountdown(prev => {
+        console.log('Countdown:', prev); // Debug log
         if (prev <= 1) {
           setCanResend(true);
+          console.log('Resend now available'); // Debug log
           return 0;
         }
         return prev - 1;
@@ -99,23 +104,32 @@ const OTPVerification: React.FC = () => {
     setServerError('');
 
     try {
-      // Call resend OTP API (this would typically be a separate endpoint)
-      // For now, we'll simulate it
+      // Call resend OTP API - this should trigger actual OTP generation
+      // You would replace this with actual API call to resend OTP
+      // Example: await authAPI.resendOTP({ phone });
+      
+      console.log('Resending OTP to:', phone);
+      
+      // Simulate API call for now
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Reset countdown
+      // Reset countdown after successful resend
       setCanResend(false);
       setCountdown(30);
+      
+      // Show success message (optional)
+      console.log('OTP resent successfully');
+      
     } catch (error: any) {
       console.error('Resend OTP error:', error);
-      setServerError(t('error.resendFailed'));
+      setServerError(error.response?.data?.error || t('error.resendFailed'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleBackToLogin = () => {
-    navigate('/login');
+    navigate('/login-4sale');
   };
 
   const maskedPhone = phone ? phone.replace(/(\+965\s\d{2})\d{2}(\s\d{4})/, '$1**$2') : '';
@@ -126,10 +140,10 @@ const OTPVerification: React.FC = () => {
       <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
         <div className="text-center text-white max-w-md">
           <Typography variant="display-medium" className="text-white mb-4">
-            {t('hero.welcome')}
+            Welcome to 4Sale
           </Typography>
           <Typography variant="body-large" className="text-primary-100">
-            {t('hero.description')}
+            Your trusted marketplace for buying and selling in Kuwait
           </Typography>
         </div>
       </div>
@@ -211,32 +225,32 @@ const OTPVerification: React.FC = () => {
                 {t('auth.didntReceiveCode')}
               </Typography>
               
-              {canResend ? (
-                <Button
-                  onClick={handleResendOTP}
-                  disabled={loading}
-                  variant="ghost"
-                  size="sm"
-                  className="text-primary-500 hover:text-primary-600"
+                          {canResend ? (
+              <Button
+                onClick={handleResendOTP}
+                disabled={loading}
+                variant="ghost"
+                size="sm"
+                className="text-primary-500 hover:text-primary-600"
+              >
+                {loading ? 'Sending...' : t('auth.resendOTP')}
+              </Button>
+            ) : (
+              <div className="flex items-center justify-center gap-2">
+                <Progress 
+                  variant="circular" 
+                  size="sm" 
+                  value={((30 - countdown) / 30) * 100}
+                  color="primary"
+                />
+                <Typography 
+                  variant="body-small"
+                  className="text-gray-400"
                 >
-                  {t('auth.resendOTP')}
-                </Button>
-              ) : (
-                <div className="flex items-center justify-center gap-2">
-                  <Progress 
-                    variant="circular" 
-                    size="sm" 
-                    value={((30 - countdown) / 30) * 100}
-                    color="primary"
-                  />
-                  <Typography 
-                    variant="body-small"
-                    className="text-gray-400"
-                  >
-                    {t('auth.resendAvailable', { seconds: countdown })}
-                  </Typography>
-                </div>
-              )}
+                  Resend available in {countdown}s
+                </Typography>
+              </div>
+            )}
             </div>
 
             {/* Back Button */}

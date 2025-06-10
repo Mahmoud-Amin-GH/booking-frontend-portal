@@ -170,10 +170,10 @@ const Signup: React.FC = () => {
       <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
         <div className="text-center text-white max-w-md">
           <Typography variant="display-medium" className="text-white mb-4">
-            {t('hero.welcome')}
+            Welcome to 4Sale
           </Typography>
           <Typography variant="body-large" className="text-primary-100">
-            {t('hero.description')}
+            Your trusted marketplace for buying and selling in Kuwait
           </Typography>
         </div>
       </div>
@@ -310,12 +310,12 @@ const Signup: React.FC = () => {
               className="text-gray-500"
             >
               {t('auth.alreadyHaveAccount')}{' '}
-              <Link 
-                to="/login"
-                className="text-primary-500 font-semibold hover:text-primary-600 no-underline"
-              >
-                {t('auth.login')}
-              </Link>
+                          <Link 
+              to="/login-4sale"
+              className="text-primary-500 font-semibold hover:text-primary-600 no-underline"
+            >
+              {t('auth.login')}
+            </Link>
             </Typography>
           </div>
         </Card>
