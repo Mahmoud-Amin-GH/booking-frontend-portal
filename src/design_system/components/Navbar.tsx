@@ -1,11 +1,18 @@
 import React from 'react';
 import { Box, Button } from '@mui/material';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 export const Navbar: React.FC = () => {
+  const { language, switchLanguage } = useLanguage();
+
   const handleLanguageSwitch = () => {
-    // Language switching logic would go here
-    console.log('Switch language');
+    // Toggle between English and Arabic
+    const newLanguage = language === 'en' ? 'ar' : 'en';
+    switchLanguage(newLanguage);
   };
+
+  const displayText = language === 'en' ? 'العربية' : 'English';
+  const textLang = language === 'en' ? 'ar' : 'en';
 
   return (
     <Box
@@ -51,6 +58,8 @@ export const Navbar: React.FC = () => {
             backgroundColor: 'transparent',
             border: 'none',
             cursor: 'pointer',
+            textTransform: 'none',
+            minWidth: 'auto',
             '&:hover': {
               backgroundColor: '#F5F6F7',
             },
@@ -69,15 +78,22 @@ export const Navbar: React.FC = () => {
           />
           {/* Language Text */}
           <Box
+            component="span"
+            lang={textLang}
             sx={{
-              fontFamily: 'SS Sakr Soft',
+              fontFamily: textLang === 'ar' ? 'SS Sakr Soft' : 'inherit',
               fontWeight: 700,
               fontSize: '14px',
               color: '#092B4C',
               lineHeight: 1.43,
+              direction: textLang === 'ar' ? 'rtl' : 'ltr',
+              unicodeBidi: 'embed',
+              textAlign: textLang === 'ar' ? 'right' : 'left',
+              writingMode: 'horizontal-tb',
+              textOrientation: 'mixed',
             }}
           >
-            ةيبرعلا
+            {displayText}
           </Box>
         </Button>
       </Box>

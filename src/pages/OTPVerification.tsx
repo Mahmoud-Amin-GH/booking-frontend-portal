@@ -1,308 +1,338 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { Box, TextField, Button as MUIButton, Stack } from '@mui/material';
-import { Alert, Typography, AuthLayout, HeroSection } from '../design_system';
-import { authAPI } from '../services/api';
-
-interface OTPFormData {
-  code: string;
-}
+import { useLanguage } from '../contexts/LanguageContext';
+import { Box, TextField, Button as MUIButton } from '@mui/material';
+import {
+  Alert,
+  Typography
+} from '../design_system';
+import { AuthLayout } from '../design_system/components/AuthLayout';
+import { HeroSection } from '../design_system/components/HeroSection';
+import { authAPI, OTPRequest } from '../services/api';
 
 const OTPVerification: React.FC = () => {
   const { t } = useTranslation();
+  const { isRTL } = useLanguage();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [phone, setPhone] = useState<string>('');
-  const [countdown, setCountdown] = useState(60);
-  const [code, setCode] = useState('');
-  const [codeError, setCodeError] = useState<string>('');
+  const location = useLocation();
+  
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [canResend, setCanResend] = useState(false);
+  const [countdown, setCountdown] = useState(30);
+  
+  // Get phone number from navigation state
+  const phone = location.state?.phone || localStorage.getItem('temp_phone') || '';
+  const fromSignup = location.state?.fromSignup || false;
 
   useEffect(() => {
-    // Get phone number from localStorage
-    const tempPhone = localStorage.getItem('temp_phone');
-    if (!tempPhone) {
-      navigate('/login');
+    if (!phone) {
+      // If no phone number, redirect to signup
+      navigate('/signup');
       return;
     }
-    setPhone(tempPhone);
-  }, [navigate]);
 
-  useEffect(() => {
-    // Start countdown timer for resend OTP
-    let timer: NodeJS.Timeout;
-    if (countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [countdown]);
+    // Start countdown
+    const timer = setInterval(() => {
+      setCountdown(prev => {
+        if (prev <= 1) {
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
 
-  const validateCode = (): boolean => {
-    if (!code.trim()) {
-      setCodeError(t('validation.required'));
-      return false;
+    return () => clearInterval(timer);
+  }, [phone, navigate]);
+
+  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ''); // Only allow digits
+    if (value.length <= 6) {
+      setOtp(value);
+      if (serverError) {
+        setServerError('');
+      }
     }
-    if (code.length !== 6) {
-      setCodeError('Please enter 6-digit code');
-      return false;
-    }
-    setCodeError('');
-    return true;
   };
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateCode()) {
+    if (otp.length !== 6) {
+      setServerError(t('placeholders.otpError'));
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
+    setLoading(true);
+    setServerError('');
 
     try {
-      await authAPI.verifyOTP({
+      const otpData: OTPRequest = {
         phone: phone,
-        code: code,
-      });
-
-      // Clear temporary data
-      localStorage.removeItem('temp_user_id');
-      localStorage.removeItem('temp_phone');
+        code: otp
+      };
       
-      // Navigate to dashboard
-      navigate('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.error || t('error.otpFailed'));
+      const response = await authAPI.verifyOTP(otpData);
+
+      if (response.token) {
+        // OTP verification successful
+        navigate('/dashboard');
+      } else {
+        setServerError(t('error.otpFailed'));
+      }
+    } catch (error: any) {
+      console.error('OTP verification error:', error);
+      setServerError(error.response?.data?.error || t('error.otpFailed'));
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleResendOTP = async () => {
-    setIsResending(true);
-    setError(null);
-    
+    if (!canResend) return;
+
+    setLoading(true);
+    setServerError('');
+
     try {
-      // In a real implementation, you would call a resend OTP API
-      console.log('Resend OTP for:', phone);
+      // Call resend OTP API (this would typically be a separate endpoint)
+      // For now, we'll simulate it
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Start countdown timer
-      setCountdown(60);
-    } catch (err: any) {
-      setError(err.response?.data?.error || t('error.resendFailed'));
+      // Reset countdown
+      setCanResend(false);
+      setCountdown(30);
+    } catch (error: any) {
+      console.error('Resend OTP error:', error);
+      setServerError(t('error.resendFailed'));
     } finally {
-      setIsResending(false);
+      setLoading(false);
     }
   };
 
-  const handleCodeChange = (value: string) => {
-    const numericValue = value.replace(/\D/g, '').slice(0, 6);
-    setCode(numericValue);
-    if (codeError) setCodeError('');
+  const handleBackToLogin = () => {
+    navigate('/login');
   };
+
+  const maskedPhone = phone ? phone.replace(/(\+965\s\d{2})\d{2}(\s\d{4})/, '$1**$2') : '';
 
   return (
     <AuthLayout heroContent={<HeroSection />}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: '400px',
+          margin: '0 auto',
+          padding: '32px 24px',
+        }}
+      >
         {/* Header */}
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography
-            sx={{
+        <Box sx={{ marginBottom: '32px', textAlign: 'center' }}>
+          <Typography 
+            variant="headline-large" 
+            sx={{ 
               fontFamily: 'SS Sakr Soft',
               fontWeight: 700,
-              fontSize: '24px',
-              lineHeight: 1.33,
+              fontSize: '32px',
+              lineHeight: '40px',
               color: '#092B4C',
-              marginBottom: 1,
+              marginBottom: '8px'
             }}
           >
-            Verify Phone Number
+            {t('auth.verifyPhone')}
           </Typography>
-          <Typography
-            sx={{
+          <Typography 
+            variant="body-large"
+            sx={{ 
               fontFamily: 'SS Sakr Soft',
               fontWeight: 400,
               fontSize: '16px',
-              lineHeight: 1.5,
-              color: '#505F79',
-              marginBottom: 1,
+              lineHeight: '24px',
+              color: '#6B7280',
+              marginBottom: '16px'
             }}
           >
-            Enter the 6-digit code sent to
+            {t('placeholders.otpHelper')}
           </Typography>
-          <Typography
-            sx={{
+          <Typography 
+            variant="body-medium"
+            sx={{ 
               fontFamily: 'SS Sakr Soft',
               fontWeight: 600,
-              fontSize: '16px',
-              color: '#092B4C',
+              fontSize: '14px',
+              lineHeight: '20px',
+              color: '#092B4C'
             }}
           >
-            {phone}
+            {maskedPhone}
           </Typography>
         </Box>
 
-        {/* Form */}
-        <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {error && (
-            <Alert 
-              variant="error" 
-              message={error}
-              dismissible
-              onDismiss={() => setError(null)}
-            />
-          )}
+        {/* Error Alert */}
+        {serverError && (
+          <Alert 
+            variant="error" 
+            message={serverError}
+            sx={{ marginBottom: '24px' }}
+            dismissible
+            onDismiss={() => setServerError('')}
+          />
+        )}
 
-          <Stack spacing={1}>
-            {/* OTP Input */}
+        {/* Form */}
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          {/* OTP Input */}
+          <Box sx={{ marginBottom: '24px' }}>
+            <Typography 
+              variant="label-large"
+              sx={{ 
+                fontFamily: 'SS Sakr Soft',
+                fontWeight: 600,
+                fontSize: '14px',
+                lineHeight: '20px',
+                color: '#374151',
+                marginBottom: '8px',
+                display: 'block',
+                textAlign: isRTL ? 'right' : 'left'
+              }}
+            >
+              {t('auth.otp')}
+            </Typography>
             <TextField
               fullWidth
+              value={otp}
+              onChange={handleOtpChange}
               placeholder="000000"
-              value={code}
-              onChange={(e) => handleCodeChange(e.target.value)}
-              error={Boolean(codeError)}
-              helperText={codeError}
-              inputProps={{
-                maxLength: 6,
-                style: {
-                  textAlign: 'center',
-                  fontSize: '24px',
-                  letterSpacing: '8px',
-                  fontWeight: 600,
-                },
-              }}
+              inputMode="numeric"
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '8px',
+                  fontFamily: 'SS Sakr Soft',
+                  fontSize: '24px',
+                  textAlign: 'center',
+                  letterSpacing: '0.5rem',
                   backgroundColor: '#FFFFFF',
-                  '& fieldset': {
-                    borderColor: '#DCDFE3',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#DCDFE3',
-                  },
-                  '&.Mui-focused fieldset': {
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
                     borderColor: '#1D8EFF',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#1D8EFF',
+                    borderWidth: '2px',
                   },
                 },
                 '& .MuiInputBase-input': {
-                  padding: '16px',
-                  fontFamily: 'SS Sakr Soft',
-                  '&::placeholder': {
-                    color: '#A8AFBB',
-                    opacity: 1,
-                  },
-                },
-                '& .MuiFormHelperText-root': {
-                  fontFamily: 'SS Sakr Soft',
-                  fontSize: '14px',
-                  color: '#6B788E',
                   textAlign: 'center',
+                  letterSpacing: '0.5rem',
                 },
               }}
             />
-          </Stack>
+          </Box>
 
           {/* Submit Button */}
           <MUIButton
             type="submit"
             fullWidth
-            disabled={isLoading}
+            disabled={loading || otp.length !== 6}
             sx={{
+              borderRadius: '8px',
+              padding: '12px 24px',
               backgroundColor: '#1D8EFF',
               color: '#FFFFFF',
-              borderRadius: '9999px',
-              padding: '12px 16px',
               fontFamily: 'SS Sakr Soft',
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: '16px',
+              lineHeight: '24px',
               textTransform: 'none',
-              boxShadow: '0px 0px 0px 1px rgba(235, 237, 240, 1)',
+              marginBottom: '24px',
               '&:hover': {
-                backgroundColor: '#0062FF',
+                backgroundColor: '#1570CD',
               },
               '&:disabled': {
-                backgroundColor: '#A8AFBB',
+                backgroundColor: '#E5E7EB',
+                color: '#9CA3AF',
               },
             }}
           >
-            {isLoading ? 'Verifying...' : 'Verify Code'}
+            {loading ? t('common.loading') : t('auth.verify')}
           </MUIButton>
-        </Box>
 
-        {/* Resend Section */}
-        <Box sx={{ textAlign: 'center' }}>
-          {countdown > 0 ? (
-            <Typography
-              sx={{
+          {/* Resend OTP */}
+          <Box sx={{ textAlign: 'center', marginBottom: '24px' }}>
+            <Typography 
+              variant="body-medium"
+              sx={{ 
                 fontFamily: 'SS Sakr Soft',
-                fontWeight: 500,
+                fontWeight: 400,
                 fontSize: '14px',
-                color: '#6B788E',
+                lineHeight: '20px',
+                color: '#6B7280',
+                marginBottom: '8px'
               }}
             >
-              Resend code in {countdown}s
+              {t('auth.didntReceiveCode')}
             </Typography>
-          ) : (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 0.5 }}>
-              <Typography
-                sx={{
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 500,
-                  fontSize: '14px',
-                  color: '#092B4C',
-                }}
-              >
-                Didn't receive the code?
-              </Typography>
+            
+            {canResend ? (
               <MUIButton
                 onClick={handleResendOTP}
-                disabled={isResending}
+                disabled={loading}
                 sx={{
-                  color: '#0062FF',
+                  color: '#1D8EFF',
                   fontFamily: 'SS Sakr Soft',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: '14px',
                   textTransform: 'none',
-                  padding: '10px 0px',
+                  padding: '4px 8px',
                   minWidth: 'auto',
                   '&:hover': {
                     backgroundColor: 'transparent',
                     textDecoration: 'underline',
                   },
-                  '&:disabled': {
-                    color: '#A8AFBB',
-                  },
                 }}
               >
-                {isResending ? 'Sending...' : 'Resend'}
+                {t('auth.resendOTP')}
               </MUIButton>
-            </Box>
-          )}
-        </Box>
+            ) : (
+              <Typography 
+                variant="body-small"
+                sx={{ 
+                  fontFamily: 'SS Sakr Soft',
+                  fontWeight: 400,
+                  fontSize: '12px',
+                  lineHeight: '16px',
+                  color: '#9CA3AF'
+                }}
+              >
+                {t('auth.resendAvailable', { seconds: countdown })}
+              </Typography>
+            )}
+          </Box>
 
-        {/* Back Button */}
-        <Box sx={{ textAlign: 'center' }}>
+          {/* Back Button */}
           <MUIButton
-            onClick={() => navigate('/login')}
+            fullWidth
+            variant="outlined"
+            onClick={handleBackToLogin}
             sx={{
-              color: '#6B788E',
+              borderRadius: '8px',
+              padding: '12px 24px',
+              borderColor: '#D1D5DB',
+              color: '#374151',
               fontFamily: 'SS Sakr Soft',
-              fontWeight: 500,
-              fontSize: '14px',
+              fontWeight: 600,
+              fontSize: '16px',
+              lineHeight: '24px',
               textTransform: 'none',
-              padding: '10px 0px',
-              minWidth: 'auto',
               '&:hover': {
-                backgroundColor: 'transparent',
-                textDecoration: 'underline',
+                borderColor: '#9CA3AF',
+                backgroundColor: '#F9FAFB',
               },
             }}
           >
-            ← Back to Login
+            {t('auth.back')}
           </MUIButton>
         </Box>
       </Box>

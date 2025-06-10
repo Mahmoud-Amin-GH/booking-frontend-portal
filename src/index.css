@@ -24,3 +24,27 @@ code {
 [dir="ltr"] {
   direction: ltr;
 }
+
+/* Arabic Text Support */
+[lang="ar"], [lang="ar"] * {
+  font-family: 'SS Sakr Soft', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+  text-align: right;
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+/* Ensure proper Arabic text rendering */
+.arabic-text {
+  direction: rtl;
+  unicode-bidi: embed;
+  text-align: right;
+  font-feature-settings: "liga" 1, "calt" 1;
+}
+
+/* Fix for Arabic text in buttons and inline elements */
+button[lang="ar"], 
+span[lang="ar"], 
+div[lang="ar"] {
+  direction: rtl;
+  unicode-bidi: embed;
+}
