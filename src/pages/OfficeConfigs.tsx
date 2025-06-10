@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Accordion, useSuccessToast, useErrorToast, OfficeConfigSection } from '../design_system';
+import { Typography, Button, Accordion } from '../design_system_4sale';
+import { useSuccessToast, useErrorToast, OfficeConfigSection } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
 
@@ -258,7 +259,7 @@ const OfficeConfigs: React.FC = () => {
       {/* Save Button */}
       <div className={`pt-6 border-t border-outline-variant ${isRTL ? 'text-left' : 'text-right'}`}>
         <Button
-          variant="filled"
+          variant="primary"
           onClick={handleSave}
           disabled={isSaving}
           className="min-w-32"

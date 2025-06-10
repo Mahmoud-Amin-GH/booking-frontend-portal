@@ -7,10 +7,9 @@ import {
   Input,
   Alert,
   Typography,
-  Progress
+  Progress,
+  Card
 } from '../design_system_4sale';
-import { AuthLayout } from '../design_system/components/AuthLayout';
-import { HeroSection } from '../design_system/components/HeroSection';
 import { authAPI, OTPRequest } from '../services/api';
 
 const OTPVerification: React.FC = () => {
@@ -122,124 +121,137 @@ const OTPVerification: React.FC = () => {
   const maskedPhone = phone ? phone.replace(/(\+965\s\d{2})\d{2}(\s\d{4})/, '$1**$2') : '';
 
   return (
-    <AuthLayout heroContent={<HeroSection />}>
-      <div className="w-full max-w-sm mx-auto p-8">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <Typography 
-            variant="headline-large" 
-            className="text-[#092B4C] mb-2"
-          >
-            {t('auth.verifyPhone')}
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+      {/* Hero Section */}
+      <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
+        <div className="text-center text-white max-w-md">
+          <Typography variant="display-medium" className="text-white mb-4">
+            {t('hero.welcome')}
           </Typography>
-          <Typography 
-            variant="body-large"
-            className="text-gray-500 mb-4"
-          >
-            {t('placeholders.otpHelper')}
-          </Typography>
-          <Typography 
-            variant="body-medium"
-            className="text-[#092B4C] font-semibold"
-          >
-            {maskedPhone}
+          <Typography variant="body-large" className="text-primary-100">
+            {t('hero.description')}
           </Typography>
         </div>
+      </div>
 
-        {/* Error Alert */}
-        {serverError && (
-          <Alert 
-            variant="error" 
-            message={serverError}
-            className="mb-6"
-            dismissible
-            onDismiss={() => setServerError('')}
-          />
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* OTP Input */}
-          <div>
+      {/* Form Section */}
+      <div className="lg:flex-1 flex items-center justify-center p-8">
+        <Card className="w-full max-w-md" padding="xl">
+          {/* Header */}
+          <div className="mb-8 text-center">
             <Typography 
-              variant="label-large"
-              className={`text-gray-700 mb-2 block font-semibold ${isRTL ? 'text-right' : 'text-left'}`}
+              variant="headline-large" 
+              className="text-[#092B4C] mb-2"
             >
-              {t('auth.otp')}
+              {t('auth.verifyPhone')}
             </Typography>
-            <Input
-              fullWidth
-              value={otp}
-              onChange={handleOtpChange}
-              placeholder="000000"
-              inputMode="numeric"
-              className="text-center text-2xl tracking-widest"
-              maxLength={6}
-            />
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            fullWidth
-            variant="primary"
-            size="lg"
-            isLoading={loading}
-            disabled={otp.length !== 6}
-            className="mb-6"
-          >
-            {loading ? t('common.loading') : t('auth.verify')}
-          </Button>
-
-          {/* Resend OTP */}
-          <div className="text-center mb-6">
+            <Typography 
+              variant="body-large"
+              className="text-gray-500 mb-4"
+            >
+              {t('placeholders.otpHelper')}
+            </Typography>
             <Typography 
               variant="body-medium"
-              className="text-gray-500 mb-2"
+              className="text-[#092B4C] font-semibold"
             >
-              {t('auth.didntReceiveCode')}
+              {maskedPhone}
             </Typography>
-            
-            {canResend ? (
-              <Button
-                onClick={handleResendOTP}
-                disabled={loading}
-                variant="ghost"
-                size="sm"
-                className="text-primary-500 hover:text-primary-600"
-              >
-                {t('auth.resendOTP')}
-              </Button>
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <Progress 
-                  variant="circular" 
-                  size="sm" 
-                  value={((30 - countdown) / 30) * 100}
-                  color="primary"
-                />
-                <Typography 
-                  variant="body-small"
-                  className="text-gray-400"
-                >
-                  {t('auth.resendAvailable', { seconds: countdown })}
-                </Typography>
-              </div>
-            )}
           </div>
 
-          {/* Back Button */}
-          <Button
-            fullWidth
-            variant="outline"
-            onClick={handleBackToLogin}
-            size="lg"
-          >
-            {t('auth.back')}
-          </Button>
-        </form>
+          {/* Error Alert */}
+          {serverError && (
+            <Alert 
+              variant="error" 
+              message={serverError}
+              className="mb-6"
+              dismissible
+              onDismiss={() => setServerError('')}
+            />
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* OTP Input */}
+            <div>
+              <Typography 
+                variant="label-large"
+                className={`text-gray-700 mb-2 block font-semibold ${isRTL ? 'text-right' : 'text-left'}`}
+              >
+                {t('auth.otp')}
+              </Typography>
+              <Input
+                fullWidth
+                value={otp}
+                onChange={handleOtpChange}
+                placeholder="000000"
+                className="text-center text-2xl tracking-widest"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              fullWidth
+              variant="primary"
+              size="lg"
+              isLoading={loading}
+              disabled={otp.length !== 6}
+              className="mb-6"
+            >
+              {loading ? t('common.loading') : t('auth.verify')}
+            </Button>
+
+            {/* Resend OTP */}
+            <div className="text-center mb-6">
+              <Typography 
+                variant="body-medium"
+                className="text-gray-500 mb-2"
+              >
+                {t('auth.didntReceiveCode')}
+              </Typography>
+              
+              {canResend ? (
+                <Button
+                  onClick={handleResendOTP}
+                  disabled={loading}
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary-500 hover:text-primary-600"
+                >
+                  {t('auth.resendOTP')}
+                </Button>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <Progress 
+                    variant="circular" 
+                    size="sm" 
+                    value={((30 - countdown) / 30) * 100}
+                    color="primary"
+                  />
+                  <Typography 
+                    variant="body-small"
+                    className="text-gray-400"
+                  >
+                    {t('auth.resendAvailable', { seconds: countdown })}
+                  </Typography>
+                </div>
+              )}
+            </div>
+
+            {/* Back Button */}
+            <Button
+              fullWidth
+              variant="outline"
+              onClick={handleBackToLogin}
+              size="lg"
+            >
+              {t('auth.back')}
+            </Button>
+          </form>
+        </Card>
       </div>
-    </AuthLayout>
+    </div>
   );
 };
 

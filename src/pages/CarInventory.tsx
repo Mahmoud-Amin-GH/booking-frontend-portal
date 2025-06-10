@@ -6,15 +6,14 @@ import {
   Input, 
   Select, 
   NumberInput, 
-  Modal, 
   ConfirmDialog,
   useSuccessToast,
   useErrorToast,
   SelectOption,
-  Typography,
   Icon,
   LanguageSwitcher
 } from '../design_system';
+import { Modal, Typography } from '../design_system_4sale';
 import { PricingTable } from '../design_system/components/PricingTable';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';

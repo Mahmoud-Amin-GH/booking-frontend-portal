@@ -5,9 +5,7 @@ import { CssBaseline, Box } from '@mui/material';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { ToastProvider } from './design_system';
 import { useMUITheme } from './theme/muiTheme';
-import Login from './pages/Login';
-import LoginMUI from './pages/LoginMUI'; // MUI Demo
-import Login4Sale from './pages/Login4Sale'; // 4Sale DS Demo
+import Login4Sale from './pages/Login4Sale';
 import Signup from './pages/Signup';
 import OTPVerification from './pages/OTPVerification';
 import DashboardOverview from './pages/DashboardOverview';
@@ -45,8 +43,6 @@ function App() {
           <Router>
             <Routes>
               <Route path="/" element={<Navigate to="/login-4sale" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/login-mui" element={<LoginMUI />} /> {/* MUI Demo */}
               <Route path="/login-4sale" element={<Login4Sale />} /> {/* 4Sale DS Demo */}
               <Route path="/signup" element={<Signup />} />
               <Route path="/verify-otp" element={<OTPVerification />} />
