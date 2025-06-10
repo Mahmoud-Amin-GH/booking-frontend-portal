@@ -34,11 +34,11 @@ const Login4Sale: React.FC = () => {
       setIsLoading(true);
       setErrorMessage('');
 
-      // Validate Kuwaiti phone number
-      if (!validateKuwaitiPhone(data.phone)) {
-        setErrorMessage(t('auth.invalidPhoneNumber'));
-        return;
-      }
+                    // Validate Kuwaiti phone number
+              if (!validateKuwaitiPhone(data.phone)) {
+                setErrorMessage(t('validation.phone'));
+                return;
+              }
 
       const response = await authAPI.login({
         phone: data.phone,
@@ -49,11 +49,11 @@ const Login4Sale: React.FC = () => {
         localStorage.setItem('auth_token', response.token);
         navigate('/dashboard');
       } else {
-        setErrorMessage(response.message || t('auth.loginFailed'));
+        setErrorMessage(response.message || t('error.loginFailed'));
       }
     } catch (error) {
       console.error('Login error:', error);
-      setErrorMessage(t('auth.loginFailed'));
+      setErrorMessage(t('error.loginFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -72,7 +72,7 @@ const Login4Sale: React.FC = () => {
             {t('auth.welcomeBack')}
           </Typography>
           <Typography variant="body-medium" className="text-center text-primary-100">
-            {t('auth.loginSubtitle')}
+            {t('auth.createAccount')}
           </Typography>
         </div>
       </div>
@@ -87,12 +87,12 @@ const Login4Sale: React.FC = () => {
 
           {/* Header */}
           <div>
-            <Typography variant="headline-medium" color="on-surface" className="mb-2">
-              {t('auth.signIn')}
-            </Typography>
-            <Typography variant="body-medium" color="on-surface-variant" className="mb-8">
-              {t('auth.signInSubtitle')}
-            </Typography>
+                      <Typography variant="headline-medium" color="on-surface" className="mb-2">
+            {t('auth.login')}
+          </Typography>
+          <Typography variant="body-medium" color="on-surface-variant" className="mb-8">
+            {t('auth.welcomeBack')}
+          </Typography>
           </div>
 
           {/* Error Alert */}
@@ -106,17 +106,17 @@ const Login4Sale: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Phone Input */}
             <Input
-              label={t('auth.phoneNumber')}
+              label={t('auth.phone')}
               type="tel"
               prefix="+965"
               placeholder="12345678"
               error={errors.phone?.message}
               fullWidth
               {...register('phone', {
-                required: t('validation.phoneRequired'),
+                required: t('validation.required'),
                 pattern: {
                   value: /^[1-9]\d{7}$/,
-                  message: t('validation.phoneInvalid'),
+                  message: t('validation.phone'),
                 },
               })}
             />
@@ -125,14 +125,14 @@ const Login4Sale: React.FC = () => {
             <Input
               label={t('auth.password')}
               type="password"
-              placeholder={t('auth.passwordPlaceholder')}
+              placeholder={t('placeholders.minimumPassword')}
               error={errors.password?.message}
               fullWidth
               {...register('password', {
-                required: t('validation.passwordRequired'),
+                required: t('validation.required'),
                 minLength: {
                   value: 6,
-                  message: t('validation.passwordMinLength'),
+                  message: t('validation.password'),
                 },
               })}
             />
@@ -146,7 +146,7 @@ const Login4Sale: React.FC = () => {
               isLoading={isLoading}
               disabled={!phoneValue || !passwordValue}
             >
-              {t('auth.signIn')}
+              {t('auth.login')}
             </Button>
           </form>
 
@@ -167,7 +167,7 @@ const Login4Sale: React.FC = () => {
                 onClick={() => navigate('/signup')}
                 className="text-primary-500 hover:text-primary-600 font-medium"
               >
-                {t('auth.signUp')}
+                {t('auth.signup')}
               </button>
             </div>
           </div>

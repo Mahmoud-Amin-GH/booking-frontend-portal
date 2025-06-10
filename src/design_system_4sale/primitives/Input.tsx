@@ -10,7 +10,7 @@ export interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElem
   suffix?: React.ReactNode;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   label,
   error,
   helperText,
@@ -20,7 +20,7 @@ export const Input: React.FC<InputProps> = ({
   suffix,
   className = '',
   ...props
-}) => {
+}, ref) => {
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm h-8',
     md: 'px-4 py-2 text-base h-10', 
@@ -41,6 +41,7 @@ export const Input: React.FC<InputProps> = ({
           </div>
         )}
         <input
+          ref={ref}
           className={`
             block w-full border border-gray-300 rounded-md shadow-sm 
             font-sakr transition-colors
@@ -66,4 +67,6 @@ export const Input: React.FC<InputProps> = ({
       )}
     </div>
   );
-}; 
+});
+
+Input.displayName = 'Input'; 

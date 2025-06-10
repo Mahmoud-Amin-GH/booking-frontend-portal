@@ -29,6 +29,7 @@ const resources = {
       "auth.resendAvailable": "Resend available in {{seconds}}s",
       "auth.back": "Back",
       "auth.logout": "Logout",
+      "auth.forgotPassword": "Forgot Password?",
       
       // Placeholders
       "placeholders.enterFullName": "Enter your full name",
@@ -326,6 +327,7 @@ const resources = {
       "auth.resendAvailable": "إعادة الإرسال متاحة خلال {{seconds}} ثانية",
       "auth.back": "رجوع",
       "auth.logout": "تسجيل الخروج",
+      "auth.forgotPassword": "هل نسيت كلمة المرور؟",
       
       // Placeholders
       "placeholders.enterFullName": "أدخل اسمك الكامل",
