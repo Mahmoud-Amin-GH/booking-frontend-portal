@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Box, Stack, TextField, Button as MUIButton } from '@mui/material';
 import {
+  Button,
+  Input,
   Alert, 
-  Typography, 
-  PhoneInput
-} from '../design_system';
+  Typography
+} from '../design_system_4sale';
+import { PhoneInput } from '../design_system';
 import { AuthLayout } from '../design_system/components/AuthLayout';
 import { HeroSection } from '../design_system/components/HeroSection';
 import { authAPI, SignupRequest } from '../services/api';
@@ -138,285 +139,142 @@ const Signup: React.FC = () => {
 
   return (
     <AuthLayout heroContent={<HeroSection />}>
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: '400px',
-          margin: '0 auto',
-          padding: '32px 24px',
-        }}
-      >
+      <div className={`w-full max-w-sm mx-auto p-8 ${isRTL ? 'text-right' : 'text-left'}`}>
         {/* Header */}
-        <Box sx={{ marginBottom: '32px', textAlign: isRTL ? 'right' : 'left' }}>
+        <div className="mb-8">
           <Typography 
             variant="headline-large" 
-            sx={{ 
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 700,
-              fontSize: '32px',
-              lineHeight: '40px',
-              color: '#092B4C',
-              marginBottom: '8px'
-            }}
+            className="text-[#092B4C] mb-2"
           >
             {t('auth.signup')}
           </Typography>
           <Typography 
             variant="body-large"
-            sx={{ 
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 400,
-              fontSize: '16px',
-              lineHeight: '24px',
-              color: '#6B7280'
-            }}
+            className="text-gray-500"
           >
             {t('auth.createAccount')}
           </Typography>
-        </Box>
+        </div>
 
         {/* Error Alert */}
         {serverError && (
           <Alert 
             variant="error" 
             message={serverError}
-            sx={{ marginBottom: '24px' }}
+            className="mb-6"
             dismissible
             onDismiss={() => setServerError('')}
           />
         )}
 
         {/* Form */}
-        <Box component="form" onSubmit={handleSubmit} noValidate>
-          <Stack spacing={3}>
-            {/* Display Name */}
-            <Box>
-              <Typography 
-                variant="label-large"
-                sx={{ 
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: '#374151',
-                  marginBottom: '8px',
-                  display: 'block'
-                }}
-              >
-                {t('auth.displayName')}
-              </Typography>
-              <TextField
-                fullWidth
-                value={form.displayName}
-                onChange={handleInputChange('displayName')}
-                error={!!errors.displayName}
-                helperText={errors.displayName}
-                placeholder={t('placeholders.enterFullName')}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '8px',
-                    fontFamily: 'SS Sakr Soft',
-                    fontSize: '16px',
-                    backgroundColor: '#FFFFFF',
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1D8EFF',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1D8EFF',
-                      borderWidth: '2px',
-                    },
-                  },
-                }}
-              />
-            </Box>
-
-            {/* Email */}
-            <Box>
-              <Typography 
-                variant="label-large"
-                sx={{ 
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: '#374151',
-                  marginBottom: '8px',
-                  display: 'block'
-                }}
-              >
-                {t('auth.email')}
-              </Typography>
-              <TextField
-                fullWidth
-                type="email"
-                value={form.email}
-                onChange={handleInputChange('email')}
-                error={!!errors.email}
-                helperText={errors.email}
-                placeholder={t('placeholders.emailExample')}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '8px',
-                    fontFamily: 'SS Sakr Soft',
-                    fontSize: '16px',
-                    backgroundColor: '#FFFFFF',
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1D8EFF',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1D8EFF',
-                      borderWidth: '2px',
-                    },
-                  },
-                }}
-              />
-            </Box>
-
-            {/* Phone */}
-            <Box>
-              <Typography 
-                variant="label-large"
-                sx={{ 
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: '#374151',
-                  marginBottom: '8px',
-                  display: 'block'
-                }}
-              >
-                {t('auth.phone')}
-              </Typography>
-              <PhoneInput
-                value={form.phone}
-                onChange={handlePhoneChange}
-                error={errors.phone}
-              />
-            </Box>
-
-            {/* Password */}
-            <Box>
-              <Typography 
-                variant="label-large"
-                sx={{ 
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  lineHeight: '20px',
-                  color: '#374151',
-                  marginBottom: '8px',
-                  display: 'block'
-                }}
-              >
-                {t('auth.password')}
-              </Typography>
-              <TextField
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                value={form.password}
-                onChange={handleInputChange('password')}
-                error={!!errors.password}
-                helperText={errors.password}
-                placeholder={t('placeholders.minimumPassword')}
-                InputProps={{
-                  endAdornment: (
-                    <Box
-                      component="img"
-                      src="/assets/eye-icon.svg"
-                      alt={showPassword ? "Hide password" : "Show password"}
-                      onClick={togglePasswordVisibility}
-                      sx={{
-                        width: 20,
-                        height: 20,
-                        cursor: 'pointer',
-                        opacity: showPassword ? 1 : 0.6,
-                        '&:hover': {
-                          opacity: 1,
-                        },
-                      }}
-                    />
-                  ),
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '8px',
-                    fontFamily: 'SS Sakr Soft',
-                    fontSize: '16px',
-                    backgroundColor: '#FFFFFF',
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1D8EFF',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1D8EFF',
-                      borderWidth: '2px',
-                    },
-                  },
-                }}
-              />
-            </Box>
-
-            {/* Submit Button */}
-            <MUIButton
-              type="submit"
-              fullWidth
-              disabled={loading}
-              sx={{
-                borderRadius: '8px',
-                padding: '12px 24px',
-                backgroundColor: '#1D8EFF',
-                color: '#FFFFFF',
-                fontFamily: 'SS Sakr Soft',
-                fontWeight: 600,
-                fontSize: '16px',
-                lineHeight: '24px',
-                textTransform: 'none',
-                marginTop: '24px',
-                '&:hover': {
-                  backgroundColor: '#1570CD',
-                },
-                '&:disabled': {
-                  backgroundColor: '#E5E7EB',
-                  color: '#9CA3AF',
-                },
-              }}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Display Name */}
+          <div>
+            <Typography 
+              variant="label-large"
+              className="text-gray-700 mb-2 block font-semibold"
             >
-              {loading ? t('common.loading') : t('auth.signup')}
-            </MUIButton>
-          </Stack>
-        </Box>
+              {t('auth.displayName')}
+            </Typography>
+            <Input
+              fullWidth
+              value={form.displayName}
+              onChange={handleInputChange('displayName')}
+              error={errors.displayName}
+              placeholder={t('placeholders.enterFullName')}
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <Typography 
+              variant="label-large"
+              className="text-gray-700 mb-2 block font-semibold"
+            >
+              {t('auth.email')}
+            </Typography>
+            <Input
+              fullWidth
+              type="email"
+              value={form.email}
+              onChange={handleInputChange('email')}
+              error={errors.email}
+              placeholder={t('placeholders.emailExample')}
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <Typography 
+              variant="label-large"
+              className="text-gray-700 mb-2 block font-semibold"
+            >
+              {t('auth.phone')}
+            </Typography>
+            <PhoneInput
+              value={form.phone}
+              onChange={handlePhoneChange}
+              error={errors.phone}
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <Typography 
+              variant="label-large"
+              className="text-gray-700 mb-2 block font-semibold"
+            >
+              {t('auth.password')}
+            </Typography>
+            <Input
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              value={form.password}
+              onChange={handleInputChange('password')}
+              error={errors.password}
+              placeholder={t('placeholders.minimumPassword')}
+              suffix={
+                <img
+                  src="/assets/eye-icon.svg"
+                  alt={showPassword ? "Hide password" : "Show password"}
+                  onClick={togglePasswordVisibility}
+                  className="w-5 h-5 cursor-pointer opacity-60 hover:opacity-100"
+                  style={{ opacity: showPassword ? 1 : 0.6 }}
+                />
+              }
+            />
+          </div>
+
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="primary"
+            size="lg"
+            isLoading={loading}
+            className="mt-6"
+          >
+            {loading ? t('common.loading') : t('auth.signup')}
+          </Button>
+        </form>
 
         {/* Footer */}
-        <Box
-          sx={{
-            marginTop: '32px',
-            textAlign: 'center',
-          }}
-        >
+        <div className="mt-8 text-center">
           <Typography 
             variant="body-medium"
-            sx={{ 
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 400,
-              fontSize: '14px',
-              lineHeight: '20px',
-              color: '#6B7280'
-            }}
+            className="text-gray-500"
           >
             {t('auth.alreadyHaveAccount')}{' '}
             <Link 
               to="/login"
-              style={{
-                color: '#1D8EFF',
-                textDecoration: 'none',
-                fontWeight: 600,
-              }}
+              className="text-primary-500 font-semibold hover:text-primary-600 no-underline"
             >
               {t('auth.login')}
             </Link>
           </Typography>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </AuthLayout>
   );
 };

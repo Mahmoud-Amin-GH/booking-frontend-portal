@@ -10,8 +10,8 @@ export type { InputProps } from './primitives/Input';
 export { default as Typography } from './primitives/Typography';
 export type { TypographyProps } from './primitives/Typography';
 
-export { default as Alert } from './primitives/Alert';
-export type { AlertProps } from './primitives/Alert';
+export { Alert } from '../design_system_4sale/primitives/Alert';
+export type { AlertProps } from '../design_system_4sale/primitives/Alert';
 
 export { default as Checkbox } from './primitives/Checkbox';
 export type { CheckboxProps } from './primitives/Checkbox';

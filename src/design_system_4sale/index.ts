@@ -38,4 +38,10 @@ export type { InputProps } from './primitives/Input';
 export type { TypographyProps } from './primitives/Typography';
 export type { CardProps } from './primitives/Card';
 export type { BadgeProps } from './primitives/Badge';
-export type { AlertProps } from './primitives/Alert'; 
+export type { AlertProps } from './primitives/Alert';
+export type { CheckboxProps } from './primitives/Checkbox';
+export type { ProgressProps } from './primitives/Progress';
+export type { SelectProps, SelectOption } from './primitives/Select';
+
+// Export Kuwait governorates for convenience
+export { kuwaitGovernorates } from './primitives/Select'; 

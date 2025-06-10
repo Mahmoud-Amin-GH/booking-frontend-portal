@@ -1,3 +1,8 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
 # 📊 Component Mapping: Current → @4saletech/web-design-system
 
 ## 🎯 Direct Replacements (Available in 4Sale DS)

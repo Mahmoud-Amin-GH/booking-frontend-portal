@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Box, TextField, Button as MUIButton } from '@mui/material';
 import {
+  Button,
+  Input,
   Alert,
-  Typography
-} from '../design_system';
+  Typography,
+  Progress
+} from '../design_system_4sale';
 import { AuthLayout } from '../design_system/components/AuthLayout';
 import { HeroSection } from '../design_system/components/HeroSection';
 import { authAPI, OTPRequest } from '../services/api';
@@ -121,221 +123,122 @@ const OTPVerification: React.FC = () => {
 
   return (
     <AuthLayout heroContent={<HeroSection />}>
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: '400px',
-          margin: '0 auto',
-          padding: '32px 24px',
-        }}
-      >
+      <div className="w-full max-w-sm mx-auto p-8">
         {/* Header */}
-        <Box sx={{ marginBottom: '32px', textAlign: 'center' }}>
+        <div className="mb-8 text-center">
           <Typography 
             variant="headline-large" 
-            sx={{ 
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 700,
-              fontSize: '32px',
-              lineHeight: '40px',
-              color: '#092B4C',
-              marginBottom: '8px'
-            }}
+            className="text-[#092B4C] mb-2"
           >
             {t('auth.verifyPhone')}
           </Typography>
           <Typography 
             variant="body-large"
-            sx={{ 
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 400,
-              fontSize: '16px',
-              lineHeight: '24px',
-              color: '#6B7280',
-              marginBottom: '16px'
-            }}
+            className="text-gray-500 mb-4"
           >
             {t('placeholders.otpHelper')}
           </Typography>
           <Typography 
             variant="body-medium"
-            sx={{ 
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 600,
-              fontSize: '14px',
-              lineHeight: '20px',
-              color: '#092B4C'
-            }}
+            className="text-[#092B4C] font-semibold"
           >
             {maskedPhone}
           </Typography>
-        </Box>
+        </div>
 
         {/* Error Alert */}
         {serverError && (
           <Alert 
             variant="error" 
             message={serverError}
-            sx={{ marginBottom: '24px' }}
+            className="mb-6"
             dismissible
             onDismiss={() => setServerError('')}
           />
         )}
 
         {/* Form */}
-        <Box component="form" onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* OTP Input */}
-          <Box sx={{ marginBottom: '24px' }}>
+          <div>
             <Typography 
               variant="label-large"
-              sx={{ 
-                fontFamily: 'SS Sakr Soft',
-                fontWeight: 600,
-                fontSize: '14px',
-                lineHeight: '20px',
-                color: '#374151',
-                marginBottom: '8px',
-                display: 'block',
-                textAlign: isRTL ? 'right' : 'left'
-              }}
+              className={`text-gray-700 mb-2 block font-semibold ${isRTL ? 'text-right' : 'text-left'}`}
             >
               {t('auth.otp')}
             </Typography>
-            <TextField
+            <Input
               fullWidth
               value={otp}
               onChange={handleOtpChange}
               placeholder="000000"
               inputMode="numeric"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                  fontFamily: 'SS Sakr Soft',
-                  fontSize: '24px',
-                  textAlign: 'center',
-                  letterSpacing: '0.5rem',
-                  backgroundColor: '#FFFFFF',
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#1D8EFF',
-                  },
-                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#1D8EFF',
-                    borderWidth: '2px',
-                  },
-                },
-                '& .MuiInputBase-input': {
-                  textAlign: 'center',
-                  letterSpacing: '0.5rem',
-                },
-              }}
+              className="text-center text-2xl tracking-widest"
+              maxLength={6}
             />
-          </Box>
+          </div>
 
           {/* Submit Button */}
-          <MUIButton
+          <Button
             type="submit"
             fullWidth
-            disabled={loading || otp.length !== 6}
-            sx={{
-              borderRadius: '8px',
-              padding: '12px 24px',
-              backgroundColor: '#1D8EFF',
-              color: '#FFFFFF',
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 600,
-              fontSize: '16px',
-              lineHeight: '24px',
-              textTransform: 'none',
-              marginBottom: '24px',
-              '&:hover': {
-                backgroundColor: '#1570CD',
-              },
-              '&:disabled': {
-                backgroundColor: '#E5E7EB',
-                color: '#9CA3AF',
-              },
-            }}
+            variant="primary"
+            size="lg"
+            isLoading={loading}
+            disabled={otp.length !== 6}
+            className="mb-6"
           >
             {loading ? t('common.loading') : t('auth.verify')}
-          </MUIButton>
+          </Button>
 
           {/* Resend OTP */}
-          <Box sx={{ textAlign: 'center', marginBottom: '24px' }}>
+          <div className="text-center mb-6">
             <Typography 
               variant="body-medium"
-              sx={{ 
-                fontFamily: 'SS Sakr Soft',
-                fontWeight: 400,
-                fontSize: '14px',
-                lineHeight: '20px',
-                color: '#6B7280',
-                marginBottom: '8px'
-              }}
+              className="text-gray-500 mb-2"
             >
               {t('auth.didntReceiveCode')}
             </Typography>
             
             {canResend ? (
-              <MUIButton
+              <Button
                 onClick={handleResendOTP}
                 disabled={loading}
-                sx={{
-                  color: '#1D8EFF',
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  textTransform: 'none',
-                  padding: '4px 8px',
-                  minWidth: 'auto',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                    textDecoration: 'underline',
-                  },
-                }}
+                variant="ghost"
+                size="sm"
+                className="text-primary-500 hover:text-primary-600"
               >
                 {t('auth.resendOTP')}
-              </MUIButton>
+              </Button>
             ) : (
-              <Typography 
-                variant="body-small"
-                sx={{ 
-                  fontFamily: 'SS Sakr Soft',
-                  fontWeight: 400,
-                  fontSize: '12px',
-                  lineHeight: '16px',
-                  color: '#9CA3AF'
-                }}
-              >
-                {t('auth.resendAvailable', { seconds: countdown })}
-              </Typography>
+              <div className="flex items-center justify-center gap-2">
+                <Progress 
+                  variant="circular" 
+                  size="sm" 
+                  value={((30 - countdown) / 30) * 100}
+                  color="primary"
+                />
+                <Typography 
+                  variant="body-small"
+                  className="text-gray-400"
+                >
+                  {t('auth.resendAvailable', { seconds: countdown })}
+                </Typography>
+              </div>
             )}
-          </Box>
+          </div>
 
           {/* Back Button */}
-          <MUIButton
+          <Button
             fullWidth
-            variant="outlined"
+            variant="outline"
             onClick={handleBackToLogin}
-            sx={{
-              borderRadius: '8px',
-              padding: '12px 24px',
-              borderColor: '#D1D5DB',
-              color: '#374151',
-              fontFamily: 'SS Sakr Soft',
-              fontWeight: 600,
-              fontSize: '16px',
-              lineHeight: '24px',
-              textTransform: 'none',
-              '&:hover': {
-                borderColor: '#9CA3AF',
-                backgroundColor: '#F9FAFB',
-              },
-            }}
+            size="lg"
           >
             {t('auth.back')}
-          </MUIButton>
-        </Box>
-      </Box>
+          </Button>
+        </form>
+      </div>
     </AuthLayout>
   );
 };
