@@ -20,7 +20,7 @@
     "axios": "^1.6.2",
     "i18next": "^23.7.16",
     "i18next-browser-languagedetector": "^7.2.0",
-    "lucide-react": "^0.294.0",
+    "lucide-react": "^0.513.0",
     "postcss": "^8.4.32",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
