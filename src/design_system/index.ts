@@ -56,6 +56,12 @@ export { AuthLayout } from './components/AuthLayout';
 export { HeroSection } from './components/HeroSection';
 export { Navbar } from './components/Navbar';
 
+// Pricing Table Components
+export { PricingTable } from './components/PricingTable';
+export { StatusTags } from './components/StatusTags';
+export { CarImageCell } from './components/CarImageCell';
+export { ActionsDropdown } from './components/ActionsDropdown';
+
 // Re-export commonly used types
 export type TypographyVariant = 
   | 'display-large' | 'display-medium' | 'display-small'

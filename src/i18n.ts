@@ -273,7 +273,32 @@ const resources = {
       "officeConfigs.delivery.noConditions": "No Prerequisites",
       "officeConfigs.delivery.noConditionsDesc": "Rent without additional requirements or guarantees",
       "officeConfigs.delivery.freeCancellation": "Free Cancellation",
-      "officeConfigs.delivery.freeCancellationDesc": "Cancel reservations without penalty"
+      "officeConfigs.delivery.freeCancellationDesc": "Cancel reservations without penalty",
+      
+      // Pricing Table
+      "pricing.allowedKm": "Allowed Kilometers",
+      "pricing.kmPerDay": "km / day",
+      "pricing.kwd": "KWD",
+      "pricing.daily": "Daily",
+      "pricing.shortTerm": "2 to 30 days",
+      "pricing.mediumTerm": "30 to 90 days",
+      "pricing.longTerm": "More than 90 days",
+      "pricing.totalCars": "Total Cars",
+      "pricing.inStockAndRental": "In Stock & For Rental",
+      "pricing.vehicle": "Vehicle",
+      "pricing.name": "Name",
+      "pricing.image": "Image",
+      
+      // Status Tags
+      "status.inStock": "In Stock",
+      "status.rented": "Rented",
+      "status.available": "Available",
+      
+      // Actions Menu
+      "actions.viewDetails": "View Details",
+      "actions.addSpecialPrice": "Add Special Price for Period",
+      "actions.markRented": "Mark as Rented from Office",
+      "actions.deleteVehicle": "Delete Vehicle"
     }
   },
   ar: {
@@ -545,7 +570,32 @@ const resources = {
       "officeConfigs.delivery.noConditions": "غير موجه",
       "officeConfigs.delivery.noConditionsDesc": "إيجار بدون متطلبات إضافية أو تضامن",
       "officeConfigs.delivery.freeCancellation": "إلغاء مجاني",
-      "officeConfigs.delivery.freeCancellationDesc": "إلغاء الحجوزات بدون عقوبة"
+      "officeConfigs.delivery.freeCancellationDesc": "إلغاء الحجوزات بدون عقوبة",
+      
+      // Pricing Table - Arabic
+      "pricing.allowedKm": "الكيلومترات المسموحة",
+      "pricing.kmPerDay": "كم / يوم",
+      "pricing.kwd": "د.ك",
+      "pricing.daily": "يومياً",
+      "pricing.shortTerm": "من 2 إلى 30 يوم",
+      "pricing.mediumTerm": "من 30 إلى 90 يوم",
+      "pricing.longTerm": "أكثر من 90 يوم",
+      "pricing.totalCars": "إجمالي السيارات",
+      "pricing.inStockAndRental": "في المخزون و للإيجار",
+      "pricing.vehicle": "سيارة",
+      "pricing.name": "اسم",
+      "pricing.image": "صورة",
+      
+      // Status Tags - Arabic
+      "status.inStock": "في المخزون",
+      "status.rented": "في الإيجار",
+      "status.available": "متاح",
+      
+      // Actions Menu - Arabic
+      "actions.viewDetails": "عرض التفاصيل",
+      "actions.addSpecialPrice": "إضافة سعر خاص لفترة زمنيه معنيه",
+      "actions.markRented": "تم حجز سيارة من المكتب",
+      "actions.deleteVehicle": "مسح السيارة"
     }
   }
 };

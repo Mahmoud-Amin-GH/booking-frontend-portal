@@ -15,6 +15,7 @@ import {
   Icon,
   LanguageSwitcher
 } from '../design_system';
+import { PricingTable } from '../design_system/components/PricingTable';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
 import {
@@ -597,117 +598,17 @@ const CarInventory: React.FC = () => {
           )}
         </div>
 
-        {/* Desktop Table */}
-        <div className="bg-surface rounded-lg border border-outline-variant overflow-hidden hidden md:block">
+        {/* Desktop Pricing Table */}
+        <div className="hidden md:block">
           {loading ? (
-            <div className="p-8 text-center">
+            <div className="bg-surface rounded-lg border border-outline-variant p-8 text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               <p className="mt-2 text-on-surface-variant">{t('common.loading')}...</p>
             </div>
           ) : cars.length === 0 ? (
             <EmptyInventoryState />
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-full">
-                <thead className="bg-surface-container-high">
-                  <tr className="border-b border-outline-variant">
-                    <th className="px-4 py-3 text-left">
-                      <input
-                        type="checkbox"
-                        checked={selectedCars.size === cars.length && cars.length > 0}
-                        onChange={(e) => handleSelectAll(e.target.checked)}
-                        className="rounded border-outline-variant"
-                      />
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
-                      Vehicle
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden sm:table-cell">
-                      {t('cars.year')}
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden md:table-cell">
-                      {t('cars.seats')}
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface hidden lg:table-cell">
-                      {t('cars.transmission')}
-                    </th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-on-surface">
-                      {t('cars.available')}
-                    </th>
-                    <th className="px-4 py-3 text-right text-sm font-medium text-on-surface">
-                      {t('common.actions')}
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant">
-                  {cars.map((car) => (
-                    <tr key={car.id} className="hover:bg-surface-container-highest group transition-colors">
-                      <td className="px-4 py-4">
-                        <input
-                          type="checkbox"
-                          checked={selectedCars.has(car.id)}
-                          onChange={(e) => handleSelectCar(car.id, e.target.checked)}
-                          className="rounded border-outline-variant"
-                        />
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-                            <Icon name="user" size="small" className="text-primary-600" />
-                          </div>
-                          <div>
-                            <Typography variant="body-medium" className="font-medium">
-                              {car.brand_name} {car.model_name}
-                            </Typography>
-                            <Typography variant="body-small" color="on-surface-variant">
-                              {car.color_name} • {t(`cars.carType.${car.car_type}`)}
-                            </Typography>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-on-surface-variant hidden sm:table-cell">
-                        {car.year}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-on-surface-variant hidden md:table-cell">
-                        {car.seats}
-                      </td>
-                      <td className="px-4 py-4 text-sm text-on-surface-variant hidden lg:table-cell">
-                        {t(`cars.transmission.${car.transmission}`)}
-                      </td>
-                      <td className="px-4 py-4 text-sm">
-                        <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                          car.available_count > 0 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {car.available_count} available
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-right">
-                        <div className="flex justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => openEditModal(car)}
-                            className="hover:bg-blue-50"
-                          >
-                            {t('form.quickEdit')}
-                          </Button>
-                          <Button
-                            variant="text"
-                            size="small"
-                            onClick={() => openDeleteDialog(car)}
-                            className="text-error hover:bg-red-50"
-                          >
-                            {t('common.delete')}
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <PricingTable />
           )}
         </div>
       </div>
