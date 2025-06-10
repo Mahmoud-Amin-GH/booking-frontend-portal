@@ -51,6 +51,11 @@ export { default as OnboardingTour } from './components/OnboardingTour';
 export { default as PhoneInput } from './components/PhoneInput';
 export { default as LanguageSwitcher } from './components/LanguageSwitcher';
 
+// Authentication Layout Components
+export { AuthLayout } from './components/AuthLayout';
+export { HeroSection } from './components/HeroSection';
+export { Navbar } from './components/Navbar';
+
 // Re-export commonly used types
 export type TypographyVariant = 
   | 'display-large' | 'display-medium' | 'display-small'

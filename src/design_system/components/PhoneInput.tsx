@@ -73,7 +73,17 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
               borderColor: 'divider',
               mr: 1.5,
             }}>
-              <Icon name="kuwait-flag" size="small" />
+              <Box
+                component="img"
+                src="/assets/kuwait-flag.png"
+                alt="Kuwait flag"
+                sx={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: 0.5,
+                  objectFit: 'cover',
+                }}
+              />
               <Typography variant="body-xs" color="on-surface-variant">
                 +965
               </Typography>

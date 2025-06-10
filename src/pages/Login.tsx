@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Container, Paper } from '@mui/material';
-import { Button, Input, Alert, Typography, Icon, PhoneInput } from '../design_system';
-import { LanguageSwitcher, Form } from '../design_system';
+import { Box, Stack, TextField, Button as MUIButton } from '@mui/material';
+import { 
+  Alert, 
+  Typography, 
+  PhoneInput, 
+  AuthLayout, 
+  HeroSection 
+} from '../design_system';
 import { authAPI, validateKuwaitiPhone } from '../services/api';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useErrorToast } from '../design_system';
 
 interface LoginFormData {
   phone: string;
@@ -17,39 +19,60 @@ interface LoginFormData {
 const Login: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isRTL } = useLanguage();
-  const showError = useErrorToast();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors },
-  } = useForm<LoginFormData>();
+  const [formData, setFormData] = useState({
+    phone: '',
+    password: '',
+  });
 
-  const phoneValue = watch('phone', '');
+  const [errors, setErrors] = useState<Partial<LoginFormData>>({});
 
-  const onSubmit = async (data: LoginFormData) => {
+  const handleInputChange = (field: keyof LoginFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<LoginFormData> = {};
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = t('validation.required');
+    } else if (!validateKuwaitiPhone(formData.phone)) {
+      newErrors.phone = t('validation.phone');
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = t('validation.required');
+    } else if (formData.password.length < 6) {
+      newErrors.password = t('validation.password');
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
     try {
-      // Validate phone number format
-      if (!validateKuwaitiPhone(data.phone)) {
-        setError(t('validation.phone'));
-        setIsLoading(false);
-        return;
-      }
-
-      const response = await authAPI.login(data);
+      const response = await authAPI.login(formData);
       
       // Store user ID for OTP verification
       localStorage.setItem('temp_user_id', response.user_id?.toString() || '');
-      localStorage.setItem('temp_phone', data.phone);
+      localStorage.setItem('temp_phone', formData.phone);
       
       // Navigate to OTP verification
       navigate('/verify-otp');
@@ -61,145 +84,211 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        backgroundColor: 'background.default',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
-      {/* Header */}
-      <Box
-        component="header"
-        sx={{
-          width: '100%',
-          p: 3,
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}
-      >
-        <LanguageSwitcher />
-      </Box>
+    <AuthLayout heroContent={<HeroSection />}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {/* Header */}
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography
+            sx={{
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 700,
+              fontSize: '24px',
+              lineHeight: 1.33,
+              color: '#092B4C',
+              marginBottom: 1,
+            }}
+          >
+            Log In
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 400,
+              fontSize: '16px',
+              lineHeight: 1.5,
+              color: '#505F79',
+            }}
+          >
+            Welcome back! Please enter your details to continue.
+          </Typography>
+        </Box>
 
-      {/* Main Content */}
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          px: 3,
-          py: 6,
-        }}
-      >
-        <Container maxWidth="sm">
-          <Box sx={{ width: '100%', maxWidth: 400, mx: 'auto' }}>
-            {/* Hero Section */}
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Typography variant="display-medium" color="primary" gutterBottom>
-                {t('auth.login')}
-              </Typography>
-              <Typography variant="body-medium" color="on-surface-variant">
-                {t('auth.welcomeBack')}
-              </Typography>
-            </Box>
+        {/* Form */}
+        <Box component="form" onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {error && (
+            <Alert 
+              variant="error" 
+              message={error}
+              dismissible
+              onDismiss={() => setError(null)}
+            />
+          )}
 
-            {/* Login Form */}
-            <Paper
-              elevation={2}
-              sx={{
-                p: 4,
-                borderRadius: 3,
-                backgroundColor: 'background.paper',
-                mb: 4,
-              }}
-            >
-              {error && (
-                <Alert 
-                  variant="error" 
-                  message={error}
-                  dismissible
-                  onDismiss={() => setError(null)}
-                />
-              )}
+          <Stack spacing={1}>
+            {/* Phone Input */}
+            <PhoneInput
+              value={formData.phone}
+              onChange={(value) => handleInputChange('phone', value)}
+              error={errors.phone}
+              placeholder="xxxxxxxx"
+            />
 
-              <Box
-                component="form"
-                onSubmit={handleSubmit(onSubmit)}
-                sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: error ? 3 : 0 }}
-              >
-                <PhoneInput
-                  value={phoneValue}
-                  onChange={(value: string) => setValue('phone', value)}
-                  error={errors.phone?.message}
-                  required
-                />
-
-                <Input
-                  label={t('auth.password')}
-                  type={showPassword ? 'text' : 'password'}
-                  {...register('password', {
-                    required: t('validation.required'),
-                    minLength: {
-                      value: 6,
-                      message: t('validation.password'),
-                    },
-                  })}
-                  error={errors.password?.message}
-                  startIcon={<Icon name="lock" />}
-                  endIcon={
+            {/* Password Input */}
+            <TextField
+              fullWidth
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={formData.password}
+              onChange={(e) => handleInputChange('password', e.target.value)}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+              InputProps={{
+                endAdornment: (
+                  <MUIButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    sx={{ 
+                      minWidth: 'auto',
+                      p: 1,
+                      color: '#59688E',
+                    }}
+                  >
                     <Box
-                      component="button"
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      component="img"
+                      src="/assets/eye-icon.svg"
+                      alt={showPassword ? "Hide password" : "Show password"}
                       sx={{
-                        border: 'none',
-                        background: 'none',
-                        cursor: 'pointer',
-                        color: 'text.secondary',
-                        display: 'flex',
-                        alignItems: 'center',
-                        '&:hover': {
-                          color: 'text.primary',
-                        },
+                        width: 24,
+                        height: 24,
+                        filter: 'none',
                       }}
-                    >
-                      <Icon name={showPassword ? 'visibility-off' : 'visibility'} />
-                    </Box>
-                  }
-                />
+                    />
+                  </MUIButton>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: '8px',
+                  backgroundColor: '#FFFFFF',
+                  '& fieldset': {
+                    borderColor: '#DCDFE3',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#DCDFE3',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#1D8EFF',
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  padding: '12px 16px',
+                  fontFamily: 'SS Sakr Soft',
+                  fontSize: '16px',
+                  '&::placeholder': {
+                    color: '#A8AFBB',
+                    opacity: 1,
+                  },
+                },
+                '& .MuiFormHelperText-root': {
+                  fontFamily: 'SS Sakr Soft',
+                  fontSize: '14px',
+                  color: '#6B788E',
+                },
+              }}
+            />
+          </Stack>
 
-                <Button
-                  type="submit"
-                  variant="filled"
-                  size="large"
-                  fullWidth
-                  isLoading={isLoading}
-                >
-                  {t('auth.login')}
-                </Button>
-              </Box>
-            </Paper>
+          {/* Submit Button */}
+          <MUIButton
+            type="submit"
+            fullWidth
+            disabled={isLoading}
+            sx={{
+              backgroundColor: '#1D8EFF',
+              color: '#FFFFFF',
+              borderRadius: '9999px',
+              padding: '12px 16px',
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 700,
+              fontSize: '16px',
+              textTransform: 'none',
+              boxShadow: '0px 0px 0px 1px rgba(235, 237, 240, 1)',
+              '&:hover': {
+                backgroundColor: '#0062FF',
+              },
+              '&:disabled': {
+                backgroundColor: '#A8AFBB',
+              },
+            }}
+          >
+            {isLoading ? 'Logging In...' : 'Log In'}
+          </MUIButton>
+        </Box>
 
-            {/* Footer */}
-            <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body-2xs" color="on-surface-variant" gutterBottom>
-                {t('auth.dontHaveAccount')}
-              </Typography>
-              <Button
-                variant="text"
-                onClick={() => navigate('/signup')}
-                icon={<Icon name={isRTL ? "arrow-left" : "arrow-right"} />}
-                iconPosition="end"
-              >
-                {t('auth.switchToSignup')}
-              </Button>
-            </Box>
-          </Box>
-        </Container>
+        {/* Footer */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 0.5 }}>
+          <Typography
+            sx={{
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 500,
+              fontSize: '14px',
+              color: '#092B4C',
+            }}
+          >
+            Don't have an account?
+          </Typography>
+          <MUIButton
+            onClick={() => navigate('/signup')}
+            sx={{
+              color: '#0062FF',
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 700,
+              fontSize: '14px',
+              textTransform: 'none',
+              padding: '10px 0px',
+              minWidth: 'auto',
+              '&:hover': {
+                backgroundColor: 'transparent',
+                textDecoration: 'underline',
+              },
+            }}
+          >
+            Sign Up
+          </MUIButton>
+        </Box>
+
+        {/* Terms & Conditions */}
+        <Box sx={{ textAlign: 'center', padding: '0 16px' }}>
+          <Typography
+            sx={{
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 500,
+              fontSize: '12px',
+              color: '#324575',
+              marginBottom: 0.5,
+            }}
+          >
+            By using the 4Sale app, you agree to our
+          </Typography>
+          <MUIButton
+            sx={{
+              color: '#0062FF',
+              fontFamily: 'SS Sakr Soft',
+              fontWeight: 500,
+              fontSize: '12px',
+              textTransform: 'none',
+              padding: 0,
+              minWidth: 'auto',
+              textDecoration: 'underline',
+              '&:hover': {
+                backgroundColor: 'transparent',
+              },
+            }}
+          >
+            Terms & conditions
+          </MUIButton>
+        </Box>
       </Box>
-    </Box>
+    </AuthLayout>
   );
 };
 
