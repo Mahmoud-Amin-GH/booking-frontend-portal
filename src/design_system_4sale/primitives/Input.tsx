@@ -36,8 +36,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       )}
       <div className="relative">
         {prefix && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-gray-500 text-sm">{prefix}</span>
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none rtl:right-0 rtl:left-auto rtl:pr-3 rtl:pl-0">
+            <span className="text-gray-600 font-sakr text-base">{prefix}</span>
           </div>
         )}
         <input
@@ -47,8 +47,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
             font-sakr transition-colors
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
             ${error ? 'border-red-500' : 'border-gray-300'}
-            ${prefix ? 'pl-10' : ''}
-            ${suffix ? 'pr-10' : ''}
+            ${prefix ? 'pl-14 rtl:pr-14 rtl:pl-4' : ''}
+            ${suffix ? 'pr-10 rtl:pl-10 rtl:pr-4' : ''}
             ${sizeClasses[size]}
           `.trim()}
           {...props}
