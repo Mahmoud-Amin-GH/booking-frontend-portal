@@ -1,0 +1,246 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# @4saletech/web-design-system
+
+A comprehensive React design system built with TypeScript and Tailwind CSS, featuring 4Sale and Q8car brand colors from Figma specifications and the custom sakrPro font family.
+
+## 🚀 Installation
+
+```bash
+npm install @4saletech/web-design-system
+```
+## 📋 Prerequisites
+This design system requires the following peer dependencies:
+
+```bash
+npm install react react-dom tailwindcss
+```
+
+## 🎨 Setup
+
+### 1. Import Styles
+
+Import the design system styles in your main CSS file or at the root of your application:
+
+```tsx
+// In your main.tsx or App.tsx
+import '@4saletech/web-design-system/dist/style.css';
+```
+
+### 2. Configure Tailwind CSS
+
+Extend your `tailwind.config.js` to include the design system's content and use its theme:
+
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@4saletech/web-design-system/dist/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: [
+          "sakrPro",
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+            "Segoe UI",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif",
+        ],
+      },
+      colors: {
+        primary: {
+          DEFAULT: "#1D8EFF",
+          50: "#eff8ff",
+          100: "#d1e9ff",
+          200: "#b2ddff",
+          300: "#84caff",
+          400: "#53b1fd",
+          500: "#1D8EFF",
+          600: "#1570ef",
+          700: "#175cd3",
+          800: "#1849a9",
+          900: "#194185",
+          950: "#102a56"
+        },
+        secondary: {
+          DEFAULT: "#0C86AE",
+          50: "#ccfbf1",
+          100: "#99f6e4",
+          200: "#5eead4",
+          300: "#2dd4bf",
+          400: "#14b8a6",
+          500: "#0C86AE",
+          600: "#0891b2",
+          700: "#0e7490",
+          800: "#155e75",
+          900: "#164e63",
+          950: "#083344"
+        },
+        // Add other colors as needed
+      },
+    },
+  },
+  plugins: [],
+}
+```
+
+## 🎯 Usage
+
+### Basic Components
+
+```tsx
+import { 
+  Button, 
+  Input, 
+  Card, 
+  Badge, 
+  Alert 
+} from '@4saletech/web-design-system';
+
+function App() {
+  return (
+    <div className="p-8">
+      <Card className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Welcome</h1>
+        
+        <div className="space-y-4">
+          <Input 
+            label="Email" 
+            type="email" 
+            placeholder="Enter your email" 
+          />
+          
+          <div className="flex gap-2">
+            <Button variant="primary">Primary</Button>
+            <Button variant="secondary">Secondary</Button>
+          </div>
+          
+          <Badge variant="success">Active</Badge>
+          
+          <Alert variant="info" title="Info">
+            This is an informational message.
+          </Alert>
+        </div>
+      </Card>
+    </div>
+  );
+}
+```
+
+### Available Components
+
+#### Core Components
+- `Button` - Various button styles and states
+- `Badge` - Status indicators and labels
+
+#### Form Components
+- `Input` - Text inputs with validation states
+- `Checkbox` - Checkbox inputs
+- `Radio` - Radio button inputs
+- `Switch` - Toggle switches
+- `Select` - Dropdown selectors
+- `Slider` - Range sliders
+- `Textarea` - Multi-line text inputs
+
+#### Navigation Components
+- `Navigation` - Main navigation bars
+- `Tabs` - Tab navigation
+- `Breadcrumbs` - Breadcrumb navigation
+- `Pagination` - Page navigation
+- `Sidebar` - Side navigation panels
+
+#### Feedback Components
+- `Alert` - Alert messages
+- `Toast` - Toast notifications
+
+#### Data Display Components
+- `Card` - Content containers
+- `Progress` - Progress indicators
+- `Accordion` - Collapsible content
+
+#### Overlay Components
+- `Modal` - Modal dialogs
+- `Tooltip` - Hover tooltips
+- `Popover` - Popover content
+- `DropdownMenu` - Dropdown menus
+
+## 🎨 Typography (sakrPro Font)
+
+The design system includes the custom sakrPro font family with four weights:
+
+- **Light (300)**: `font-light`
+- **Regular (400)**: `font-normal`
+- **Medium (500)**: `font-medium`
+- **Bold (700)**: `font-bold`
+
+The font is automatically applied to all text elements. You can also use the explicit `font-sakr` class:
+```tsx
+<h1 className="font-sakr font-bold">Bold sakrPro Heading</h1>
+<p className="font-sakr font-light">Light sakrPro text</p>
+```
+
+## 🎨 Design Tokens
+
+Access design tokens for colors and utilities:
+
+```tsx
+import { colors } from '@4saletech/web-design-system';
+
+// Use in your custom components
+const customStyle = {
+  backgroundColor: colors.primary[500],
+  color: colors.neutral[50],
+};
+```
+## 🛠️ Utilities
+
+```tsx
+import { cn } from '@4saletech/web-design-system';
+
+// Utility for conditional class names
+const buttonClass = cn(
+  'px-4 py-2 rounded',
+  isActive && 'bg-primary text-white',
+  isDisabled && 'opacity-50 cursor-not-allowed'
+);
+```
+## 📚 Storybook
+
+View all components and their variants in our Storybook:
+
+```bash
+npm run storybook
+```
+Visit `http://localhost:6006` to explore the component library.
+## 🔧 Development
+### Building the Library
+```bash
+npm run build:lib
+```
+### Running Tests
+```bash
+npm test
+```
+### Type Checking
+```bash
+npm run type-check
+```
+
+## 📄 License
+
+MIT © 4Sale Technology
+
+## 🤝 Contributing
+
+Please read our contributing guidelines before submitting pull requests.
+## 📞 Support
+For support and questions, please open an issue on our [GitHub repository](https://github.com/4SaleTech/web-design-system). 
