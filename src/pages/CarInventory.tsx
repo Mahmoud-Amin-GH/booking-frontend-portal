@@ -349,12 +349,16 @@ const CarInventory: React.FC = () => {
           <Select
             label={t('cars.brand')}
             options={brandOptions}
+            value={formData.brand_id ? formData.brand_id.toString() : ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) || 0 }))}
             required
           />
 
           <Select
             label={t('cars.model')}
             options={modelOptions}
+            value={formData.model_id ? formData.model_id.toString() : ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) || 0 }))}
             disabled={!formData.brand_id || modelOptions.length === 0}
             placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')}
             required
@@ -383,6 +387,8 @@ const CarInventory: React.FC = () => {
           <Select
             label={t('cars.color')}
             options={colorOptions}
+            value={formData.color_id ? formData.color_id.toString() : ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
             required
           />
 
@@ -405,12 +411,16 @@ const CarInventory: React.FC = () => {
           <Select
             label={t('cars.transmission')}
             options={transmissionOptions}
+            value={formData.transmission || ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
             required
           />
 
           <Select
             label={t('cars.carType')}
             options={carTypeOptions}
+            value={formData.car_type || ''}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, car_type: value as 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van' }))}
             required
           />
         </div>
