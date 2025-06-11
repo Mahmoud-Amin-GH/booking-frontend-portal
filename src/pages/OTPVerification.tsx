@@ -11,6 +11,7 @@ import {
   Card
 } from '../design_system_4sale';
 import { authAPI, OTPRequest } from '../services/api';
+import { maskPhoneNumber } from '../business/phoneValidation';
 
 const OTPVerification: React.FC = () => {
   const { t } = useTranslation();
@@ -132,7 +133,7 @@ const OTPVerification: React.FC = () => {
     navigate('/login-4sale');
   };
 
-  const maskedPhone = phone ? phone.replace(/(\+965\s\d{2})\d{2}(\s\d{4})/, '$1**$2') : '';
+  const maskedPhone = phone ? maskPhoneNumber(phone) : '';
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">

@@ -10,6 +10,11 @@ import {
   Card
 } from '../design_system_4sale';
 import { authAPI, SignupRequest } from '../services/api';
+import { 
+  validateKuwaitiPhone, 
+  handlePhoneInputChange, 
+  preparePhoneForAPI 
+} from '../business/phoneValidation';
 
 interface SignupForm {
   displayName: string;
@@ -57,7 +62,7 @@ const Signup: React.FC = () => {
 
     if (!form.phone.trim()) {
       newErrors.phone = t('validation.required');
-    } else if (!/^\+965\s\d{4}\s\d{4}$/.test(form.phone)) {
+    } else if (!validateKuwaitiPhone(form.phone)) {
       newErrors.phone = t('validation.phone');
     }
 
@@ -89,39 +94,12 @@ const Signup: React.FC = () => {
   };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let value = event.target.value;
-    
-    // Remove all non-digits
-    const digits = value.replace(/\D/g, '');
-    
-    // Format as Kuwait phone number
-    if (digits.startsWith('965')) {
-      // Remove country code if user types it
-      const phoneDigits = digits.substring(3);
-      if (phoneDigits.length <= 8) {
-        if (phoneDigits.length > 4) {
-          value = `+965 ${phoneDigits.substring(0, 4)} ${phoneDigits.substring(4)}`;
-        } else if (phoneDigits.length > 0) {
-          value = `+965 ${phoneDigits}`;
-        } else {
-          value = '+965 ';
-        }
+    handlePhoneInputChange(event.target.value, (formatted) => {
+      setForm(prev => ({ ...prev, phone: formatted }));
+      if (errors.phone) {
+        setErrors(prev => ({ ...prev, phone: undefined }));
       }
-    } else if (digits.length <= 8) {
-      // Kuwait local number
-      if (digits.length > 4) {
-        value = `+965 ${digits.substring(0, 4)} ${digits.substring(4)}`;
-      } else if (digits.length > 0) {
-        value = `+965 ${digits}`;
-      } else {
-        value = '+965 ';
-      }
-    }
-    
-    setForm(prev => ({ ...prev, phone: value }));
-    if (errors.phone) {
-      setErrors(prev => ({ ...prev, phone: undefined }));
-    }
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -139,7 +117,7 @@ const Signup: React.FC = () => {
       const signupData: SignupRequest = {
         display_name: form.displayName,
         email: form.email,
-        phone: form.phone,
+        phone: preparePhoneForAPI(form.phone),
         password: form.password
       };
       
@@ -258,7 +236,7 @@ const Signup: React.FC = () => {
                 value={form.phone}
                 onChange={handlePhoneChange}
                 error={errors.phone}
-                placeholder="+965 XXXX XXXX"
+                placeholder="XXXX XXXX"
                 prefix="+965"
               />
             </div>

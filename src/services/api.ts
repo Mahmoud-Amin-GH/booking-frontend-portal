@@ -87,25 +87,6 @@ export const getAuthToken = () => {
   return localStorage.getItem('auth_token');
 };
 
-export const formatKuwaitiPhone = (phone: string): string => {
-  // Remove all non-digit characters
-  const digits = phone.replace(/\D/g, '');
-  
-  // If starts with 965, remove it (will be added by country code)
-  let phoneDigits = digits.startsWith('965') ? digits.substring(3) : digits;
-  
-  // Format as XXXX XXXX
-  if (phoneDigits.length >= 8) {
-    phoneDigits = phoneDigits.substring(0, 8);
-    return `+965 ${phoneDigits.substring(0, 4)} ${phoneDigits.substring(4)}`;
-  }
-  
-  return phone;
-};
-
-export const validateKuwaitiPhone = (phone: string): boolean => {
-  const pattern = /^\+965\s\d{4}\s\d{4}$/;
-  return pattern.test(phone);
-};
+// Phone validation functions moved to business/phoneValidation.ts
 
 export default api; 

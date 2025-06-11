@@ -1,59 +1,110 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Typography, Alert } from '../design_system_4sale';
-import { authAPI, validateKuwaitiPhone } from '../services/api';
+import { authAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageSwitcher } from '../design_system';
+import { 
+  validateKuwaitiPhone, 
+  handlePhoneInputChange, 
+  preparePhoneForAPI 
+} from '../business/phoneValidation';
 
-interface LoginFormData {
+interface LoginForm {
   phone: string;
   password: string;
+}
+
+interface ValidationErrors {
+  phone?: string;
+  password?: string;
 }
 
 const Login4Sale: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
+  
+  const [form, setForm] = useState<LoginForm>({
+    phone: '',
+    password: ''
+  });
+  
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<LoginFormData>();
+  const validateForm = (): boolean => {
+    const newErrors: ValidationErrors = {};
 
-  const phoneValue = watch('phone', '');
-  const passwordValue = watch('password', '');
+    if (!form.phone.trim()) {
+      newErrors.phone = t('validation.required');
+    } else if (!validateKuwaitiPhone(form.phone)) {
+      newErrors.phone = t('validation.phone');
+    }
 
-  const onSubmit = async (data: LoginFormData) => {
+    if (!form.password) {
+      newErrors.password = t('validation.required');
+    } else if (form.password.length < 6) {
+      newErrors.password = t('validation.password');
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field: keyof LoginForm) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setForm(prev => ({
+      ...prev,
+      [field]: event.target.value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({
+        ...prev,
+        [field]: undefined
+      }));
+    }
+  };
+
+  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handlePhoneInputChange(event.target.value, (formatted) => {
+      setForm(prev => ({ ...prev, phone: formatted }));
+      if (errors.phone) {
+        setErrors(prev => ({ ...prev, phone: undefined }));
+      }
+    });
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
     try {
       setIsLoading(true);
       setErrorMessage('');
 
-                    // Validate Kuwaiti phone number
-              if (!validateKuwaitiPhone(data.phone)) {
-                setErrorMessage(t('validation.phone'));
-                return;
-              }
-
       const response = await authAPI.login({
-        phone: data.phone,
-        password: data.password,
+        phone: preparePhoneForAPI(form.phone),
+        password: form.password,
       });
 
       if (response.token) {
         localStorage.setItem('auth_token', response.token);
         navigate('/dashboard');
       } else {
-        setErrorMessage(response.message || t('error.loginFailed'));
+        setErrorMessage(t('error.loginFailed'));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
-      setErrorMessage(t('error.loginFailed'));
+      setErrorMessage(error.response?.data?.error || t('error.loginFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -103,38 +154,28 @@ const Login4Sale: React.FC = () => {
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={onSubmit} className="space-y-6">
             {/* Phone Input */}
             <Input
               label={t('auth.phone')}
               type="tel"
+              value={form.phone}
+              onChange={handlePhoneChange}
+              error={errors.phone}
+              placeholder="XXXX XXXX"
               prefix="+965"
-              placeholder="12345678"
-              error={errors.phone?.message}
               fullWidth
-              {...register('phone', {
-                required: t('validation.required'),
-                pattern: {
-                  value: /^[1-9]\d{7}$/,
-                  message: t('validation.phone'),
-                },
-              })}
             />
 
             {/* Password Input */}
             <Input
               label={t('auth.password')}
               type="password"
+              value={form.password}
+              onChange={handleInputChange('password')}
+              error={errors.password}
               placeholder={t('placeholders.minimumPassword')}
-              error={errors.password?.message}
               fullWidth
-              {...register('password', {
-                required: t('validation.required'),
-                minLength: {
-                  value: 6,
-                  message: t('validation.password'),
-                },
-              })}
             />
 
             {/* Submit Button */}
@@ -144,7 +185,7 @@ const Login4Sale: React.FC = () => {
               size="lg"
               fullWidth
               isLoading={isLoading}
-              disabled={!phoneValue || !passwordValue}
+              disabled={!form.phone || !form.password}
             >
               {t('auth.login')}
             </Button>

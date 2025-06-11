@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { TextField, InputAdornment, Box, Divider } from '@mui/material';
 import { Icon, Typography } from '../index';
-import { formatKuwaitiPhone } from '../../services/api';
+import { formatKuwaitiPhone } from '../../business/phoneValidation';
 
 interface PhoneInputProps {
   value: string;
