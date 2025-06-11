@@ -8,7 +8,7 @@ import CarInventory from './pages/CarInventory';
 import OfficeConfigs from './pages/OfficeConfigs';
 import { DashboardLayout } from './design_system';
 import '@mo_sami/web-design-system/dist/style.css';
-import './i18n'; // Initialize i18n
+import './i18n';
 import Login from './pages/Login';
 
 // Simple wrapper component for RTL support
@@ -31,7 +31,7 @@ function App() {
       <AppWrapper>
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/login-4sale" replace />} />
             <Route path="/login-4sale" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify-otp" element={<OTPVerification />} />
