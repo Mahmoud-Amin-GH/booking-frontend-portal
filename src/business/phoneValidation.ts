@@ -19,6 +19,8 @@ export const validateKuwaitiPhone = (phone: string): boolean => {
   if (!phone || typeof phone !== 'string') {
     return false;
   }
+
+  console.log('validateKuwaitiPhone - phone', phone);
   
   // Remove all whitespace and special characters for validation
   const cleanPhone = phone.replace(/\s+/g, ' ').trim();
@@ -67,7 +69,7 @@ export const validateAndFormatPhone = (input: string, errorMessage?: string): Ph
     };
   }
   
-  const formatted = formatKuwaitiPhone(input);
+  const formatted = '+965 ' + formatKuwaitiPhone(input);
   const isValid = validateKuwaitiPhone(formatted);
   
   return {

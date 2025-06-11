@@ -40,7 +40,7 @@ const Login4Sale: React.FC = () => {
 
     if (!form.phone.trim()) {
       newErrors.phone = t('validation.required');
-    } else if (!validateKuwaitiPhone(form.phone)) {
+    } else if (!validateKuwaitiPhone('+965 ' + form.phone)) {
       newErrors.phone = t('validation.phone');
     }
 
@@ -163,8 +163,8 @@ const Login4Sale: React.FC = () => {
               onChange={handlePhoneChange}
               error={errors.phone}
               placeholder="XXXX XXXX"
-              prefix="+965"
               fullWidth
+              prefix="+965"
             />
 
             {/* Password Input */}

@@ -62,7 +62,7 @@ const Signup: React.FC = () => {
 
     if (!form.phone.trim()) {
       newErrors.phone = t('validation.required');
-    } else if (!validateKuwaitiPhone(form.phone)) {
+    } else if (!validateKuwaitiPhone('+965 ' + form.phone)) {
       newErrors.phone = t('validation.phone');
     }
 

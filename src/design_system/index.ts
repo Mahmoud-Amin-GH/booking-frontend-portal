@@ -48,7 +48,6 @@ export { default as Sidebar } from './components/Sidebar';
 export { default as DashboardLayout } from './components/DashboardLayout';
 export { default as CarFormSteps } from './components/CarFormSteps';
 export { default as OnboardingTour } from './components/OnboardingTour';
-export { default as PhoneInput } from './components/PhoneInput';
 export { default as LanguageSwitcher } from './components/LanguageSwitcher';
 
 // Authentication Layout Components
