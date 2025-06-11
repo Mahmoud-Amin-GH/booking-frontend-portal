@@ -579,18 +579,129 @@ const CarInventory: React.FC = () => {
           )}
         </div>
 
-        {/* Desktop Pricing Table */}
+        {/* Desktop Inventory Table */}
         <div className="hidden md:block">
           {loading ? (
-            <div className="bg-surface rounded-lg border border-outline-variant p-8 text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="mt-2 text-on-surface-variant">{t('common.loading')}...</p>
+            <div className="bg-white rounded-lg border border-neutral-200 p-8 text-center">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+              <p className="mt-2 font-sakr font-normal text-text-secondary">{t('common.loading')}...</p>
             </div>
           ) : cars.length === 0 ? (
             <EmptyInventoryState />
           ) : (
-            <div className="p-6 text-center">
-              <p className="text-gray-500">Pricing table coming soon</p>
+            <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-neutral-50 border-b border-neutral-200">
+                    <tr>
+                      <th className="px-4 py-3 text-left">
+                        <input 
+                          type="checkbox" 
+                          className="rounded border-neutral-300 text-primary-500 focus:ring-primary-500"
+                          onChange={(e) => handleSelectAll(e.target.checked)}
+                          checked={selectedCars.size === cars.length && cars.length > 0}
+                        />
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.brand')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.model')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.year')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.seats')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.color')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.transmission')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.carType')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.availableCount')}
+                      </th>
+                      <th className="px-4 py-3 text-right font-sakr font-medium text-sm text-text-primary">
+                        {t('common.actions')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-200">
+                    {cars.map((car) => (
+                      <tr key={car.id} className="hover:bg-neutral-25 transition-colors">
+                        <td className="px-4 py-4">
+                          <input 
+                            type="checkbox" 
+                            className="rounded border-neutral-300 text-primary-500 focus:ring-primary-500"
+                            checked={selectedCars.has(car.id)}
+                            onChange={(e) => handleSelectCar(car.id, e.target.checked)}
+                          />
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-primary">
+                          {car.brand_name}
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-primary">
+                          {car.model_name}
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                          {car.year}
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                          {car.seats}
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                          <div className="flex items-center gap-2">
+                            <div 
+                              className="w-4 h-4 rounded-full border border-neutral-300" 
+                              style={{ backgroundColor: car.color_name === 'White' ? '#ffffff' : 
+                                       car.color_name === 'Black' ? '#000000' : 
+                                       car.color_name === 'Red' ? '#ef4444' :
+                                       car.color_name === 'Blue' ? '#3b82f6' :
+                                       car.color_name === 'Gray' ? '#6b7280' :
+                                       car.color_name === 'Silver' ? '#d1d5db' : '#9ca3af' }}
+                            />
+                            {car.color_name}
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800">
+                            {t(`cars.transmission.${car.transmission}`)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
+                            {t(`cars.carType.${car.car_type}`)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            car.available_count > 0 
+                              ? 'bg-success-100 text-success-800' 
+                              : 'bg-error-100 text-error-800'
+                          }`}>
+                            {car.available_count}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button variant="text" size="small" onClick={() => openEditModal(car)}>
+                              {t('common.edit')}
+                            </Button>
+                            <Button variant="text" size="small" onClick={() => openDeleteDialog(car)} className="text-error-600">
+                              {t('common.delete')}
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </div>
