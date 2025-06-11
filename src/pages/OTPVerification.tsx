@@ -7,8 +7,7 @@ import {
   Input,
   Alert,
   Typography,
-  Progress,
-  Card
+  Progress
 } from '../design_system_4sale';
 import { authAPI, OTPRequest } from '../services/api';
 import { maskPhoneNumber } from '../business/phoneValidation';
@@ -150,8 +149,8 @@ const OTPVerification: React.FC = () => {
       </div>
 
       {/* Form Section */}
-      <div className="lg:flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md" padding="xl">
+      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
           {/* Header */}
           <div className="mb-8 text-center">
             <Typography 
@@ -226,32 +225,32 @@ const OTPVerification: React.FC = () => {
                 {t('auth.didntReceiveCode')}
               </Typography>
               
-                          {canResend ? (
-              <Button
-                onClick={handleResendOTP}
-                disabled={loading}
-                variant="ghost"
-                size="sm"
-                className="text-primary-500 hover:text-primary-600"
-              >
-                {loading ? 'Sending...' : t('auth.resendOTP')}
-              </Button>
-            ) : (
-              <div className="flex items-center justify-center gap-2">
-                <Progress 
-                  variant="circular" 
-                  size="sm" 
-                  value={((30 - countdown) / 30) * 100}
-                  color="primary"
-                />
-                <Typography 
-                  variant="body-small"
-                  className="text-gray-400"
+              {canResend ? (
+                <Button
+                  onClick={handleResendOTP}
+                  disabled={loading}
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary-500 hover:text-primary-600"
                 >
-                  Resend available in {countdown}s
-                </Typography>
-              </div>
-            )}
+                  {loading ? 'Sending...' : t('auth.resendOTP')}
+                </Button>
+              ) : (
+                <div className="flex items-center justify-center gap-2">
+                  <Progress 
+                    variant="circular" 
+                    size="sm" 
+                    value={((30 - countdown) / 30) * 100}
+                    color="primary"
+                  />
+                  <Typography 
+                    variant="body-small"
+                    className="text-gray-400"
+                  >
+                    Resend available in {countdown}s
+                  </Typography>
+                </div>
+              )}
             </div>
 
             {/* Back Button */}
@@ -264,7 +263,7 @@ const OTPVerification: React.FC = () => {
               {t('auth.back')}
             </Button>
           </form>
-        </Card>
+        </div>
       </div>
     </div>
   );

@@ -6,8 +6,7 @@ import {
   Button,
   Input,
   Alert, 
-  Typography,
-  Card
+  Typography
 } from '../design_system_4sale';
 import { authAPI, SignupRequest } from '../services/api';
 import { 
@@ -156,9 +155,9 @@ const Signup: React.FC = () => {
         </div>
       </div>
 
-      {/* Form Section */}
-      <div className="lg:flex-1 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md" padding="xl">
+            {/* Form Section */}
+      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
           {/* Header */}
           <div className="mb-8">
             <Typography 
@@ -288,15 +287,15 @@ const Signup: React.FC = () => {
               className="text-gray-500"
             >
               {t('auth.alreadyHaveAccount')}{' '}
-                          <Link 
-              to="/login-4sale"
-              className="text-primary-500 font-semibold hover:text-primary-600 no-underline"
-            >
-              {t('auth.login')}
-            </Link>
+              <Link 
+                to="/login-4sale"
+                className="text-primary-500 font-semibold hover:text-primary-600 no-underline"
+              >
+                {t('auth.login')}
+              </Link>
             </Typography>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
