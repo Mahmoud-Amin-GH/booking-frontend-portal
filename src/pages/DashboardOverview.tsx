@@ -75,23 +75,6 @@ const DashboardOverview: React.FC = () => {
       className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
       onClick={action}
     >
-      <div className={`flex items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        <div className={`p-3 rounded-lg ${color} transition-transform group-hover:scale-110`}>
-          <Icon name={icon} size="medium" />
-        </div>
-        {trend && (
-          <div className={`text-sm flex items-center gap-1 ${
-            trend.direction === 'up' ? 'text-green-600' : 
-            trend.direction === 'down' ? 'text-red-600' : 'text-gray-500'
-          }`}>
-            <Icon 
-              name={trend.direction === 'up' ? 'arrow-right' : trend.direction === 'down' ? 'arrow-left' : 'arrow-right'} 
-              size="small" 
-            />
-            {t(`stats.trend.${trend.direction}`, { value: trend.value })}
-          </div>
-        )}
-      </div>
       <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="font-sakr font-bold text-3xl mb-1 text-gray-900">
           {statsLoading ? (
@@ -178,7 +161,6 @@ const DashboardOverview: React.FC = () => {
             size="lg"
             onClick={() => navigate('/dashboard/cars')}
             className={`justify-start gap-3 hover:bg-primary-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
-            prefix={<Icon name="user" size="small" />}
           >
             {t('dashboard.addNewCar')}
           </Button>

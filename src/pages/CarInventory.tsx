@@ -5,6 +5,7 @@ import {
   Button, 
   Input,
   Modal,
+  ModalFooter,
   Select,
   SelectOption
 } from '@mo_sami/web-design-system';
@@ -422,9 +423,6 @@ const CarInventory: React.FC = () => {
     <div className="bg-surface rounded-lg border border-outline-variant p-4 md:hidden space-y-3">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary-50 rounded-lg flex items-center justify-center">
-            <Icon name="user" size="small" className="text-primary-600" />
-          </div>
           <div>
             <p className="font-sakr font-medium text-base">
               {car.brand_name} {car.model_name}
@@ -466,9 +464,6 @@ const CarInventory: React.FC = () => {
   // Enhanced Empty State Component
   const EmptyInventoryState = () => (
     <div className="text-center py-16">
-      <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
-        <Icon name="user" size="large" className="text-primary-600" />
-      </div>
       <h3 className="font-sakr font-bold text-xl mb-2">
         {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
       </h3>
@@ -621,10 +616,12 @@ const CarInventory: React.FC = () => {
       {/* Add Car Modal */}
       <Modal
         open={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onOpenChange={(open) => setIsAddModalOpen(open)}
         title={t('cars.addNewCar')}
         size="lg"
-        actions={
+      >
+        <CarForm />
+        <ModalFooter>
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
               {t('common.cancel')}
@@ -636,18 +633,18 @@ const CarInventory: React.FC = () => {
               {isSubmitting ? t('common.loading') : t('common.save')}
             </Button>
           </div>
-        }
-      >
-        <CarForm />
+        </ModalFooter>
       </Modal>
 
       {/* Edit Car Modal */}
       <Modal
         open={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onOpenChange={(open) => setIsEditModalOpen(open)}
         title={t('cars.editCar')}
         size="lg"
-        actions={
+      >
+        <CarForm />
+        <ModalFooter>
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsEditModalOpen(false)}>
               {t('common.cancel')}
@@ -659,9 +656,7 @@ const CarInventory: React.FC = () => {
               {isSubmitting ? t('common.loading') : t('common.save')}
             </Button>
           </div>
-        }
-      >
-        <CarForm />
+        </ModalFooter>
       </Modal>
     </div>
   );
