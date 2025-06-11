@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Sidebar, type SidebarItem } from '@mo_sami/web-design-system';
+import { Sidebar, type SidebarItem, Button } from '@mo_sami/web-design-system';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
+import { clearAuthToken } from '../../services/api';
 
 const DashboardLayout: React.FC = () => {
   const { t } = useTranslation();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { language, switchLanguage } = useLanguage();
   const { isLoading, isEmpty, refreshStatus } = useInventoryStatus();
 
   // Handle conditional navigation based on inventory status
@@ -31,6 +32,18 @@ const DashboardLayout: React.FC = () => {
 
   // Determine which navigation items should be disabled
   const disabledNavItems = isEmpty ? ['overview', 'settings'] : [];
+
+  // Handle logout
+  const handleLogout = () => {
+    clearAuthToken();
+    navigate('/login-4sale');
+  };
+
+  // Handle language switch
+  const handleLanguageSwitch = () => {
+    const newLanguage = language === 'en' ? 'ar' : 'en';
+    switchLanguage(newLanguage);
+  };
 
   // Create sidebar navigation items
   const sidebarItems: SidebarItem[] = [
@@ -65,14 +78,37 @@ const DashboardLayout: React.FC = () => {
     }
   ];
 
+  // Sidebar footer with logout and language switch buttons
+  const sidebarFooter = (
+    <div className="p-4 border-t border-neutral-200 space-y-3">
+      {/* Language Switch Button */}
+      <Button
+        variant="text"
+        size="sm"
+        onClick={handleLanguageSwitch}
+        className="w-full justify-start font-sakr font-normal text-text-secondary hover:text-text-primary"
+      >
+        {language === 'en' ? 'العربية' : 'English'}
+      </Button>
+      
+      {/* Logout Button */}
+      <Button
+        variant="text"
+        size="sm"
+        onClick={handleLogout}
+        className="w-full justify-start font-sakr font-normal text-error-600 hover:text-error-700"
+      >
+        {t('auth.logout')}
+      </Button>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar for desktop */}
       <Sidebar 
         items={sidebarItems}
-        collapsible={true}
-        collapsed={isSidebarCollapsed}
-        onCollapsedChange={setIsSidebarCollapsed}
+        footer={sidebarFooter}
         className="h-screen sticky top-0"
         variant="default"
         width="md"
