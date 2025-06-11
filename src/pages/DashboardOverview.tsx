@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { Typography, Button, Progress } from '../design_system_4sale';
+import { Button, Progress } from '../design_system_4sale';
+import { Typography } from '../design_system';
 import { Icon } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CarApiService } from '../services/carApi';

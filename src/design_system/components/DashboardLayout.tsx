@@ -5,7 +5,6 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
 import Sidebar from './Sidebar';
 import BottomNavigation from './BottomNavigation';
-import OnboardingTour from './OnboardingTour';
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -85,12 +84,6 @@ const DashboardLayout: React.FC = () => {
       {/* Bottom navigation for mobile */}
       <BottomNavigation disabledItems={disabledNavItems} />
       
-      {/* Onboarding Tour */}
-      <OnboardingTour
-        isVisible={showOnboarding}
-        onComplete={handleOnboardingComplete}
-        onSkip={handleOnboardingSkip}
-      />
     </Box>
   );
 };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Typography, Button, Accordion } from '../design_system_4sale';
-import { useSuccessToast, useErrorToast, OfficeConfigSection } from '../design_system';
+import { Button, Accordion } from '../design_system_4sale';
+import { Typography } from '../design_system';
+// import { OfficeConfigSection } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
 
@@ -14,8 +15,6 @@ interface OfficeConfigState {
 const OfficeConfigs: React.FC = () => {
   const { t } = useTranslation();
   const { isRTL } = useLanguage();
-  const showSuccess = useSuccessToast();
-  const showError = useErrorToast();
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -96,7 +95,6 @@ const OfficeConfigs: React.FC = () => {
         });
       } catch (error) {
         console.error('Error loading office configurations:', error);
-        showError(t('officeConfigs.loadError'));
         
         // Initialize with empty configs on error
         const initialConfigs: OfficeConfigState = {
@@ -171,10 +169,7 @@ const OfficeConfigs: React.FC = () => {
       };
       
       await OfficeConfigsApiService.updateOfficeConfigs(request);
-      
-      showSuccess(t('officeConfigs.saveSuccess'));
     } catch (error) {
-      showError(t('officeConfigs.saveError'));
       console.error('Error saving office configurations:', error);
     } finally {
       setIsSaving(false);

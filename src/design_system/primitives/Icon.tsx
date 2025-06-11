@@ -1,17 +1,17 @@
 import React from 'react';
 import {
   Phone,
-  Email,
-  Person,
+  Mail,
+  User,
   Lock,
-  Visibility,
-  VisibilityOff,
+  Eye,
+  EyeOff,
   Check,
-  Close,
+  X,
   ChevronRight,
   ChevronLeft,
   Flag,
-} from '@mui/icons-material';
+} from 'lucide-react';
 
 export interface IconProps {
   name: 'phone' | 'email' | 'user' | 'lock' | 'eye' | 'eye-off' | 'check' | 'close' | 'arrow-right' | 'arrow-left' | 'kuwait-flag' | 'visibility' | 'visibility-off';
@@ -20,18 +20,18 @@ export interface IconProps {
   sx?: any;
 }
 
-// Map our custom icon names to MUI icons
+// Map our custom icon names to Lucide React icons
 const iconMap = {
   phone: Phone,
-  email: Email,
-  user: Person,
+  email: Mail,
+  user: User,
   lock: Lock,
-  eye: Visibility,
-  'eye-off': VisibilityOff,
-  visibility: Visibility,
-  'visibility-off': VisibilityOff,
+  eye: Eye,
+  'eye-off': EyeOff,
+  visibility: Eye,
+  'visibility-off': EyeOff,
   check: Check,
-  close: Close,
+  close: X,
   'arrow-right': ChevronRight,
   'arrow-left': ChevronLeft,
   'kuwait-flag': Flag, // Using generic flag, could be customized
@@ -67,11 +67,16 @@ const Icon: React.FC<IconProps> = ({ name, size = 'medium', className = '', sx }
     );
   }
 
+  const sizeMap = {
+    small: 16,
+    medium: 20,
+    large: 24,
+  };
+
   return (
     <IconComponent
-      fontSize={size}
+      size={sizeMap[size]}
       className={className}
-      sx={sx}
     />
   );
 };

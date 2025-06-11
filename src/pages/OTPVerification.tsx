@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
-import {
-  Button,
-  Input,
-  Alert,
-  Typography,
-  Progress
-} from '../design_system_4sale';
+import { Button, Input, Alert, Typography, Progress } from '../design_system';
 import { authAPI, OTPRequest } from '../services/api';
 import { maskPhoneNumber } from '../business/phoneValidation';
 
@@ -238,10 +232,10 @@ const OTPVerification: React.FC = () => {
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <Progress 
-                    variant="circular" 
+                    variant="default" 
                     size="sm" 
                     value={((30 - countdown) / 30) * 100}
-                    color="primary"
+                    className="w-4 h-4"
                   />
                   <Typography 
                     variant="body-small"

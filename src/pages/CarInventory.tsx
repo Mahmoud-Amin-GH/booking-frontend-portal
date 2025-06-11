@@ -3,17 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { 
   Button, 
-  Input, 
-  Select, 
-  NumberInput, 
-  ConfirmDialog,
-  useSuccessToast,
-  useErrorToast,
-  SelectOption,
+  Input,
+  NumberInput,
   Icon,
   LanguageSwitcher
 } from '../design_system';
-import { Modal, Typography } from '../design_system_4sale';
+import { Select, SelectOption } from '@4saletech/web-design-system'
+// import { Modal, Typography } from '../design_system_4sale';
 import { PricingTable } from '../design_system/components/PricingTable';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
@@ -684,20 +680,6 @@ const CarInventory: React.FC = () => {
       >
         <CarForm />
       </Modal>
-
-      {/* Delete Confirmation */}
-      <ConfirmDialog
-        isOpen={isDeleteDialogOpen}
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={handleDelete}
-        title={t('cars.deleteCar')}
-        message={carToDelete ? t('cars.deleteConfirmation', { 
-          car: formatCarDisplayName(carToDelete, language) 
-        }) : ''}
-        confirmText={t('common.delete')}
-        cancelText={t('common.cancel')}
-        variant="danger"
-      />
     </div>
   );
 };

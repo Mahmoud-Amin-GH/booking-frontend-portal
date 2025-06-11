@@ -1,64 +1,52 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline, Box } from '@mui/material';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
-import { ToastProvider } from './design_system';
-import { useMUITheme } from './theme/muiTheme';
 import Login4Sale from './pages/Login4Sale';
 import Signup from './pages/Signup';
 import OTPVerification from './pages/OTPVerification';
-import DashboardOverview from './pages/DashboardOverview';
-import CarInventory from './pages/CarInventory';
-import OfficeConfigs from './pages/OfficeConfigs';
-import { DashboardLayout } from './design_system';
+// import DashboardOverview from './pages/DashboardOverview';
+// import CarInventory from './pages/CarInventory';
+// import OfficeConfigs from './pages/OfficeConfigs';
+// import { DashboardLayout } from './design_system';
+import './design_system_4sale'; // Import 4Sale Design System styles
 import './i18n'; // Initialize i18n
 
-// Theme wrapper component that uses language context
-const ThemedApp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const theme = useMUITheme();
+// Simple wrapper component for RTL support
+const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isRTL } = useLanguage();
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{
-          direction: isRTL ? 'rtl' : 'ltr',
-          minHeight: '100vh',
-          backgroundColor: 'background.default',
-        }}
-      >
-        {children}
-      </Box>
-    </ThemeProvider>
+    <div
+      dir={isRTL ? 'rtl' : 'ltr'}
+      className="min-h-screen bg-gray-50"
+    >
+      {children}
+    </div>
   );
 };
 
 function App() {
   return (
     <LanguageProvider>
-      <ThemedApp>
-        <ToastProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Navigate to="/login-4sale" replace />} />
-              <Route path="/login-4sale" element={<Login4Sale />} /> {/* 4Sale DS Demo */}
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/verify-otp" element={<OTPVerification />} />
-              
-              {/* Dashboard with nested routes */}
-              <Route path="/dashboard" element={<DashboardLayout />}>
-                <Route index element={<DashboardOverview />} />
-                <Route path="cars" element={<CarInventory />} />
-                <Route path="office-configs" element={<OfficeConfigs />} />
-              </Route>
-              
-              <Route path="/" element={<Navigate to="/login" replace />} />
-            </Routes>
-          </Router>
-        </ToastProvider>
-      </ThemedApp>
+      <AppWrapper>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Navigate to="/signup" replace />} />
+            <Route path="/login-4sale" element={<Login4Sale />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-otp" element={<OTPVerification />} />
+            
+            {/* Dashboard routes commented out until migration is complete */}
+            {/* 
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<DashboardOverview />} />
+              <Route path="cars" element={<CarInventory />} />
+              <Route path="office-configs" element={<OfficeConfigs />} />
+            </Route>
+            */}
+          </Routes>
+        </Router>
+      </AppWrapper>
     </LanguageProvider>
   );
 }

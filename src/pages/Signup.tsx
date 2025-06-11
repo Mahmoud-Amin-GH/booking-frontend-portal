@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
-import {
-  Button,
-  Input,
-  Alert, 
-  Typography
-} from '../design_system_4sale';
+import { Button, Input, Alert, Typography } from '../design_system';
 import { authAPI, SignupRequest } from '../services/api';
 import { 
   validateKuwaitiPhone, 
@@ -160,112 +155,68 @@ const Signup: React.FC = () => {
         <div className="mx-auto w-full max-w-sm lg:w-96">
           {/* Header */}
           <div className="mb-8">
-            <Typography 
-              variant="headline-large" 
-              className="text-[#092B4C] mb-2"
-            >
+            <h1 className="text-3xl font-bold text-[#092B4C] mb-2">
               {t('auth.signup')}
-            </Typography>
-            <Typography 
-              variant="body-large"
-              className="text-gray-500"
-            >
+            </h1>
+            <p className="text-lg text-gray-500">
               {t('auth.createAccount')}
-            </Typography>
+            </p>
           </div>
 
           {/* Error Alert */}
           {serverError && (
             <Alert 
               variant="error" 
-              message={serverError}
               className="mb-6"
-              dismissible
-              onDismiss={() => setServerError('')}
-            />
+            >
+              {serverError}
+            </Alert>
           )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Display Name */}
-            <div>
-              <Typography 
-                variant="label-large"
-                className="text-gray-700 mb-2 block font-semibold"
-              >
-                {t('auth.displayName')}
-              </Typography>
-              <Input
-                fullWidth
-                value={form.displayName}
-                onChange={handleInputChange('displayName')}
-                error={errors.displayName}
-                placeholder={t('placeholders.enterFullName')}
-              />
-            </div>
+            <Input
+              label={t('auth.displayName')}
+              value={form.displayName}
+              onChange={handleInputChange('displayName')}
+              error={errors.displayName}
+              placeholder={t('placeholders.enterFullName')}
+              required
+            />
 
             {/* Email */}
-            <div>
-              <Typography 
-                variant="label-large"
-                className="text-gray-700 mb-2 block font-semibold"
-              >
-                {t('auth.email')}
-              </Typography>
-              <Input
-                fullWidth
-                type="email"
-                value={form.email}
-                onChange={handleInputChange('email')}
-                error={errors.email}
-                placeholder={t('placeholders.emailExample')}
-              />
-            </div>
+            <Input
+              label={t('auth.email')}
+              type="email"
+              value={form.email}
+              onChange={handleInputChange('email')}
+              error={errors.email}
+              placeholder={t('placeholders.emailExample')}
+              required
+            />
 
             {/* Phone */}
-            <div>
-              <Typography 
-                variant="label-large"
-                className="text-gray-700 mb-2 block font-semibold"
-              >
-                {t('auth.phone')}
-              </Typography>
-              <Input
-                fullWidth
-                value={form.phone}
-                onChange={handlePhoneChange}
-                error={errors.phone}
-                placeholder="XXXX XXXX"
-                prefix="+965"
-              />
-            </div>
+            <Input
+              label={t('auth.phone')}
+              value={form.phone}
+              onChange={handlePhoneChange}
+              error={errors.phone}
+              placeholder="XXXX XXXX"
+              startIcon={<span className="text-sm text-gray-500">+965</span>}
+              required
+            />
 
             {/* Password */}
-            <div>
-              <Typography 
-                variant="label-large"
-                className="text-gray-700 mb-2 block font-semibold"
-              >
-                {t('auth.password')}
-              </Typography>
-              <Input
-                fullWidth
-                type={showPassword ? 'text' : 'password'}
-                value={form.password}
-                onChange={handleInputChange('password')}
-                error={errors.password}
-                placeholder={t('placeholders.minimumPassword')}
-                suffix={
-                  <img
-                    src="/assets/eye-icon.svg"
-                    alt={showPassword ? "Hide password" : "Show password"}
-                    onClick={togglePasswordVisibility}
-                    className="w-5 h-5 cursor-pointer opacity-60 hover:opacity-100"
-                    style={{ opacity: showPassword ? 1 : 0.6 }}
-                  />
-                }
-              />
-            </div>
+            <Input
+              label={t('auth.password')}
+              type="password"
+              value={form.password}
+              onChange={handleInputChange('password')}
+              error={errors.password}
+              placeholder={t('placeholders.minimumPassword')}
+              required
+            />
 
             {/* Submit Button */}
             <Button

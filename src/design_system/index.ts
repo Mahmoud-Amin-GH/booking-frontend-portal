@@ -1,65 +1,43 @@
 // Material Design 3 Design System Components
+import React from 'react';
 
 // ===== PRIMITIVES =====
-export { default as Button } from './primitives/Button';
-export type { ButtonProps } from './primitives/Button';
+// Compatibility wrappers that maintain old API while using 4Sale DS internally
+export { Button, Input, Alert, LanguageSwitcher } from './compatibility';
+export type { ButtonProps, InputProps, AlertProps, LanguageSwitcherProps } from './compatibility';
 
-export { default as Input } from './primitives/Input';
-export type { InputProps } from './primitives/Input';
+// Simple Typography wrapper for backward compatibility
+export { default as Typography } from './primitives/TypographySimple';
+export type { TypographyProps } from './primitives/TypographySimple';
 
-export { default as Typography } from './primitives/Typography';
-export type { TypographyProps } from './primitives/Typography';
+// Direct 4Sale DS components
+export { Progress, Accordion } from '../design_system_4sale';
 
-export { Alert } from '../design_system_4sale/primitives/Alert';
-export type { AlertProps } from '../design_system_4sale/primitives/Alert';
+// Temporarily commented out MUI-dependent components
+// export { default as Checkbox } from './primitives/Checkbox';
+// export type { CheckboxProps } from './primitives/Checkbox';
 
-export { default as Checkbox } from './primitives/Checkbox';
-export type { CheckboxProps } from './primitives/Checkbox';
-
-export { default as Loader } from './primitives/Loader';
-export type { LoaderProps } from './primitives/Loader';
+// export { default as Loader } from './primitives/Loader';
+// export type { LoaderProps } from './primitives/Loader';
 
 export { default as Icon } from './primitives/Icon';
 export type { IconProps } from './primitives/Icon';
 
-export { NumberInput } from './primitives/NumberInput';
-export type { NumberInputProps } from './primitives/NumberInput';
+// export { NumberInput } from './primitives/NumberInput';
+// export type { NumberInputProps } from './primitives/NumberInput';
 
-// ===== COMPLEX COMPONENTS =====
-export { default as Form, FormSection } from './components/Form';
-export type { FormProps, FormSectionProps } from './components/Form';
+// Application Components - Temporarily commented out during migration
+// export { default as OfficeConfigSection } from './components/OfficeConfigSection';
+// export { default as BottomNavigation } from './components/BottomNavigation';
+// export { default as Sidebar } from './components/Sidebar';
+// export { default as DashboardLayout } from './components/DashboardLayout';
+// export { default as LanguageSwitcher } from './components/LanguageSwitcher';
 
-export { Select } from './components/Select';
-export type { SelectProps, SelectOption } from './components/Select';
-
-export { Modal, ConfirmDialog } from './components/Modal';
-export type { ModalProps, ConfirmDialogProps } from './components/Modal';
-
-export { ToastProvider, useToast, useSuccessToast, useErrorToast, useWarningToast, useInfoToast } from './components/Toast';
-export type { ToastItem, ToastProviderProps } from './components/Toast';
-
-export { default as Accordion } from './components/Accordion';
-export type { AccordionProps } from './components/Accordion';
-
-// Application Components
-export { default as OfficeConfigSection } from './components/OfficeConfigSection';
-export { default as BottomNavigation } from './components/BottomNavigation';
-export { default as Sidebar } from './components/Sidebar';
-export { default as DashboardLayout } from './components/DashboardLayout';
-export { default as CarFormSteps } from './components/CarFormSteps';
-export { default as OnboardingTour } from './components/OnboardingTour';
-export { default as LanguageSwitcher } from './components/LanguageSwitcher';
-
-// Authentication Layout Components
-export { AuthLayout } from './components/AuthLayout';
-export { HeroSection } from './components/HeroSection';
-export { Navbar } from './components/Navbar';
-
-// Pricing Table Components
-export { PricingTable } from './components/PricingTable';
-export { StatusTags } from './components/StatusTags';
-export { CarImageCell } from './components/CarImageCell';
-export { ActionsDropdown } from './components/ActionsDropdown';
+// Pricing Table Components - Temporarily commented out during migration
+// export { PricingTable } from './components/PricingTable';
+// export { StatusTags } from './components/StatusTags';
+// export { CarImageCell } from './components/CarImageCell';
+// export { ActionsDropdown } from './components/ActionsDropdown';
 
 // Re-export commonly used types
 export type TypographyVariant = 

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Typography, Alert } from '../design_system_4sale';
+import { Button, Input, Alert, Typography, LanguageSwitcher } from '../design_system';
 import { authAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
-import { LanguageSwitcher } from '../design_system';
 import { 
   validateKuwaitiPhone, 
   handlePhoneInputChange, 
