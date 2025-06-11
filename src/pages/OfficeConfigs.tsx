@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Accordion } from '../design_system_4sale';
-import { Typography } from '../design_system';
+import { Button, Accordion, Typography } from '../design_system';
 // import { OfficeConfigSection } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
@@ -216,12 +215,24 @@ const OfficeConfigs: React.FC = () => {
           title={t('officeConfigs.locationCoverage')}
           defaultExpanded={true}
         >
-          <OfficeConfigSection
-            title=""
-            description={t('officeConfigs.locationCoverageDesc')}
-            options={formatOptionsForSection(locationOptions, 'locations')}
-            onOptionChange={handleLocationChange}
-          />
+          <div className="space-y-4 p-4">
+            <Typography variant="body-medium" className="text-gray-600 mb-4">
+              {t('officeConfigs.locationCoverageDesc')}
+            </Typography>
+            <div className="space-y-3">
+              {formatOptionsForSection(locationOptions, 'locations').map((option) => (
+                <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={option.enabled}
+                    onChange={(e) => handleLocationChange(option.key, e.target.checked)}
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <span className="font-sakr">{t(option.labelKey)}</span>
+                </label>
+              ))}
+            </div>
+          </div>
         </Accordion>
 
         {/* Service Options */}
@@ -229,12 +240,29 @@ const OfficeConfigs: React.FC = () => {
           title={t('officeConfigs.serviceOptions')}
           defaultExpanded={false}
         >
-          <OfficeConfigSection
-            title=""
-            description={t('officeConfigs.serviceOptionsDesc')}
-            options={formatOptionsForSection(serviceOptions, 'services')}
-            onOptionChange={handleServiceChange}
-          />
+          <div className="space-y-4 p-4">
+            <Typography variant="body-medium" className="text-gray-600 mb-4">
+              {t('officeConfigs.serviceOptionsDesc')}
+            </Typography>
+            <div className="space-y-3">
+              {formatOptionsForSection(serviceOptions, 'services').map((option) => (
+                <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={option.enabled}
+                    onChange={(e) => handleServiceChange(option.key, e.target.checked)}
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <div>
+                    <span className="font-sakr">{t(option.labelKey)}</span>
+                    {(option as any).descriptionKey && (
+                      <p className="text-sm text-gray-500 mt-1">{t((option as any).descriptionKey)}</p>
+                    )}
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
         </Accordion>
 
         {/* Delivery & Pickup */}
@@ -242,12 +270,29 @@ const OfficeConfigs: React.FC = () => {
           title={t('officeConfigs.deliveryPickup')}
           defaultExpanded={false}
         >
-          <OfficeConfigSection
-            title=""
-            description={t('officeConfigs.deliveryPickupDesc')}
-            options={formatOptionsForSection(deliveryOptions, 'delivery')}
-            onOptionChange={handleDeliveryChange}
-          />
+          <div className="space-y-4 p-4">
+            <Typography variant="body-medium" className="text-gray-600 mb-4">
+              {t('officeConfigs.deliveryPickupDesc')}
+            </Typography>
+            <div className="space-y-3">
+              {formatOptionsForSection(deliveryOptions, 'delivery').map((option) => (
+                <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={option.enabled}
+                    onChange={(e) => handleDeliveryChange(option.key, e.target.checked)}
+                    className="rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <div>
+                    <span className="font-sakr">{t(option.labelKey)}</span>
+                    {(option as any).descriptionKey && (
+                      <p className="text-sm text-gray-500 mt-1">{t((option as any).descriptionKey)}</p>
+                    )}
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
         </Accordion>
       </div>
 

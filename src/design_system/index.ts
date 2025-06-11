@@ -3,15 +3,42 @@ import React from 'react';
 
 // ===== PRIMITIVES =====
 // Compatibility wrappers that maintain old API while using 4Sale DS internally
-export { Button, Input, Alert, LanguageSwitcher } from './compatibility';
-export type { ButtonProps, InputProps, AlertProps, LanguageSwitcherProps } from './compatibility';
+export { 
+  Button, 
+  Input, 
+  Alert, 
+  Icon, 
+  NumberInput, 
+  Modal, 
+  Select,
+  Progress,
+  Accordion,
+  useSuccessToast,
+  useErrorToast,
+  useInfoToast,
+  useWarningToast
+} from './compatibility';
+export type { 
+  ButtonProps, 
+  InputProps, 
+  AlertProps, 
+  LanguageSwitcherProps, 
+  IconProps, 
+  NumberInputProps, 
+  ModalProps, 
+  SelectProps, 
+  SelectOption,
+  ProgressProps,
+  AccordionProps
+} from './compatibility';
 
 // Simple Typography wrapper for backward compatibility
 export { default as Typography } from './primitives/TypographySimple';
 export type { TypographyProps } from './primitives/TypographySimple';
 
 // Direct 4Sale DS components
-export { Progress, Accordion } from '../design_system_4sale';
+// export { Accordion } from '../design_system_4sale';
+// Progress now comes from compatibility layer above
 
 // Temporarily commented out MUI-dependent components
 // export { default as Checkbox } from './primitives/Checkbox';
@@ -20,18 +47,17 @@ export { Progress, Accordion } from '../design_system_4sale';
 // export { default as Loader } from './primitives/Loader';
 // export type { LoaderProps } from './primitives/Loader';
 
-export { default as Icon } from './primitives/Icon';
-export type { IconProps } from './primitives/Icon';
+// Icon now comes from compatibility layer above
 
 // export { NumberInput } from './primitives/NumberInput';
 // export type { NumberInputProps } from './primitives/NumberInput';
 
-// Application Components - Temporarily commented out during migration
+// Application Components - Enabling required components for dashboard
 // export { default as OfficeConfigSection } from './components/OfficeConfigSection';
-// export { default as BottomNavigation } from './components/BottomNavigation';
+export { default as BottomNavigation } from './components/BottomNavigation';
 // export { default as Sidebar } from './components/Sidebar';
-// export { default as DashboardLayout } from './components/DashboardLayout';
-// export { default as LanguageSwitcher } from './components/LanguageSwitcher';
+export { default as DashboardLayout } from './components/DashboardLayout';
+export { default as LanguageSwitcher } from './components/LanguageSwitcher';
 
 // Pricing Table Components - Temporarily commented out during migration
 // export { PricingTable } from './components/PricingTable';

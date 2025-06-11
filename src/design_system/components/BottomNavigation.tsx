@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Paper } from '@mui/material';
 import { Button, Icon, Typography } from '../index';
 import { useLanguage } from '../../contexts/LanguageContext';
 
@@ -52,71 +51,37 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ disabledItems = [] 
   };
 
   return (
-    <Paper
-      elevation={8}
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        zIndex: 40,
-        display: { xs: 'flex', md: 'none' },
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        py: 1,
-        px: 2,
-        borderTop: 1,
-        borderColor: 'divider',
-        backgroundColor: 'background.paper',
-      }}
-    >
+    <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden flex items-center justify-around py-2 px-4 border-t border-gray-200 bg-white shadow-lg">
       {navigationItems.map((item) => {
         const isActiveItem = isActive(item.path);
         const isDisabled = disabledItems.includes(item.key);
         
         return (
-          <Button
+          <button
             key={item.key}
-            variant="text"
-            size="small"
             onClick={() => handleNavClick(item)}
             disabled={isDisabled}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 0.5,
-              py: 1,
-              px: 1.5,
-              minWidth: 0,
-              color: isActiveItem ? 'primary.main' : 'text.secondary',
-              opacity: isDisabled ? 0.5 : 1,
-              cursor: isDisabled ? 'not-allowed' : 'pointer',
-            }}
+            className={`
+              flex flex-col items-center gap-1 py-2 px-3 min-w-0 rounded-lg transition-colors
+              ${isActiveItem ? 'text-primary' : 'text-gray-500'}
+              ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'}
+            `}
           >
             <Icon 
               name={item.icon} 
               size="small" 
-              sx={{
-                color: isActiveItem ? 'primary.main' : 'text.secondary',
-                opacity: isDisabled ? 0.5 : 1,
-              }}
+              className={`${isActiveItem ? 'text-primary' : 'text-gray-500'} ${isDisabled ? 'opacity-50' : ''}`}
             />
             <Typography 
               variant="label-small" 
-              color={isActiveItem ? 'primary' : 'on-surface-variant'}
-              sx={{ 
-                textAlign: 'center',
-                lineHeight: 1.2,
-                opacity: isDisabled ? 0.5 : 1,
-              }}
+              className={`text-center leading-tight ${isActiveItem ? 'text-primary' : 'text-gray-500'} ${isDisabled ? 'opacity-50' : ''}`}
             >
               {item.label}
             </Typography>
-          </Button>
+          </button>
         );
       })}
-    </Paper>
+    </div>
   );
 };
 

@@ -62,7 +62,7 @@ const Pagination = React.forwardRef<HTMLDivElement, PaginationProps>(
         start = Math.max(1, end - maxVisiblePages + 1);
       }
 
-      const pages = [];
+      const pages: (number | string)[] = [];
       
       // Always show first page
       if (start > 1) {

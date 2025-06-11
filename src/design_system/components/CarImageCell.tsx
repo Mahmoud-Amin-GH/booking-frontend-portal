@@ -1,65 +1,33 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '../index';
 
 interface CarImageCellProps {
   carName: string;
-  carImage?: string;
+  carImage: string;
 }
 
-export const CarImageCell: React.FC<CarImageCellProps> = ({ carName, carImage }) => {
+export const CarImageCell: React.FC<CarImageCellProps> = ({
+  carName,
+  carImage,
+}) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1.5,
-        padding: '16px 12px',
-        width: '243px', // Fixed width as per Figma
-      }}
-    >
+    <div className="flex items-center gap-3 p-3">
+      {/* Car Image */}
+      <div className="w-12 h-12 flex-shrink-0">
+        <img
+          src={carImage}
+          alt={carName}
+          className="w-full h-full object-cover rounded-lg"
+        />
+      </div>
+
       {/* Car Name */}
       <Typography
-        sx={{
-          fontFamily: 'SS Sakr Soft',
-          fontWeight: 500,
-          fontSize: '14px',
-          lineHeight: 1.43,
-          color: '#021442',
-          textAlign: 'right',
-          flex: 1,
-        }}
+        variant="body-medium"
+        className="font-semibold text-gray-900 text-right font-sakr"
       >
         {carName}
       </Typography>
-      
-      {/* Car Image */}
-      <Box
-        sx={{
-          width: 40,
-          height: 40,
-          borderRadius: '4px',
-          backgroundColor: '#F7F8FA',
-          backgroundImage: carImage ? `url(${carImage})` : 'none',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        {!carImage && (
-          <Box
-            sx={{
-              width: 24,
-              height: 24,
-              backgroundColor: '#E9EBF2',
-              borderRadius: '2px',
-            }}
-          />
-        )}
-      </Box>
-    </Box>
+    </div>
   );
 }; 

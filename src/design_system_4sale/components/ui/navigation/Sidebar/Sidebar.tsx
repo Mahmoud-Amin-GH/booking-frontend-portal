@@ -144,7 +144,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
           )}>
             {collapsed ? (
               <div className="w-8 h-8 flex items-center justify-center">
-                {React.isValidElement(header) && header.props.children?.[0]}
+                {React.isValidElement(header) && (header.props as any).children?.[0]}
               </div>
             ) : (
               header

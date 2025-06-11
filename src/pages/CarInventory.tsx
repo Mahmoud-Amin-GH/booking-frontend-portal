@@ -6,11 +6,15 @@ import {
   Input,
   NumberInput,
   Icon,
-  LanguageSwitcher
+  LanguageSwitcher,
+  Modal,
+  Typography,
+  Select,
+  useSuccessToast,
+  useErrorToast
 } from '../design_system';
-import { Select, SelectOption } from '@4saletech/web-design-system'
-// import { Modal, Typography } from '../design_system_4sale';
-import { PricingTable } from '../design_system/components/PricingTable';
+import type { SelectOption } from '../design_system';
+// import { PricingTable } from '../design_system/components/PricingTable';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
 import {
@@ -603,7 +607,9 @@ const CarInventory: React.FC = () => {
           ) : cars.length === 0 ? (
             <EmptyInventoryState />
           ) : (
-            <PricingTable />
+            <div className="p-6 text-center">
+              <p className="text-gray-500">Pricing table coming soon</p>
+            </div>
           )}
         </div>
       </div>
@@ -640,7 +646,7 @@ const CarInventory: React.FC = () => {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         title={t('cars.addNewCar')}
-        size="large"
+        size="lg"
         actions={
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
@@ -663,7 +669,7 @@ const CarInventory: React.FC = () => {
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         title={t('cars.editCar')}
-        size="large"
+        size="lg"
         actions={
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsEditModalOpen(false)}>

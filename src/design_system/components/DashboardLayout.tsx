@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
-import Sidebar from './Sidebar';
+// import Sidebar from './Sidebar';
 import BottomNavigation from './BottomNavigation';
 
 const DashboardLayout: React.FC = () => {
@@ -60,31 +59,32 @@ const DashboardLayout: React.FC = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
+    <div className="min-h-screen bg-gray-50">
       {/* Sidebar for desktop */}
-      <Sidebar 
+      {/* <Sidebar 
         isCollapsed={isSidebarCollapsed} 
         onToggle={toggleSidebar}
         disabledItems={disabledNavItems}
         data-tour="sidebar"
-      />
+      /> */}
       
       {/* Main content area */}
-      <Box 
-        sx={{
-          transition: 'margin 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-          marginLeft: isRTL ? 0 : (isSidebarCollapsed ? 8 : 32),
-          marginRight: isRTL ? (isSidebarCollapsed ? 8 : 32) : 0,
-          paddingBottom: { xs: 10, md: 0 },
-        }}
+      <div 
+        className={`
+          transition-all duration-300 ease-in-out pb-20 md:pb-0
+          ${isRTL 
+            ? (isSidebarCollapsed ? 'mr-8' : 'mr-32') 
+            : (isSidebarCollapsed ? 'ml-8' : 'ml-32')
+          }
+        `}
       >
         <Outlet context={inventoryContext} />
-      </Box>
+      </div>
       
       {/* Bottom navigation for mobile */}
       <BottomNavigation disabledItems={disabledNavItems} />
       
-    </Box>
+    </div>
   );
 };
 

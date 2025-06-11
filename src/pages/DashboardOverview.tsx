@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { Button, Progress } from '../design_system_4sale';
-import { Typography } from '../design_system';
-import { Icon } from '../design_system';
+import { Button, Progress, Typography, Icon } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CarApiService } from '../services/carApi';
 
@@ -21,6 +19,9 @@ const DashboardOverview: React.FC = () => {
   
   // Get inventory context from outlet
   const inventoryContext = useOutletContext<InventoryContext>();
+  
+  // Use inventory context to refresh status when needed
+  const { isEmpty, isLoading, refreshStatus } = inventoryContext || { isEmpty: false, isLoading: false, refreshStatus: () => {} };
 
   const [statsLoading, setStatsLoading] = useState(true);
   const [carStats, setCarStats] = useState({
