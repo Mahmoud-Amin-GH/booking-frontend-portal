@@ -96,11 +96,16 @@ const Login4Sale: React.FC = () => {
         password: form.password,
       });
 
-      if (response.token) {
-        localStorage.setItem('auth_token', response.token);
-        navigate('/dashboard');
+      // Login successful - OTP sent, navigate to verification
+      if (response.message && response.user_id) {
+        navigate('/verify-otp', { 
+          state: { 
+            phone: preparePhoneForAPI(form.phone),
+            fromSignup: false 
+          }
+        });
       } else {
-        setErrorMessage(t('error.loginFailed'));
+        setErrorMessage(response.message || t('error.loginFailed'));
       }
     } catch (error: any) {
       console.error('Login error:', error);
