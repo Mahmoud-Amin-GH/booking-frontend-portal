@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Accordion, Typography } from '../design_system';
+import { Button, Accordion } from '@mo_sami/web-design-system';
 // import { OfficeConfigSection } from '../design_system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
@@ -188,9 +188,9 @@ const OfficeConfigs: React.FC = () => {
       <div className="p-6 flex items-center justify-center min-h-96">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
-          <Typography variant="body-medium" color="on-surface-variant">
+          <p className="font-sakr font-normal text-base text-gray-600">
             {t('common.loading')}...
-          </Typography>
+          </p>
         </div>
       </div>
     );
@@ -200,25 +200,24 @@ const OfficeConfigs: React.FC = () => {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <Typography variant="headline-medium" color="on-surface" className="font-bold mb-2">
+        <h2 className="font-sakr font-bold text-2xl mb-2 text-gray-900">
           {t('officeConfigs.title')}
-        </Typography>
-        <Typography variant="body-large" color="on-surface-variant">
+        </h2>
+        <p className="font-sakr font-normal text-lg text-gray-600">
           {t('officeConfigs.description')}
-        </Typography>
+        </p>
       </div>
 
       {/* Configuration Sections */}
       <div className="space-y-6">
         {/* Location Coverage */}
-        <Accordion
-          title={t('officeConfigs.locationCoverage')}
-          defaultExpanded={true}
-        >
-          <div className="space-y-4 p-4">
-            <Typography variant="body-medium" className="text-gray-600 mb-4">
+        <div className="space-y-6">
+          {/* Location Coverage */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="font-sakr font-medium text-lg mb-4">{t('officeConfigs.locationCoverage')}</h3>
+            <p className="font-sakr font-normal text-base text-gray-600 mb-4">
               {t('officeConfigs.locationCoverageDesc')}
-            </Typography>
+            </p>
             <div className="space-y-3">
               {formatOptionsForSection(locationOptions, 'locations').map((option) => (
                 <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
@@ -233,17 +232,13 @@ const OfficeConfigs: React.FC = () => {
               ))}
             </div>
           </div>
-        </Accordion>
 
-        {/* Service Options */}
-        <Accordion
-          title={t('officeConfigs.serviceOptions')}
-          defaultExpanded={false}
-        >
-          <div className="space-y-4 p-4">
-            <Typography variant="body-medium" className="text-gray-600 mb-4">
+          {/* Service Options */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="font-sakr font-medium text-lg mb-4">{t('officeConfigs.serviceOptions')}</h3>
+            <p className="font-sakr font-normal text-base text-gray-600 mb-4">
               {t('officeConfigs.serviceOptionsDesc')}
-            </Typography>
+            </p>
             <div className="space-y-3">
               {formatOptionsForSection(serviceOptions, 'services').map((option) => (
                 <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
@@ -263,17 +258,13 @@ const OfficeConfigs: React.FC = () => {
               ))}
             </div>
           </div>
-        </Accordion>
 
-        {/* Delivery & Pickup */}
-        <Accordion
-          title={t('officeConfigs.deliveryPickup')}
-          defaultExpanded={false}
-        >
-          <div className="space-y-4 p-4">
-            <Typography variant="body-medium" className="text-gray-600 mb-4">
+          {/* Delivery & Pickup */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="font-sakr font-medium text-lg mb-4">{t('officeConfigs.deliveryPickup')}</h3>
+            <p className="font-sakr font-normal text-base text-gray-600 mb-4">
               {t('officeConfigs.deliveryPickupDesc')}
-            </Typography>
+            </p>
             <div className="space-y-3">
               {formatOptionsForSection(deliveryOptions, 'delivery').map((option) => (
                 <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
@@ -293,7 +284,7 @@ const OfficeConfigs: React.FC = () => {
               ))}
             </div>
           </div>
-        </Accordion>
+        </div>
       </div>
 
       {/* Save Button */}

@@ -8,7 +8,7 @@ import DashboardOverview from './pages/DashboardOverview';
 import CarInventory from './pages/CarInventory';
 import OfficeConfigs from './pages/OfficeConfigs';
 import { DashboardLayout } from './design_system';
-import './design_system_4sale'; // Import 4Sale Design System styles
+import '@mo_sami/web-design-system/dist/style.css';
 import './i18n'; // Initialize i18n
 
 // Simple wrapper component for RTL support

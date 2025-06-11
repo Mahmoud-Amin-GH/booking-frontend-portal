@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Button, Input, Alert, Typography, Progress } from '../design_system';
+import { Button, Input, Alert, Progress } from '@mo_sami/web-design-system';
 import { authAPI, OTPRequest } from '../services/api';
 import { maskPhoneNumber } from '../business/phoneValidation';
 
@@ -133,12 +133,12 @@ const OTPVerification: React.FC = () => {
       {/* Hero Section */}
       <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
         <div className="text-center text-white max-w-md">
-          <Typography variant="display-medium" className="text-white mb-4">
+          <h1 className="font-sakr font-bold text-4xl text-white mb-4">
             Welcome to 4Sale
-          </Typography>
-          <Typography variant="body-large" className="text-primary-100">
+          </h1>
+          <p className="font-sakr font-normal text-lg text-primary-100">
             Your trusted marketplace for buying and selling in Kuwait
-          </Typography>
+          </p>
         </div>
       </div>
 
@@ -147,24 +147,15 @@ const OTPVerification: React.FC = () => {
         <div className="mx-auto w-full max-w-sm lg:w-96">
           {/* Header */}
           <div className="mb-8 text-center">
-            <Typography 
-              variant="headline-large" 
-              className="text-[#092B4C] mb-2"
-            >
+            <h2 className="font-sakr font-bold text-3xl text-[#092B4C] mb-2">
               {t('auth.verifyPhone')}
-            </Typography>
-            <Typography 
-              variant="body-large"
-              className="text-gray-500 mb-4"
-            >
+            </h2>
+            <p className="font-sakr font-normal text-lg text-gray-500 mb-4">
               {t('placeholders.otpHelper')}
-            </Typography>
-            <Typography 
-              variant="body-medium"
-              className="text-[#092B4C] font-semibold"
-            >
+            </p>
+            <p className="font-sakr font-medium text-base text-[#092B4C] font-semibold">
               {maskedPhone}
-            </Typography>
+            </p>
           </div>
 
           {/* Error Alert */}
@@ -182,12 +173,9 @@ const OTPVerification: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* OTP Input */}
             <div>
-              <Typography 
-                variant="label-large"
-                className={`text-gray-700 mb-2 block font-semibold ${isRTL ? 'text-right' : 'text-left'}`}
-              >
+              <label className={`font-sakr font-semibold text-lg text-gray-700 mb-2 block ${isRTL ? 'text-right' : 'text-left'}`}>
                 {t('auth.otp')}
-              </Typography>
+              </label>
               <Input
                 fullWidth
                 value={otp}
@@ -212,12 +200,9 @@ const OTPVerification: React.FC = () => {
 
             {/* Resend OTP */}
             <div className="text-center mb-6">
-              <Typography 
-                variant="body-medium"
-                className="text-gray-500 mb-2"
-              >
+              <p className="font-sakr font-normal text-base text-gray-500 mb-2">
                 {t('auth.didntReceiveCode')}
-              </Typography>
+              </p>
               
               {canResend ? (
                 <Button
@@ -237,12 +222,9 @@ const OTPVerification: React.FC = () => {
                     value={((30 - countdown) / 30) * 100}
                     className="w-4 h-4"
                   />
-                  <Typography 
-                    variant="body-small"
-                    className="text-gray-400"
-                  >
+                  <span className="font-sakr font-normal text-sm text-gray-400">
                     Resend available in {countdown}s
-                  </Typography>
+                  </span>
                 </div>
               )}
             </div>

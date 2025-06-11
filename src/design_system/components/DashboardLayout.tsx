@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
-// import Sidebar from './Sidebar';
-import BottomNavigation from './BottomNavigation';
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -80,10 +78,7 @@ const DashboardLayout: React.FC = () => {
       >
         <Outlet context={inventoryContext} />
       </div>
-      
-      {/* Bottom navigation for mobile */}
-      <BottomNavigation disabledItems={disabledNavItems} />
-      
+
     </div>
   );
 };

@@ -4,16 +4,10 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { 
   Button, 
   Input,
-  NumberInput,
-  Icon,
-  LanguageSwitcher,
   Modal,
-  Typography,
   Select,
-  useSuccessToast,
-  useErrorToast
-} from '../design_system';
-import type { SelectOption } from '../design_system';
+  SelectOption
+} from '@mo_sami/web-design-system';
 // import { PricingTable } from '../design_system/components/PricingTable';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
@@ -45,8 +39,6 @@ const CarInventory: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { language, isRTL } = useLanguage();
-  const showSuccess = useSuccessToast();
-  const showError = useErrorToast();
   
   // Get inventory context from outlet
   const inventoryContext = useOutletContext<InventoryContext>();
@@ -113,7 +105,6 @@ const CarInventory: React.FC = () => {
       setTotalCars(response.total || 0);
       setSelectedCars(new Set()); // Clear selection when loading new data
     } catch (error) {
-      showError('Failed to load cars');
       console.error('Error loading cars:', error);
       setCars([]);
       setTotalCars(0);
@@ -134,7 +125,6 @@ const CarInventory: React.FC = () => {
         car_types: options.car_types || []
       });
     } catch (error) {
-      showError('Failed to load car options');
       console.error('Error loading car options:', error);
       // Defensive: Reset to empty structure on error
       setCarOptions({
@@ -152,7 +142,6 @@ const CarInventory: React.FC = () => {
       // Defensive: Ensure models is always an array
       setAvailableModels(response.models || []);
     } catch (error) {
-      showError('Failed to load models');
       console.error('Error loading models:', error);
       // Defensive: Reset to empty array on error
       setAvailableModels([]);
@@ -163,7 +152,7 @@ const CarInventory: React.FC = () => {
   const brandOptions: SelectOption[] = useMemo(() => {
     if (!carOptions) return [];
     return carOptions.brands.map(brand => ({
-      value: brand.id,
+      value: brand.id.toString(),
       label: getLocalizedBrandName(brand, language),
       labelEn: brand.name_en,
       labelAr: brand.name_ar
@@ -172,7 +161,7 @@ const CarInventory: React.FC = () => {
 
   const modelOptions: SelectOption[] = useMemo(() => {
     return availableModels.map(model => ({
-      value: model.id,
+      value: model.id.toString(),
       label: getLocalizedModelName(model, language),
       labelEn: model.name_en,
       labelAr: model.name_ar
@@ -182,7 +171,7 @@ const CarInventory: React.FC = () => {
   const colorOptions: SelectOption[] = useMemo(() => {
     if (!carOptions) return [];
     return carOptions.colors.map(color => ({
-      value: color.id,
+      value: color.id.toString(),
       label: getLocalizedColorName(color, language),
       labelEn: color.name_en,
       labelAr: color.name_ar
@@ -248,12 +237,10 @@ const CarInventory: React.FC = () => {
       if (editingCar) {
         // Update existing car
         await CarApiService.updateCar(editingCar.id, formData as CarFormData);
-        showSuccess('Car updated successfully');
         setIsEditModalOpen(false);
       } else {
         // Create new car
         await CarApiService.createCar(formData as CarFormData);
-        showSuccess('Car added successfully');
         setIsAddModalOpen(false);
         
         // Refresh inventory status to potentially enable navigation
@@ -265,7 +252,6 @@ const CarInventory: React.FC = () => {
       resetForm();
       loadCars(); // Refresh the list
     } catch (error) {
-      showError('Failed to save car');
       console.error('Error saving car:', error);
     } finally {
       setIsSubmitting(false);
@@ -278,7 +264,6 @@ const CarInventory: React.FC = () => {
 
     try {
       await CarApiService.deleteCar(carToDelete.id);
-      showSuccess('Car deleted successfully');
       setIsDeleteDialogOpen(false);
       setCarToDelete(null);
       loadCars(); // Refresh the list
@@ -288,7 +273,6 @@ const CarInventory: React.FC = () => {
         inventoryContext.refreshStatus();
       }
     } catch (error) {
-      showError('Failed to delete car');
       console.error('Error deleting car:', error);
     }
   };
@@ -364,22 +348,19 @@ const CarInventory: React.FC = () => {
           <Select
             label={t('cars.brand')}
             options={brandOptions}
-            value={formData.brand_id}
-            onChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) }))}
             required
           />
 
           <Select
             label={t('cars.model')}
             options={modelOptions}
-            value={formData.model_id}
-            onChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) }))}
             disabled={!formData.brand_id || modelOptions.length === 0}
             placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')}
             required
           />
 
-          <NumberInput
+          <Input
+            type="number"
             label={t('cars.year')}
             value={formData.year}
             onChange={(value) => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
@@ -388,7 +369,8 @@ const CarInventory: React.FC = () => {
             required
           />
 
-          <NumberInput
+          <Input
+            type="number"
             label={t('cars.seats')}
             value={formData.seats}
             onChange={(value) => setFormData(prev => ({ ...prev, seats: Number(value) || 0 }))}
@@ -400,8 +382,6 @@ const CarInventory: React.FC = () => {
           <Select
             label={t('cars.color')}
             options={colorOptions}
-            value={formData.color_id}
-            onChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) }))}
             required
           />
 
@@ -412,7 +392,8 @@ const CarInventory: React.FC = () => {
             placeholder={t('cars.trimLevelPlaceholder')}
           />
 
-          <NumberInput
+          <Input
+            type="number"
             label={t('cars.availableCount')}
             value={formData.available_count}
             onChange={(value) => setFormData(prev => ({ ...prev, available_count: Number(value) || 0 }))}
@@ -423,16 +404,12 @@ const CarInventory: React.FC = () => {
           <Select
             label={t('cars.transmission')}
             options={transmissionOptions}
-            value={formData.transmission}
-            onChange={(value) => setFormData(prev => ({ ...prev, transmission: value as any }))}
             required
           />
 
           <Select
             label={t('cars.carType')}
             options={carTypeOptions}
-            value={formData.car_type}
-            onChange={(value) => setFormData(prev => ({ ...prev, car_type: value as any }))}
             required
           />
         </div>
@@ -449,12 +426,12 @@ const CarInventory: React.FC = () => {
             <Icon name="user" size="small" className="text-primary-600" />
           </div>
           <div>
-            <Typography variant="body-medium" className="font-medium">
+            <p className="font-sakr font-medium text-base">
               {car.brand_name} {car.model_name}
-            </Typography>
-            <Typography variant="body-small" color="on-surface-variant">
+            </p>
+            <p className="font-sakr font-normal text-sm text-gray-600">
               {car.year} • {car.seats} seats • {car.color_name}
-            </Typography>
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -470,9 +447,9 @@ const CarInventory: React.FC = () => {
       
       <div className="flex justify-between items-center pt-2 border-t border-outline-variant">
         <div className="flex gap-2">
-          <Typography variant="body-small" color="on-surface-variant">
+          <p className="font-sakr font-normal text-sm text-gray-600">
             {t(`cars.transmission.${car.transmission}`)} • {t(`cars.carType.${car.car_type}`)}
-          </Typography>
+          </p>
         </div>
         <div className="flex gap-2">
           <Button variant="text" size="small" onClick={() => openEditModal(car)}>
@@ -492,12 +469,12 @@ const CarInventory: React.FC = () => {
       <div className="w-16 h-16 bg-primary-50 rounded-full flex items-center justify-center mx-auto mb-4">
         <Icon name="user" size="large" className="text-primary-600" />
       </div>
-      <Typography variant="headline-small" className="mb-2">
+      <h3 className="font-sakr font-bold text-xl mb-2">
         {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
-      </Typography>
-      <Typography variant="body-medium" color="on-surface-variant" className="mb-6 max-w-md mx-auto">
+      </h3>
+      <p className="font-sakr font-normal text-base text-gray-600 mb-6 max-w-md mx-auto">
         {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
-      </Typography>
+      </p>
       {searchTerm ? (
         <Button variant="outlined" onClick={() => handleSearch('')}>
           {t('empty.clearFilters')}
@@ -519,9 +496,9 @@ const CarInventory: React.FC = () => {
     return (
       <div className="bg-primary-50 border border-primary-200 rounded-lg p-4 mb-4">
         <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <Typography variant="body-medium">
+          <p className="font-sakr font-normal text-base">
             {t('form.selectedItems', { count: selectedCars.size })}
-          </Typography>
+          </p>
           <div className="flex gap-2">
             <Button variant="outlined" size="small">
               {t('form.bulkEdit')}
@@ -545,12 +522,12 @@ const CarInventory: React.FC = () => {
       {/* Header */}
       <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
-          <Typography variant="headline-medium" color="on-surface" className="font-bold mb-2">
+          <h2 className="font-sakr font-bold text-2xl mb-2 text-gray-900">
             {t('nav.inventory')}
-          </Typography>
-          <Typography variant="body-large" color="on-surface-variant">
+          </h2>
+          <p className="font-sakr font-normal text-lg text-gray-600">
             {t('dashboard.carInventoryDesc')}
-          </Typography>
+          </p>
         </div>
         <Button onClick={openAddModal}>
           {t('dashboard.addNewCar')}
@@ -617,9 +594,9 @@ const CarInventory: React.FC = () => {
       {/* Pagination */}
       {totalPages > 1 && (
         <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <Typography variant="body-small" color="on-surface-variant">
+          <p className="font-sakr font-normal text-sm text-gray-600">
             {t('common.pageOfTotal', { current: currentPage, total: totalPages })}
-          </Typography>
+          </p>
           <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Button
               variant="outlined"
@@ -643,7 +620,7 @@ const CarInventory: React.FC = () => {
 
       {/* Add Car Modal */}
       <Modal
-        isOpen={isAddModalOpen}
+        open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         title={t('cars.addNewCar')}
         size="lg"
@@ -666,7 +643,7 @@ const CarInventory: React.FC = () => {
 
       {/* Edit Car Modal */}
       <Modal
-        isOpen={isEditModalOpen}
+        open={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         title={t('cars.editCar')}
         size="lg"

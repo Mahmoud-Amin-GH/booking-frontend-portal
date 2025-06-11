@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../contexts/LanguageContext';
-import { Button, Input, Alert, Typography } from '../design_system';
+import { Button, Input, Alert } from '@mo_sami/web-design-system';
 import { authAPI, SignupRequest } from '../services/api';
 import { 
   validateKuwaitiPhone, 
@@ -141,12 +141,12 @@ const Signup: React.FC = () => {
       {/* Hero Section */}
       <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
         <div className="text-center text-white max-w-md">
-          <Typography variant="display-medium" className="text-white mb-4">
+          <h1 className="font-sakr font-bold text-4xl text-white mb-4">
             Welcome to 4Sale
-          </Typography>
-          <Typography variant="body-large" className="text-primary-100">
+          </h1>
+          <p className="font-sakr font-normal text-lg text-primary-100">
             Your trusted marketplace for buying and selling in Kuwait
-          </Typography>
+          </p>
         </div>
       </div>
 
@@ -233,10 +233,7 @@ const Signup: React.FC = () => {
 
           {/* Footer */}
           <div className="mt-8 text-center">
-            <Typography 
-              variant="body-medium"
-              className="text-gray-500"
-            >
+            <p className="font-sakr font-normal text-base text-gray-500">
               {t('auth.alreadyHaveAccount')}{' '}
               <Link 
                 to="/login-4sale"
@@ -244,7 +241,7 @@ const Signup: React.FC = () => {
               >
                 {t('auth.login')}
               </Link>
-            </Typography>
+            </p>
           </div>
         </div>
       </div>

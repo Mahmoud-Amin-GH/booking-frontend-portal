@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Alert, Typography, LanguageSwitcher } from '../design_system';
+import { Button, Input, Alert } from '@mo_sami/web-design-system';
 import { authAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { 
@@ -123,31 +123,26 @@ const Login4Sale: React.FC = () => {
           <div className="mb-8">
             <img src="/assets/4sale-logo.svg" alt="4Sale" className="h-16 w-auto" />
           </div>
-          <Typography variant="headline-large" className="text-center mb-4 text-white">
+          <h1 className="font-sakr font-bold text-3xl text-center mb-4 text-white">
             {t('auth.welcomeBack')}
-          </Typography>
-          <Typography variant="body-medium" className="text-center text-primary-100">
+          </h1>
+          <p className="font-sakr font-normal text-base text-center text-primary-100">
             {t('auth.createAccount')}
-          </Typography>
+          </p>
         </div>
       </div>
 
       {/* Form Section */}
       <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
         <div className="mx-auto w-full max-w-sm lg:w-96">
-          {/* Language Switcher */}
-          <div className="flex justify-end mb-6">
-            <LanguageSwitcher />
-          </div>
-
           {/* Header */}
           <div>
-                      <Typography variant="headline-medium" color="on-surface" className="mb-2">
-            {t('auth.login')}
-          </Typography>
-          <Typography variant="body-medium" color="on-surface-variant" className="mb-8">
-            {t('auth.welcomeBack')}
-          </Typography>
+            <h2 className="font-sakr font-bold text-2xl mb-2 text-gray-900">
+              {t('auth.login')}
+            </h2>
+            <p className="font-sakr font-normal text-base mb-8 text-gray-600">
+              {t('auth.welcomeBack')}
+            </p>
           </div>
 
           {/* Error Alert */}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
-import { Button, Typography } from '../index';
+import { Button } from '@mo_sami/web-design-system';
 
 const LanguageSwitcher: React.FC = () => {
   const { language, switchLanguage } = useLanguage();
@@ -18,9 +18,9 @@ const LanguageSwitcher: React.FC = () => {
       className="gap-2"
     >
       <span className="text-base">{language === 'en' ? '🇸🇦' : '🇺🇸'}</span>
-      <Typography variant="label-small" className="font-medium">
+      <span className="font-sakr font-medium text-sm">
         {language === 'en' ? 'العربية' : 'English'}
-      </Typography>
+      </span>
     </Button>
   );
 };
