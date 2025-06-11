@@ -20,7 +20,7 @@ interface ValidationErrors {
   password?: string;
 }
 
-const Login4Sale: React.FC = () => {
+const Login: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
@@ -217,4 +217,4 @@ const Login4Sale: React.FC = () => {
   );
 };
 
-export default Login4Sale; 
+export default Login;

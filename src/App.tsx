@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
-import Login4Sale from './pages/Login4Sale';
 import Signup from './pages/Signup';
 import OTPVerification from './pages/OTPVerification';
 import DashboardOverview from './pages/DashboardOverview';
@@ -10,6 +9,7 @@ import OfficeConfigs from './pages/OfficeConfigs';
 import { DashboardLayout } from './design_system';
 import '@mo_sami/web-design-system/dist/style.css';
 import './i18n'; // Initialize i18n
+import Login from './pages/Login';
 
 // Simple wrapper component for RTL support
 const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -32,7 +32,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login-4sale" element={<Login4Sale />} />
+            <Route path="/login-4sale" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verify-otp" element={<OTPVerification />} />
             
