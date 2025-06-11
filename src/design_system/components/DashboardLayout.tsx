@@ -1,26 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Sidebar, type SidebarItem } from '@mo_sami/web-design-system';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   const { isRTL } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoading, isEmpty, refreshStatus } = useInventoryStatus();
-
-  useEffect(() => {
-    // Check if user is new (hasn't seen onboarding)
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboarding) {
-      // Show onboarding after a short delay to allow layout to settle
-      setTimeout(() => {
-        setShowOnboarding(true);
-      }, 1000);
-    }
-  }, []);
 
   // Handle conditional navigation based on inventory status
   useEffect(() => {
@@ -42,40 +31,55 @@ const DashboardLayout: React.FC = () => {
   // Determine which navigation items should be disabled
   const disabledNavItems = isEmpty ? ['overview', 'settings'] : [];
 
-  const toggleSidebar = () => {
-    setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
-
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false);
-    localStorage.setItem('hasSeenOnboarding', 'true');
-  };
-
-  const handleOnboardingSkip = () => {
-    setShowOnboarding(false);
-    localStorage.setItem('hasSeenOnboarding', 'true');
-  };
+  // Create sidebar navigation items
+  const sidebarItems: SidebarItem[] = [
+    {
+      id: 'overview',
+      label: 'Overview',
+      href: '/dashboard',
+      active: location.pathname === '/dashboard',
+      onClick: () => {
+        if (!disabledNavItems.includes('overview')) {
+          navigate('/dashboard');
+        }
+      }
+    },
+    {
+      id: 'cars',
+      label: 'Car Inventory',
+      href: '/dashboard/cars',
+      active: location.pathname === '/dashboard/cars',
+      onClick: () => navigate('/dashboard/cars')
+    },
+    {
+      id: 'office-configs',
+      label: 'Office Configs',
+      href: '/dashboard/office-configs',
+      active: location.pathname === '/dashboard/office-configs',
+      onClick: () => {
+        if (!disabledNavItems.includes('settings')) {
+          navigate('/dashboard/office-configs');
+        }
+      }
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar for desktop */}
-      {/* <Sidebar 
-        isCollapsed={isSidebarCollapsed} 
-        onToggle={toggleSidebar}
-        disabledItems={disabledNavItems}
+      <Sidebar 
+        items={sidebarItems}
+        collapsible={true}
+        collapsed={isSidebarCollapsed}
+        onCollapsedChange={setIsSidebarCollapsed}
+        className="h-screen sticky top-0"
+        variant="default"
+        width="md"
         data-tour="sidebar"
-      /> */}
+      />
       
       {/* Main content area */}
-      <div 
-        className={`
-          transition-all duration-300 ease-in-out pb-20 md:pb-0
-          ${isRTL 
-            ? (isSidebarCollapsed ? 'mr-8' : 'mr-32') 
-            : (isSidebarCollapsed ? 'ml-8' : 'ml-32')
-          }
-        `}
-      >
+      <div className="flex-1 transition-all duration-300 ease-in-out pb-20 md:pb-0">
         <Outlet context={inventoryContext} />
       </div>
 
