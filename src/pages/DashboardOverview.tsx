@@ -185,41 +185,6 @@ const DashboardOverview: React.FC = () => {
         </div>
       </div>
 
-      {/* Recent Activity Placeholder */}
-      <div className={`bg-white rounded-lg border border-gray-200 p-6 ${isRTL ? 'text-right' : 'text-left'}`}>
-        <h3 className="font-sakr font-medium text-xl mb-4 text-gray-900">
-          Recent Activity
-        </h3>
-        <div className="space-y-4">
-          <div className={`flex items-center gap-3 p-3 rounded-lg bg-primary-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className="w-2 h-2 bg-primary-600 rounded-full animate-pulse"></div>
-            <p className="font-sakr font-normal text-base text-gray-900">
-              System initialized and ready for inventory management
-            </p>
-            <span className="font-sakr font-normal text-sm ml-auto text-gray-500">
-              Just now
-            </span>
-          </div>
-          <div className={`flex items-center gap-3 p-3 rounded-lg bg-green-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-            <p className="font-sakr font-normal text-base text-gray-900">
-              Car inventory system is operational
-            </p>
-            <span className="font-sakr font-normal text-sm ml-auto text-gray-500">
-              2 min ago
-            </span>
-          </div>
-          <div className={`flex items-center gap-3 p-3 rounded-lg bg-blue-50 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-            <p className="font-sakr font-normal text-base text-gray-900">
-              Authentication system is secure and active
-            </p>
-            <span className="font-sakr font-normal text-sm ml-auto text-gray-500">
-              5 min ago
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
