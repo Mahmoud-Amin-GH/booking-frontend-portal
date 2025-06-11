@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Sidebar, type SidebarItem } from '@mo_sami/web-design-system';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
 
 const DashboardLayout: React.FC = () => {
+  const { t } = useTranslation();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const { isRTL } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const { isLoading, isEmpty, refreshStatus } = useInventoryStatus();
@@ -35,7 +36,7 @@ const DashboardLayout: React.FC = () => {
   const sidebarItems: SidebarItem[] = [
     {
       id: 'overview',
-      label: 'Overview',
+      label: t('nav.overview'),
       href: '/dashboard',
       active: location.pathname === '/dashboard',
       onClick: () => {
@@ -46,14 +47,14 @@ const DashboardLayout: React.FC = () => {
     },
     {
       id: 'cars',
-      label: 'Car Inventory',
+      label: t('nav.inventory'),
       href: '/dashboard/cars',
       active: location.pathname === '/dashboard/cars',
       onClick: () => navigate('/dashboard/cars')
     },
     {
       id: 'office-configs',
-      label: 'Office Configs',
+      label: t('nav.settings'),
       href: '/dashboard/office-configs',
       active: location.pathname === '/dashboard/office-configs',
       onClick: () => {

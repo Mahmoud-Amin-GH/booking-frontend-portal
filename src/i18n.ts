@@ -112,6 +112,10 @@ const resources = {
       "stats.trend.up": "↗ {{value}}% vs last month",
       "stats.trend.down": "↘ {{value}}% vs last month",
       "stats.trend.same": "→ No change",
+      "stats.inYourFleet": "In your fleet",
+      "stats.readyForRental": "Ready for rental",
+      "stats.differentManufacturers": "Different manufacturers",
+      "stats.comingSoon": "Coming soon",
       
       // Dashboard
       "dashboard.welcome": "Welcome to your car rental management portal",
@@ -128,6 +132,7 @@ const resources = {
       "dashboard.systemReadyDesc": "All systems are operational. You can start managing your car rental business.",
       "dashboard.addNewCar": "Add New Car",
       "dashboard.viewReports": "View Reports",
+      "dashboard.quickActions": "Quick Actions",
       "dashboard.manageBrand": "Brand & Model Management",
       "dashboard.manageSeats": "Year & Seat Configuration",
       "dashboard.manageColors": "Color & Trim Options",
@@ -410,6 +415,10 @@ const resources = {
       "stats.trend.up": "↗ {{value}}% مقارنة بالشهر الماضي",
       "stats.trend.down": "↘ {{value}}% مقارنة بالشهر الماضي",
       "stats.trend.same": "→ لا يوجد تغيير",
+      "stats.inYourFleet": "في أسطولك",
+      "stats.readyForRental": "جاهز للإيجار",
+      "stats.differentManufacturers": "صانعون مختلفون",
+      "stats.comingSoon": "قريباً",
       
       // Dashboard - Arabic
       "dashboard.welcome": "مرحباً بك في بوابة إدارة تأجير السيارات",
@@ -426,6 +435,7 @@ const resources = {
       "dashboard.systemReadyDesc": "جميع الأنظمة تعمل بشكل طبيعي. يمكنك البدء في إدارة أعمال تأجير السيارات.",
       "dashboard.addNewCar": "إضافة سيارة جديدة",
       "dashboard.viewReports": "عرض التقارير",
+      "dashboard.quickActions": "الإجراءات السريعة",
       "dashboard.manageBrand": "إدارة العلامة التجارية والموديل",
       "dashboard.manageSeats": "تكوين السنة والمقاعد",
       "dashboard.manageColors": "خيارات اللون والتشطيب",

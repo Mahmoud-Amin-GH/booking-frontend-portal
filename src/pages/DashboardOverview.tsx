@@ -97,7 +97,7 @@ const DashboardOverview: React.FC = () => {
     {
       title: t('stats.totalVehicles'),
       value: carStats.totalCars,
-      subtitle: 'In your fleet',
+      subtitle: t('stats.inYourFleet'),
       icon: 'user' as const,
       color: 'bg-blue-100 text-blue-700',
       trend: { direction: 'up' as const, value: 12 },
@@ -106,7 +106,7 @@ const DashboardOverview: React.FC = () => {
     {
       title: t('stats.availableNow'),
       value: carStats.availableCars,
-      subtitle: 'Ready for rental',
+      subtitle: t('stats.readyForRental'),
       icon: 'check' as const,
       color: 'bg-green-100 text-green-700',
       trend: { direction: 'same' as const, value: 0 },
@@ -115,7 +115,7 @@ const DashboardOverview: React.FC = () => {
     {
       title: t('stats.totalBrands'),
       value: carStats.brands,
-      subtitle: 'Different manufacturers',
+      subtitle: t('stats.differentManufacturers'),
       icon: 'phone' as const,
       color: 'bg-purple-100 text-purple-700',
       trend: { direction: 'up' as const, value: 5 },
@@ -124,7 +124,7 @@ const DashboardOverview: React.FC = () => {
     {
       title: t('stats.revenue'),
       value: '—',
-      subtitle: 'Coming soon',
+      subtitle: t('stats.comingSoon'),
       icon: 'email' as const,
       color: 'bg-orange-100 text-orange-700',
       action: () => navigate('/dashboard/office-configs'),
@@ -153,7 +153,7 @@ const DashboardOverview: React.FC = () => {
       {/* Quick Actions */}
       <div className={`bg-white rounded-lg border border-gray-200 p-6 ${isRTL ? 'text-right' : 'text-left'}`}>
         <h3 className="font-sakr font-medium text-xl mb-4 text-gray-900">
-          Quick Actions
+          {t('dashboard.quickActions')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Button
