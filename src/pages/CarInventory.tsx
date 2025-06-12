@@ -807,7 +807,7 @@ const CarInventory: React.FC = () => {
       <Modal
         open={isDeleteDialogOpen}
         onOpenChange={(open) => setIsDeleteDialogOpen(open)}
-        title={t('cars.deleteCar', 'Delete Car')}
+        title={t('cars.deleteCar')}
         size="md"
       >
         <div className="p-6">
@@ -817,16 +817,16 @@ const CarInventory: React.FC = () => {
             </div>
             <div>
               <h3 className="font-sakr font-bold text-lg text-on-surface mb-2">
-                {t('cars.deleteConfirmTitle', 'Are you sure?')}
+                {t('cars.deleteConfirmTitle')}
               </h3>
               <p className="font-sakr font-normal text-sm text-on-surface-variant leading-relaxed">
                 {carToDelete && (
                   <>
-                    {t('cars.deleteConfirmMessage', 'You are about to delete')}{' '}
-                    <span className="font-medium text-on-surface">
-                      {carToDelete.brand_name} {carToDelete.model_name} ({carToDelete.year})
-                    </span>
-                    . {t('cars.deleteWarning', 'This action cannot be undone.')}
+                    {t('cars.deleteConfirmMessage', {
+                      carName: `${carToDelete.brand_name} ${carToDelete.model_name}`,
+                      year: carToDelete.year
+                    })}{' '}
+                    {t('cars.deleteWarning')}
                   </>
                 )}
               </p>
@@ -845,7 +845,7 @@ const CarInventory: React.FC = () => {
               variant="primary"
               onClick={handleDelete}
               disabled={isSubmitting}
-              className="bg-error-600 hover:bg-error-700 text-white"
+              className="!bg-red-600 hover:!bg-red-700 !text-white !border-red-600 hover:!border-red-700"
             >
               {isSubmitting ? t('common.loading') : t('common.delete')}
             </Button>
