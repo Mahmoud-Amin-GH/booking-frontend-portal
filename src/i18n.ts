@@ -66,6 +66,7 @@ const resources = {
       "common.next": "Next",
       "common.pageOfTotal": "Page {{current}} of {{total}}",
       "common.actions": "Actions",
+      "common.disabled": "Disabled",
       
       // Navigation (new improved labels)
       "nav.overview": "Overview",
@@ -91,6 +92,7 @@ const resources = {
       "empty.noSearchResults": "No cars match your search",
       "empty.noSearchResultsDesc": "Try adjusting your search terms or filters",
       "empty.clearFilters": "Clear Filters",
+      "empty.getStartedHint": "Get started by adding vehicles to build your rental fleet",
       
       // Form Enhancement
       "form.step": "Step {{current}} of {{total}}",
@@ -172,6 +174,9 @@ const resources = {
       "cars.addNewCar": "Add New Car",
       "cars.editCar": "Edit Car",
       "cars.deleteCar": "Delete Car",
+      "cars.deleteConfirmTitle": "Delete Car",
+      "cars.deleteConfirmMessage": "You are about to delete {{carName}} ({{year}}). This action cannot be undone.",
+      "cars.deleteWarning": "This will permanently remove the car from your inventory.",
       "cars.deleteConfirmation": "Are you sure you want to delete {{car}}? This action cannot be undone.",
       "cars.selectBrandFirst": "Select a brand first",
       "cars.searchPlaceholder": "Search cars by brand, model, or year...",
@@ -369,6 +374,7 @@ const resources = {
       "common.next": "التالي",
       "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
       "common.actions": "الإجراءات",
+      "common.disabled": "معطل",
       
       // Navigation - Arabic
       "nav.overview": "نظرة عامة",
@@ -394,6 +400,7 @@ const resources = {
       "empty.noSearchResults": "لا توجد سيارات تطابق بحثك",
       "empty.noSearchResultsDesc": "جرب تعديل مصطلحات البحث أو المرشحات",
       "empty.clearFilters": "مسح المرشحات",
+      "empty.getStartedHint": "ابدأ بإضافة المركبات لبناء أسطول التأجير الخاص بك",
       
       // Form Enhancement - Arabic
       "form.step": "الخطوة {{current}} من {{total}}",
@@ -475,6 +482,9 @@ const resources = {
       "cars.addNewCar": "إضافة سيارة جديدة",
       "cars.editCar": "تعديل السيارة",
       "cars.deleteCar": "حذف السيارة",
+      "cars.deleteConfirmTitle": "حذف السيارة",
+      "cars.deleteConfirmMessage": "أنت على وشك حذف {{carName}} ({{year}}). هذا الإجراء لا يمكن التراجع عنه.",
+      "cars.deleteWarning": "سيؤدي هذا إلى إزالة السيارة نهائياً من مخزونك.",
       "cars.deleteConfirmation": "هل أنت متأكد أنك تريد حذف {{car}}؟ هذا الإجراء لا يمكن التراجع عنه.",
       "cars.selectBrandFirst": "حدد العلامة اولا",
       "cars.searchPlaceholder": "ابحث عن سيارات بنوع العلامة أو الموديل أو السنة...",

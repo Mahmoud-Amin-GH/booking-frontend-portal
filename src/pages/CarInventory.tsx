@@ -486,22 +486,43 @@ const CarInventory: React.FC = () => {
 
   // Enhanced Empty State Component
   const EmptyInventoryState = () => (
-    <div className="text-center py-16">
-      <h3 className="font-sakr font-bold text-xl mb-2">
-        {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
-      </h3>
-      <p className="font-sakr font-normal text-base text-gray-600 mb-6 max-w-md mx-auto">
-        {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
-      </p>
-      {searchTerm ? (
-        <Button variant="outlined" onClick={() => handleSearch('')}>
-          {t('empty.clearFilters')}
-        </Button>
-      ) : (
-        <Button onClick={openAddModal}>
-          {t('empty.addFirstCar')}
-        </Button>
-      )}
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="text-center max-w-md mx-auto p-8">
+        {/* Icon/Illustration */}
+        <div className="w-24 h-24 mx-auto mb-6 bg-primary-100 rounded-full flex items-center justify-center">
+          <div className="text-4xl">🚗</div>
+        </div>
+        
+        {/* Title */}
+        <h3 className="font-sakr font-bold text-2xl mb-4 text-on-surface">
+          {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
+        </h3>
+        
+        {/* Description */}
+        <p className="font-sakr font-normal text-lg text-on-surface-variant mb-8 leading-relaxed">
+          {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
+        </p>
+        
+        {/* Action Button */}
+        <div className="space-y-4">
+          {searchTerm ? (
+            <Button variant="primary" size="lg" onClick={() => handleSearch('')}>
+              {t('empty.clearFilters')}
+            </Button>
+          ) : (
+            <Button variant="primary" size="lg" onClick={openAddModal}>
+              {t('empty.addFirstCar')}
+            </Button>
+          )}
+        </div>
+        
+        {/* Optional Helper Text */}
+        {!searchTerm && (
+          <p className="font-sakr font-normal text-sm text-on-surface-variant mt-6">
+            {t('empty.getStartedHint')}
+          </p>
+        )}
+      </div>
     </div>
   );
 
@@ -552,17 +573,19 @@ const CarInventory: React.FC = () => {
         </Button>
       </div>
 
-      {/* Search */}
-      <div className="flex gap-4 items-center">
-        <div className="flex-1 max-w-md">
-          <Input
-            placeholder={t('cars.searchPlaceholder')}
-            value={searchTerm}
-            onChange={(e) => handleSearch(e.target.value)}
-            data-tour="search"
-          />
+      {/* Search - Only show when inventory has cars */}
+      {cars.length > 0 && (
+        <div className="flex gap-4 items-center">
+          <div className="flex-1 max-w-md">
+            <Input
+              placeholder={t('cars.searchPlaceholder')}
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              data-tour="search"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Bulk Actions */}
       <BulkActionsBar />

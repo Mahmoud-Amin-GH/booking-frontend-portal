@@ -45,13 +45,13 @@ const DashboardLayout: React.FC = () => {
     switchLanguage(newLanguage);
   };
 
-  // Create sidebar navigation items
+  // Create sidebar navigation items with disabled state handling
   const sidebarItems: SidebarItem[] = [
     {
       id: 'overview',
-      label: t('nav.overview'),
+      label: disabledNavItems.includes('overview') ? `${t('nav.overview')} (${t('common.disabled')})` : t('nav.overview'),
       href: '/dashboard',
-      active: location.pathname === '/dashboard',
+      active: location.pathname === '/dashboard' && !disabledNavItems.includes('overview'),
       onClick: () => {
         if (!disabledNavItems.includes('overview')) {
           navigate('/dashboard');
@@ -67,9 +67,9 @@ const DashboardLayout: React.FC = () => {
     },
     {
       id: 'office-configs',
-      label: t('nav.settings'),
+      label: disabledNavItems.includes('settings') ? `${t('nav.settings')} (${t('common.disabled')})` : t('nav.settings'),
       href: '/dashboard/office-configs',
-      active: location.pathname === '/dashboard/office-configs',
+      active: location.pathname === '/dashboard/office-configs' && !disabledNavItems.includes('settings'),
       onClick: () => {
         if (!disabledNavItems.includes('settings')) {
           navigate('/dashboard/office-configs');
