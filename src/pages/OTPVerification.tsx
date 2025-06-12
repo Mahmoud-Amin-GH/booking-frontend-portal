@@ -123,122 +123,194 @@ const OTPVerification: React.FC = () => {
   };
 
   const handleBackToLogin = () => {
-    navigate('/login-4sale');
+    navigate('/login');
   };
 
   const maskedPhone = phone ? maskPhoneNumber(phone) : '';
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-gradient-to-br from-surface-container-low to-surface-container flex" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Hero Section */}
-      <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
-        <div className="text-center text-white max-w-md">
-          <h1 className="font-sakr font-bold text-4xl text-white mb-4">
-            Welcome to 4Sale
-          </h1>
-          <p className="font-sakr font-normal text-lg text-primary-100">
-            Your trusted marketplace for buying and selling in Kuwait
-          </p>
+      <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-transparent" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-48 translate-x-48 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full translate-y-40 -translate-x-40 blur-3xl" />
+        
+        <div className="relative z-10 flex flex-col justify-center items-center text-white p-8">
+          {/* Logo Section */}
+          <div className="mb-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <img 
+                src="/assets/4sale-logo.svg" 
+                alt="4Sale" 
+                className="h-16 w-auto filter brightness-0 invert" 
+              />
+            </div>
+          </div>
+          
+          {/* Typography */}
+          <div className="text-center max-w-md">
+            <h1 className="font-sakr font-bold text-4xl xl:text-5xl mb-4 text-white">
+              {t('auth.almostThere', 'Almost There!')}
+            </h1>
+            <p className="font-sakr font-normal text-lg xl:text-xl text-primary-100 mb-6">
+              {t('auth.verificationDescription', 'We\'ve sent a verification code to secure your account')}
+            </p>
+            
+            {/* Security Features */}
+            <div className="space-y-3 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
+                <span className="font-sakr font-medium text-primary-100">
+                  {t('security.smsVerification', 'SMS verification')}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
+                <span className="font-sakr font-medium text-primary-100">
+                  {t('security.secureAccess', 'Secure account access')}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
+                <span className="font-sakr font-medium text-primary-100">
+                  {t('security.protectedData', 'Protected personal data')}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Form Section */}
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
+      <div className="flex-1 flex flex-col justify-center p-8">
+        <div className="mx-auto w-full max-w-md">
           {/* Header */}
-          <div className="mb-8 text-center">
-            <h2 className="font-sakr font-bold text-3xl text-[#092B4C] mb-2">
+          <div className="text-center mb-8">
+            {/* Mobile Logo */}
+            <div className="lg:hidden mb-6 flex justify-center">
+              <div className="bg-primary-50 rounded-xl p-4">
+                <img src="/assets/4sale-logo.svg" alt="4Sale" className="h-12 w-auto" />
+              </div>
+            </div>
+            
+            <h2 className="font-sakr font-bold text-3xl mb-2 text-on-surface">
               {t('auth.verifyPhone')}
             </h2>
-            <p className="font-sakr font-normal text-lg text-gray-500 mb-4">
-              {t('placeholders.otpHelper')}
+            <p className="font-sakr font-normal text-lg text-on-surface-variant mb-4">
+              {t('auth.otpSentTo', 'We\'ve sent a 6-digit code to')}
             </p>
-            <p className="font-sakr font-medium text-base text-[#092B4C] font-semibold">
-              {maskedPhone}
-            </p>
+            <div className="inline-flex items-center px-4 py-2 bg-primary-50 rounded-xl">
+              <span className="font-sakr font-bold text-lg text-primary-700">
+                {maskedPhone}
+              </span>
+            </div>
           </div>
 
-          {/* Error Alert */}
-          {serverError && (
-            <Alert 
-              variant="error" 
-              message={serverError}
-              className="mb-6"
-              dismissible
-              onDismiss={() => setServerError('')}
-            />
-          )}
+          {/* Form Container */}
+          <div className="bg-surface rounded-2xl border border-outline-variant p-6 shadow-sm">
+            {/* Error Alert */}
+            {serverError && (
+              <div className="mb-4">
+                <Alert variant="error">
+                  {serverError}
+                </Alert>
+              </div>
+            )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* OTP Input */}
-            <div>
-              <label className={`font-sakr font-semibold text-lg text-gray-700 mb-2 block ${isRTL ? 'text-right' : 'text-left'}`}>
-                {t('auth.otp')}
-              </label>
-              <Input
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* OTP Input */}
+              <div className="text-center">
+                <label className="font-sakr font-medium text-lg text-on-surface mb-3 block">
+                  {t('auth.enterCode', 'Enter verification code')}
+                </label>
+                <Input
+                  value={otp}
+                  onChange={handleOtpChange}
+                  placeholder="000000"
+                  fullWidth
+                  className="text-center text-2xl tracking-[0.5em] font-mono"
+                  maxLength={6}
+                />
+                <p className="font-sakr text-sm text-on-surface-variant mt-2">
+                  {t('auth.codeLength', 'Enter the 6-digit code sent to your phone')}
+                </p>
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
                 fullWidth
-                value={otp}
-                onChange={handleOtpChange}
-                placeholder="000000"
-                className="text-center text-2xl tracking-widest"
-              />
+                isLoading={loading}
+                disabled={otp.length !== 6}
+              >
+                {t('auth.verify')}
+              </Button>
+            </form>
+
+            {/* Resend Section */}
+            <div className="mt-6 pt-4 border-t border-outline-variant">
+              <div className="text-center space-y-3">
+                <p className="font-sakr text-sm text-on-surface-variant">
+                  {t('auth.didntReceiveCode')}
+                </p>
+                
+                {canResend ? (
+                  <Button
+                    onClick={handleResendOTP}
+                    disabled={loading}
+                    variant="ghost"
+                    size="sm"
+                    className="text-primary-500 hover:text-primary-600"
+                  >
+                    {t('auth.resendCode', 'Resend Code')}
+                  </Button>
+                ) : (
+                  <div className="flex items-center justify-center gap-2 py-2">
+                    <div className="w-4 h-4">
+                      <Progress 
+                        variant="default" 
+                        value={((30 - countdown) / 30) * 100}
+                        className="w-full h-1"
+                      />
+                    </div>
+                    <span className="font-sakr text-sm text-on-surface-variant">
+                      {t('auth.resendIn', 'Resend in')} {countdown}s
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
+          </div>
 
-            {/* Submit Button */}
+          {/* Back to Login */}
+          <div className="mt-6 text-center">
             <Button
-              type="submit"
-              fullWidth
-              variant="primary"
-              size="lg"
-              isLoading={loading}
-              disabled={otp.length !== 6}
-              className="mb-6"
-            >
-              {loading ? t('common.loading') : t('auth.verify')}
-            </Button>
-
-            {/* Resend OTP */}
-            <div className="text-center mb-6">
-              <p className="font-sakr font-normal text-base text-gray-500 mb-2">
-                {t('auth.didntReceiveCode')}
-              </p>
-              
-              {canResend ? (
-                <Button
-                  onClick={handleResendOTP}
-                  disabled={loading}
-                  variant="ghost"
-                  size="sm"
-                  className="text-primary-500 hover:text-primary-600"
-                >
-                  {loading ? 'Sending...' : t('auth.resendOTP')}
-                </Button>
-              ) : (
-                <div className="flex items-center justify-center gap-2">
-                  <Progress 
-                    variant="default" 
-                    size="sm" 
-                    value={((30 - countdown) / 30) * 100}
-                    className="w-4 h-4"
-                  />
-                  <span className="font-sakr font-normal text-sm text-gray-400">
-                    Resend available in {countdown}s
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {/* Back Button */}
-            <Button
-              fullWidth
-              variant="outline"
+              variant="ghost"
               onClick={handleBackToLogin}
-              size="lg"
+              className="text-on-surface-variant hover:text-on-surface"
             >
-              {t('auth.back')}
+              ← {t('auth.backToLogin', 'Back to Login')}
             </Button>
-          </form>
+          </div>
+
+          {/* Help Text */}
+          <div className="mt-6 text-center">
+            <p className="font-sakr text-xs text-on-surface-variant">
+              {t('auth.troubleReceiving', 'Having trouble receiving the code?')}{' '}
+              <button 
+                type="button"
+                className="text-primary-500 hover:text-primary-600 no-underline"
+                onClick={() => {/* Handle help */}}
+              >
+                {t('auth.contactSupport', 'Contact Support')}
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>

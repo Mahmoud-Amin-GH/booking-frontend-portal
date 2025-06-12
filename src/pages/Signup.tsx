@@ -39,7 +39,6 @@ const Signup: React.FC = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
@@ -132,114 +131,179 @@ const Signup: React.FC = () => {
     }
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-gradient-to-br from-surface-container-low to-surface-container flex" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Hero Section */}
-      <div className="lg:flex-1 bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center p-8">
-        <div className="text-center text-white max-w-md">
-          <h1 className="font-sakr font-bold text-4xl text-white mb-4">
-            Welcome to 4Sale
-          </h1>
-          <p className="font-sakr font-normal text-lg text-primary-100">
-            Your trusted marketplace for buying and selling in Kuwait
-          </p>
+      <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 relative overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-transparent" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-48 translate-x-48 blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full translate-y-40 -translate-x-40 blur-3xl" />
+        
+        <div className="relative z-10 flex flex-col justify-center items-center text-white p-8">
+          {/* Logo Section */}
+          <div className="mb-8">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+              <img 
+                src="/assets/4sale-logo.svg" 
+                alt="4Sale" 
+                className="h-16 w-auto filter brightness-0 invert" 
+              />
+            </div>
+          </div>
+          
+          {/* Typography */}
+          <div className="text-center max-w-md">
+            <h1 className="font-sakr font-bold text-4xl xl:text-5xl mb-4 text-white">
+              {t('auth.joinCommunity', 'Join Our Community')}
+            </h1>
+            <p className="font-sakr font-normal text-lg xl:text-xl text-primary-100 mb-6">
+              {t('auth.signupSubtitle', 'Start your journey with Kuwait\'s trusted marketplace')}
+            </p>
+            
+            {/* Benefits */}
+            <div className="space-y-3 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
+                <span className="font-sakr font-medium text-primary-100">
+                  {t('benefits.freeAccount', 'Free account setup')}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
+                <span className="font-sakr font-medium text-primary-100">
+                  {t('benefits.securePlatform', 'Secure & trusted platform')}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
+                <span className="font-sakr font-medium text-primary-100">
+                  {t('benefits.instantAccess', 'Instant access to inventory tools')}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-            {/* Form Section */}
-      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
-        <div className="mx-auto w-full max-w-sm lg:w-96">
+      {/* Form Section */}
+      <div className="flex-1 flex flex-col justify-center p-8">
+        <div className="mx-auto w-full max-w-md">
           {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-[#092B4C] mb-2">
+          <div className="text-center lg:text-left mb-8">
+            {/* Mobile Logo */}
+            <div className="lg:hidden mb-6 flex justify-center">
+              <div className="bg-primary-50 rounded-xl p-4">
+                <img src="/assets/4sale-logo.svg" alt="4Sale" className="h-12 w-auto" />
+              </div>
+            </div>
+            
+            <h2 className="font-sakr font-bold text-3xl mb-2 text-on-surface">
               {t('auth.signup')}
-            </h1>
-            <p className="text-lg text-gray-500">
-              {t('auth.createAccount')}
+            </h2>
+            <p className="font-sakr font-normal text-lg text-on-surface-variant">
+              {t('auth.createAccountSubtitle', 'Create your account to get started')}
             </p>
           </div>
 
-          {/* Error Alert */}
-          {serverError && (
-            <Alert 
-              variant="error" 
-              className="mb-6"
-            >
-              {serverError}
-            </Alert>
-          )}
+          {/* Form Container */}
+          <div className="bg-surface rounded-2xl border border-outline-variant p-6 shadow-sm">
+            {/* Error Alert */}
+            {serverError && (
+              <div className="mb-4">
+                <Alert variant="error">
+                  {serverError}
+                </Alert>
+              </div>
+            )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Display Name */}
-            <Input
-              label={t('auth.displayName')}
-              value={form.displayName}
-              onChange={handleInputChange('displayName')}
-              error={errors.displayName}
-              placeholder={t('placeholders.enterFullName')}
-              required
-            />
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Display Name */}
+              <Input
+                label={t('auth.displayName')}
+                value={form.displayName}
+                onChange={handleInputChange('displayName')}
+                error={errors.displayName}
+                placeholder={t('placeholders.enterFullName')}
+                fullWidth
+              />
 
-            {/* Email */}
-            <Input
-              label={t('auth.email')}
-              type="email"
-              value={form.email}
-              onChange={handleInputChange('email')}
-              error={errors.email}
-              placeholder={t('placeholders.emailExample')}
-              required
-            />
+              {/* Email */}
+              <Input
+                label={t('auth.email')}
+                type="email"
+                value={form.email}
+                onChange={handleInputChange('email')}
+                error={errors.email}
+                placeholder={t('placeholders.emailExample')}
+                fullWidth
+              />
 
-            {/* Phone */}
-            <Input
-              label={t('auth.phone')}
-              value={form.phone}
-              onChange={handlePhoneChange}
-              error={errors.phone}
-              placeholder="XXXX XXXX"
-              startIcon={<span className="text-sm text-gray-500">+965</span>}
-              required
-            />
+              {/* Phone */}
+              <Input
+                label={t('auth.phone')}
+                type="tel"
+                value={form.phone}
+                onChange={handlePhoneChange}
+                error={errors.phone}
+                placeholder="XXXX XXXX"
+                prefix="+965"
+                fullWidth
+              />
 
-            {/* Password */}
-            <Input
-              label={t('auth.password')}
-              type="password"
-              value={form.password}
-              onChange={handleInputChange('password')}
-              error={errors.password}
-              placeholder={t('placeholders.minimumPassword')}
-              required
-            />
+              {/* Password */}
+              <Input
+                label={t('auth.password')}
+                type="password"
+                value={form.password}
+                onChange={handleInputChange('password')}
+                error={errors.password}
+                placeholder={t('placeholders.minimumPassword')}
+                fullWidth
+              />
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              fullWidth
-              variant="primary"
-              size="lg"
-              isLoading={loading}
-              className="mt-6"
-            >
-              {loading ? t('common.loading') : t('auth.signup')}
-            </Button>
-          </form>
+              {/* Submit Button */}
+              <div className="pt-2">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  isLoading={loading}
+                  disabled={!form.displayName || !form.email || !form.phone || !form.password}
+                >
+                  {t('auth.signup')}
+                </Button>
+              </div>
+            </form>
 
-          {/* Footer */}
-          <div className="mt-8 text-center">
-            <p className="font-sakr font-normal text-base text-gray-500">
-              {t('auth.alreadyHaveAccount')}{' '}
-              <Link 
-                to="/login-4sale"
-                className="text-primary-500 font-semibold hover:text-primary-600 no-underline"
-              >
-                {t('auth.login')}
+            {/* Footer Links */}
+            <div className="mt-6 pt-4 border-t border-outline-variant text-center">
+              <div className="text-sm">
+                <span className="font-sakr text-on-surface-variant">
+                  {t('auth.alreadyHaveAccount')}{' '}
+                </span>
+                <Link 
+                  to="/login-4sale"
+                  className="font-sakr font-medium text-primary-500 hover:text-primary-600 transition-colors duration-200 no-underline"
+                >
+                  {t('auth.login')}
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Terms & Privacy */}
+          <div className="mt-6 text-center">
+            <p className="font-sakr text-xs text-on-surface-variant leading-relaxed">
+              {t('auth.termsAgreement', 'By creating an account, you agree to our')}{' '}
+              <Link to="/terms" className="text-primary-500 hover:text-primary-600 no-underline">
+                {t('legal.terms', 'Terms of Service')}
+              </Link>{' '}
+              {t('common.and', 'and')}{' '}
+              <Link to="/privacy" className="text-primary-500 hover:text-primary-600 no-underline">
+                {t('legal.privacy', 'Privacy Policy')}
               </Link>
             </p>
           </div>
