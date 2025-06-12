@@ -263,6 +263,7 @@ const CarInventory: React.FC = () => {
   const handleDelete = async () => {
     if (!carToDelete) return;
 
+    setIsSubmitting(true);
     try {
       await CarApiService.deleteCar(carToDelete.id);
       setIsDeleteDialogOpen(false);
@@ -275,6 +276,8 @@ const CarInventory: React.FC = () => {
       }
     } catch (error) {
       console.error('Error deleting car:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -795,6 +798,56 @@ const CarInventory: React.FC = () => {
               disabled={isSubmitting}
             >
               {isSubmitting ? t('common.loading') : t('common.save')}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        open={isDeleteDialogOpen}
+        onOpenChange={(open) => setIsDeleteDialogOpen(open)}
+        title={t('cars.deleteCar', 'Delete Car')}
+        size="md"
+      >
+        <div className="p-6">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-12 h-12 bg-error-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl text-error-600">⚠️</span>
+            </div>
+            <div>
+              <h3 className="font-sakr font-bold text-lg text-on-surface mb-2">
+                {t('cars.deleteConfirmTitle', 'Are you sure?')}
+              </h3>
+              <p className="font-sakr font-normal text-sm text-on-surface-variant leading-relaxed">
+                {carToDelete && (
+                  <>
+                    {t('cars.deleteConfirmMessage', 'You are about to delete')}{' '}
+                    <span className="font-medium text-on-surface">
+                      {carToDelete.brand_name} {carToDelete.model_name} ({carToDelete.year})
+                    </span>
+                    . {t('cars.deleteWarning', 'This action cannot be undone.')}
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+        <ModalFooter>
+          <div className="flex gap-3 justify-end">
+            <Button 
+              variant="ghost" 
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button 
+              variant="primary"
+              onClick={handleDelete}
+              disabled={isSubmitting}
+              className="bg-error-600 hover:bg-error-700 text-white"
+            >
+              {isSubmitting ? t('common.loading') : t('common.delete')}
             </Button>
           </div>
         </ModalFooter>
