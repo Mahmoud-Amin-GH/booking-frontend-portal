@@ -459,12 +459,22 @@ const CarInventory: React.FC = () => {
             {t(`cars.transmission.${car.transmission}`)} • {t(`cars.carType.${car.car_type}`)}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="text" size="small" onClick={() => openEditModal(car)}>
-            {t('common.edit')}
+        <div className="flex gap-1">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => openEditModal(car)}
+            className="w-8 h-8 p-0 hover:bg-primary-100 text-primary-600 hover:text-primary-700"
+          >
+            ✏️
           </Button>
-          <Button variant="text" size="small" onClick={() => openDeleteDialog(car)} className="text-error">
-            {t('common.delete')}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => openDeleteDialog(car)} 
+            className="w-8 h-8 p-0 hover:bg-error-100 text-error-600 hover:text-error-700"
+          >
+            🗑️
           </Button>
         </div>
       </div>
@@ -688,12 +698,22 @@ const CarInventory: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-4 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Button variant="text" size="small" onClick={() => openEditModal(car)}>
-                              {t('common.edit')}
+                          <div className="flex items-center justify-end gap-1">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => openEditModal(car)}
+                              className="w-8 h-8 p-0 hover:bg-primary-100 text-primary-600 hover:text-primary-700 transition-colors duration-200"
+                            >
+                              ✏️
                             </Button>
-                            <Button variant="text" size="small" onClick={() => openDeleteDialog(car)} className="text-error-600">
-                              {t('common.delete')}
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              onClick={() => openDeleteDialog(car)} 
+                              className="w-8 h-8 p-0 hover:bg-error-100 text-error-600 hover:text-error-700 transition-colors duration-200"
+                            >
+                              🗑️
                             </Button>
                           </div>
                         </td>

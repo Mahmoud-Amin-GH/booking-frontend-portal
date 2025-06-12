@@ -61,130 +61,242 @@ const DashboardOverview: React.FC = () => {
     }
   };
 
-  // Enhanced stat cards with trend indicators and better visual design
-  const StatCard = ({ title, value, subtitle, icon, color, trend, action }: {
+  // Enhanced stat cards with modern design
+  const StatCard = ({ title, value, subtitle, color, trend, action }: {
     title: string;
     value: string | number;
     subtitle: string;
-    icon: any;
     color: string;
     trend?: { direction: 'up' | 'down' | 'same'; value: number };
     action: () => void;
   }) => (
     <div
-      className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+      className="bg-surface rounded-2xl border border-outline-variant p-6 hover:shadow-lg hover:shadow-primary-500/10 transition-all duration-200 cursor-pointer group"
       onClick={action}
     >
-      <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <div className="font-sakr font-bold text-3xl mb-1 text-gray-900">
-          {statsLoading ? (
-            <Progress variant="default" className="w-16 h-2" />
-          ) : (
-            value
-          )}
+      <div className="flex flex-col h-full">
+        <div className="flex-1">
+          <div className="font-sakr font-bold text-3xl mb-2 text-on-surface">
+            {statsLoading ? (
+              <div className="w-16 h-8 bg-surface-container-highest rounded animate-pulse"></div>
+            ) : (
+              <span className="group-hover:text-primary-600 transition-colors duration-200">
+                {value}
+              </span>
+            )}
+          </div>
+          <h3 className="font-sakr font-medium text-lg mb-1 text-on-surface group-hover:text-primary-600 transition-colors duration-200">
+            {title}
+          </h3>
+          <p className="font-sakr font-normal text-sm text-on-surface-variant">
+            {subtitle}
+          </p>
         </div>
-        <p className="font-sakr font-medium text-base mb-1 text-gray-600">
-          {title}
-        </p>
-        <p className="font-sakr font-normal text-sm text-gray-500">
-          {subtitle}
-        </p>
+        
+        {trend && (
+          <div className="mt-4 pt-3 border-t border-outline-variant/50">
+            <div className={`flex items-center gap-1 text-xs font-sakr font-medium ${
+              trend.direction === 'up' ? 'text-success' : 
+              trend.direction === 'down' ? 'text-error' : 'text-on-surface-variant'
+            }`}>
+              <span>
+                {trend.direction === 'up' ? '↗' : trend.direction === 'down' ? '↘' : '→'}
+              </span>
+              <span>
+                {trend.direction !== 'same' && `${trend.value}% `}
+                {t(trend.direction === 'up' ? 'stats.increase' : trend.direction === 'down' ? 'stats.decrease' : 'stats.stable', 
+                   trend.direction === 'up' ? 'increase' : trend.direction === 'down' ? 'decrease' : 'stable')}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 
   const statCards = [
     {
-      title: t('stats.totalVehicles'),
+      title: t('stats.totalVehicles', 'Total Vehicles'),
       value: carStats.totalCars,
-      subtitle: t('stats.inYourFleet'),
-      icon: 'user' as const,
-      color: 'bg-blue-100 text-blue-700',
+      subtitle: t('stats.inYourFleet', 'In your fleet'),
+      color: 'primary',
       trend: { direction: 'up' as const, value: 12 },
       action: () => navigate('/dashboard/cars'),
     },
     {
-      title: t('stats.availableNow'),
+      title: t('stats.availableNow', 'Available Now'),
       value: carStats.availableCars,
-      subtitle: t('stats.readyForRental'),
-      icon: 'check' as const,
-      color: 'bg-green-100 text-green-700',
+      subtitle: t('stats.readyForRental', 'Ready for rental'),
+      color: 'success',
       trend: { direction: 'same' as const, value: 0 },
       action: () => navigate('/dashboard/cars'),
     },
     {
-      title: t('stats.totalBrands'),
+      title: t('stats.totalBrands', 'Total Brands'),
       value: carStats.brands,
-      subtitle: t('stats.differentManufacturers'),
-      icon: 'phone' as const,
-      color: 'bg-purple-100 text-purple-700',
+      subtitle: t('stats.differentManufacturers', 'Different manufacturers'),
+      color: 'secondary',
       trend: { direction: 'up' as const, value: 5 },
       action: () => navigate('/dashboard/cars'),
     },
     {
-      title: t('stats.revenue'),
+      title: t('stats.revenue', 'Revenue'),
       value: '—',
-      subtitle: t('stats.comingSoon'),
-      icon: 'email' as const,
-      color: 'bg-orange-100 text-orange-700',
+      subtitle: t('stats.comingSoon', 'Coming soon'),
+      color: 'warning',
       action: () => navigate('/dashboard/office-configs'),
     },
   ];
 
   return (
-    <div className="p-6 space-y-8">
-      {/* Header */}
-      <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <h2 className="font-sakr font-bold text-2xl mb-2 text-gray-900">
-          {t('dashboard.welcome')}
-        </h2>
-        <p className="font-sakr font-normal text-lg text-gray-600">
-          {t('dashboard.systemReadyDesc')}
-        </p>
-      </div>
-
-      {/* Enhanced Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        {statCards.map((card, index) => (
-          <StatCard key={index} {...card} />
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className={`bg-white rounded-lg border border-gray-200 p-6 ${isRTL ? 'text-right' : 'text-left'}`}>
-        <h3 className="font-sakr font-medium text-xl mb-4 text-gray-900">
-          {t('dashboard.quickActions')}
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => navigate('/dashboard/cars')}
-            className={`justify-start gap-3 hover:bg-primary-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
-          >
-            {t('dashboard.addNewCar')}
-          </Button>
+    <div className="p-8 space-y-8" dir={isRTL ? 'rtl' : 'ltr'}>
+      {/* Welcome Header */}
+      <div className="bg-gradient-to-r from-primary-50 to-primary-100 rounded-2xl p-8 border border-primary-200">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div>
+            <h1 className="font-sakr font-bold text-4xl mb-3 text-primary-800">
+              {t('dashboard.welcome', 'Welcome Back!')}
+            </h1>
+            <p className="font-sakr font-normal text-xl text-primary-700 mb-4">
+              {t('dashboard.overviewDescription', 'Here\'s what\'s happening with your car rental business today')}
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+              <span className="font-sakr font-medium text-sm text-primary-600">
+                {t('dashboard.systemStatus', 'All systems operational')}
+              </span>
+            </div>
+          </div>
           
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => navigate('/dashboard/cars')}
-            className={`justify-start gap-3 hover:bg-green-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
-          >
-            {t('dashboard.viewReports')}
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => navigate('/dashboard/office-configs')}
-            className={`justify-start gap-3 hover:bg-purple-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
-          >
-            {t('nav.settings')}
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/dashboard/cars')}
+              className="shadow-lg"
+            >
+              {t('dashboard.addNewCar', 'Add New Car')}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/dashboard/cars')}
+            >
+              {t('dashboard.viewInventory', 'View Inventory')}
+            </Button>
+          </div>
         </div>
       </div>
 
+      {/* Statistics Grid */}
+      <div>
+        <div className="mb-6">
+          <h2 className="font-sakr font-bold text-2xl text-on-surface mb-2">
+            {t('dashboard.overview', 'Business Overview')}
+          </h2>
+          <p className="font-sakr font-normal text-lg text-on-surface-variant">
+            {t('dashboard.keyMetrics', 'Key metrics for your rental business')}
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          {statCards.map((card, index) => (
+            <StatCard key={index} {...card} />
+          ))}
+        </div>
+      </div>
+
+      {/* Quick Actions Section */}
+      <div className="bg-surface rounded-2xl border border-outline-variant p-8">
+        <div className="mb-6">
+          <h3 className="font-sakr font-bold text-2xl text-on-surface mb-2">
+            {t('dashboard.quickActions', 'Quick Actions')}
+          </h3>
+          <p className="font-sakr font-normal text-lg text-on-surface-variant">
+            {t('dashboard.quickActionsDesc', 'Common tasks to manage your business')}
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div 
+            className="group bg-primary-50 hover:bg-primary-100 rounded-xl p-6 border border-primary-200 cursor-pointer transition-all duration-200"
+            onClick={() => navigate('/dashboard/cars')}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center">
+                <span className="text-white font-sakr font-bold text-xl">+</span>
+              </div>
+              <span className="text-primary-600 group-hover:text-primary-700 transition-colors">→</span>
+            </div>
+            <h4 className="font-sakr font-bold text-lg text-primary-800 mb-1">
+              {t('dashboard.addNewCar', 'Add New Car')}
+            </h4>
+            <p className="font-sakr font-normal text-sm text-primary-600">
+              {t('dashboard.addCarDesc', 'Expand your fleet with new vehicles')}
+            </p>
+          </div>
+
+          <div 
+            className="group bg-success-50 hover:bg-success-100 rounded-xl p-6 border border-success-200 cursor-pointer transition-all duration-200"
+            onClick={() => navigate('/dashboard/cars')}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-success-500 rounded-xl flex items-center justify-center">
+                <span className="text-white font-sakr font-bold text-xl">📊</span>
+              </div>
+              <span className="text-success-600 group-hover:text-success-700 transition-colors">→</span>
+            </div>
+            <h4 className="font-sakr font-bold text-lg text-success-800 mb-1">
+              {t('dashboard.viewReports', 'View Reports')}
+            </h4>
+            <p className="font-sakr font-normal text-sm text-success-600">
+              {t('dashboard.reportsDesc', 'Analyze your business performance')}
+            </p>
+          </div>
+
+          <div 
+            className="group bg-secondary-50 hover:bg-secondary-100 rounded-xl p-6 border border-secondary-200 cursor-pointer transition-all duration-200"
+            onClick={() => navigate('/dashboard/office-configs')}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-12 h-12 bg-secondary-500 rounded-xl flex items-center justify-center">
+                <span className="text-white font-sakr font-bold text-xl">⚙️</span>
+              </div>
+              <span className="text-secondary-600 group-hover:text-secondary-700 transition-colors">→</span>
+            </div>
+            <h4 className="font-sakr font-bold text-lg text-secondary-800 mb-1">
+              {t('nav.settings', 'Settings')}
+            </h4>
+            <p className="font-sakr font-normal text-sm text-secondary-600">
+              {t('dashboard.settingsDesc', 'Configure your business preferences')}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Empty State Helper (when no cars) */}
+      {isEmpty && !isLoading && (
+        <div className="bg-surface rounded-2xl border border-outline-variant p-8 text-center">
+          <div className="max-w-md mx-auto">
+            <div className="w-24 h-24 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-4xl">🚗</span>
+            </div>
+            <h3 className="font-sakr font-bold text-2xl text-on-surface mb-3">
+              {t('dashboard.emptyState', 'Start Building Your Fleet')}
+            </h3>
+            <p className="font-sakr font-normal text-lg text-on-surface-variant mb-6">
+              {t('dashboard.emptyStateDesc', 'Add your first vehicle to begin managing your car rental business')}
+            </p>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/dashboard/cars')}
+            >
+              {t('dashboard.addFirstCar', 'Add Your First Car')}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

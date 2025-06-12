@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Accordion } from '@mo_sami/web-design-system';
+import { Button } from '@mo_sami/web-design-system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
 
@@ -174,7 +174,7 @@ const OfficeConfigs: React.FC = () => {
     }
   };
 
-  // Convert option arrays to format expected by OfficeConfigSection
+  // Convert option arrays to format expected by ConfigSection
   const formatOptionsForSection = (options: typeof locationOptions, configType: keyof OfficeConfigState) => {
     return options.map(option => ({
       ...option,
@@ -182,13 +182,78 @@ const OfficeConfigs: React.FC = () => {
     }));
   };
 
+  // Enhanced Config Section Component
+  const ConfigSection = ({ 
+    title, 
+    description, 
+    options, 
+    onChange, 
+    icon, 
+    color 
+  }: {
+    title: string;
+    description: string;
+    options: any[];
+    onChange: (key: string, enabled: boolean) => void;
+    icon: string;
+    color: string;
+  }) => (
+    <div className="bg-surface rounded-2xl border border-outline-variant overflow-hidden">
+      <div className={`bg-gradient-to-r ${color} p-6`}>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+            <span className="text-2xl">{icon}</span>
+          </div>
+          <div>
+            <h3 className="font-sakr font-bold text-xl text-white mb-1">
+              {title}
+            </h3>
+            <p className="font-sakr font-medium text-sm text-white/90">
+              {description}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div className="p-6">
+        <div className="space-y-4">
+          {options.map((option) => (
+            <label 
+              key={option.key} 
+              className="group flex items-start gap-4 p-4 rounded-xl border border-outline-variant hover:border-primary-300 hover:bg-primary-50/50 cursor-pointer transition-all duration-200"
+            >
+              <input
+                type="checkbox"
+                checked={option.enabled}
+                onChange={(e) => onChange(option.key, e.target.checked)}
+                className="mt-1 w-5 h-5 rounded border-outline-variant text-primary-500 focus:ring-primary-500 focus:ring-2 focus:ring-offset-0"
+              />
+              <div className="flex-1">
+                <span className="font-sakr font-medium text-lg text-on-surface group-hover:text-primary-700 transition-colors duration-200">
+                  {t(option.labelKey)}
+                </span>
+                {option.descriptionKey && (
+                  <p className="font-sakr font-normal text-sm text-on-surface-variant mt-1 leading-relaxed">
+                    {t(option.descriptionKey)}
+                  </p>
+                )}
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   if (isLoading) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-96">
+      <div className="p-8 flex items-center justify-center min-h-96">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-4"></div>
-          <p className="font-sakr font-normal text-base text-gray-600">
-            {t('common.loading')}...
+          <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <div className="w-8 h-8 bg-primary-500 rounded-full animate-bounce"></div>
+          </div>
+          <p className="font-sakr font-medium text-lg text-on-surface-variant">
+            {t('common.loading', 'Loading')}...
           </p>
         </div>
       </div>
@@ -196,106 +261,108 @@ const OfficeConfigs: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-8 space-y-8" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
-      <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
-        <h2 className="font-sakr font-bold text-2xl mb-2 text-gray-900">
-          {t('officeConfigs.title')}
-        </h2>
-        <p className="font-sakr font-normal text-lg text-gray-600">
-          {t('officeConfigs.description')}
-        </p>
-      </div>
-
-      {/* Configuration Sections */}
-      <div className="space-y-6">
-        {/* Location Coverage */}
-        <div className="space-y-6">
-          {/* Location Coverage */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-sakr font-medium text-lg mb-4">{t('officeConfigs.locationCoverage')}</h3>
-            <p className="font-sakr font-normal text-base text-gray-600 mb-4">
-              {t('officeConfigs.locationCoverageDesc')}
+      <div className="bg-gradient-to-r from-secondary-50 to-secondary-100 rounded-2xl p-8 border border-secondary-200">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div>
+            <h1 className="font-sakr font-bold text-4xl mb-3 text-secondary-800">
+              {t('officeConfigs.title', 'Business Configuration')}
+            </h1>
+            <p className="font-sakr font-normal text-xl text-secondary-700">
+              {t('officeConfigs.description', 'Configure your rental business settings and service offerings')}
             </p>
-            <div className="space-y-3">
-              {formatOptionsForSection(locationOptions, 'locations').map((option) => (
-                <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={option.enabled}
-                    onChange={(e) => handleLocationChange(option.key, e.target.checked)}
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <span className="font-sakr">{t(option.labelKey)}</span>
-                </label>
-              ))}
-            </div>
           </div>
-
-          {/* Service Options */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-sakr font-medium text-lg mb-4">{t('officeConfigs.serviceOptions')}</h3>
-            <p className="font-sakr font-normal text-base text-gray-600 mb-4">
-              {t('officeConfigs.serviceOptionsDesc')}
-            </p>
-            <div className="space-y-3">
-              {formatOptionsForSection(serviceOptions, 'services').map((option) => (
-                <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={option.enabled}
-                    onChange={(e) => handleServiceChange(option.key, e.target.checked)}
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <div>
-                    <span className="font-sakr">{t(option.labelKey)}</span>
-                    {(option as any).descriptionKey && (
-                      <p className="text-sm text-gray-500 mt-1">{t((option as any).descriptionKey)}</p>
-                    )}
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Delivery & Pickup */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="font-sakr font-medium text-lg mb-4">{t('officeConfigs.deliveryPickup')}</h3>
-            <p className="font-sakr font-normal text-base text-gray-600 mb-4">
-              {t('officeConfigs.deliveryPickupDesc')}
-            </p>
-            <div className="space-y-3">
-              {formatOptionsForSection(deliveryOptions, 'delivery').map((option) => (
-                <label key={option.key} className="flex items-center space-x-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={option.enabled}
-                    onChange={(e) => handleDeliveryChange(option.key, e.target.checked)}
-                    className="rounded border-gray-300 text-primary focus:ring-primary"
-                  />
-                  <div>
-                    <span className="font-sakr">{t(option.labelKey)}</span>
-                    {(option as any).descriptionKey && (
-                      <p className="text-sm text-gray-500 mt-1">{t((option as any).descriptionKey)}</p>
-                    )}
-                  </div>
-                </label>
-              ))}
-            </div>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-secondary-500 rounded-full animate-pulse"></div>
+            <span className="font-sakr font-medium text-sm text-secondary-600">
+              {t('officeConfigs.autoSave', 'Auto-saved')}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Save Button */}
-      <div className={`pt-6 border-t border-outline-variant ${isRTL ? 'text-left' : 'text-right'}`}>
-        <Button
-          variant="primary"
-          onClick={handleSave}
-          disabled={isSaving}
-          className="min-w-32"
-        >
-          {isSaving ? t('common.loading') : t('common.save')}
-        </Button>
+      {/* Configuration Sections */}
+      <div className="space-y-8">
+        {/* Location Coverage */}
+        <ConfigSection
+          title={t('officeConfigs.locationCoverage', 'Location Coverage')}
+          description={t('officeConfigs.locationCoverageDesc', 'Select areas where you provide rental services')}
+          options={formatOptionsForSection(locationOptions, 'locations')}
+          onChange={handleLocationChange}
+          icon="🗺️"
+          color="from-primary-500 to-primary-600"
+        />
+
+        {/* Service Options */}
+        <ConfigSection
+          title={t('officeConfigs.serviceOptions', 'Service Options')}
+          description={t('officeConfigs.serviceOptionsDesc', 'Additional services you offer to customers')}
+          options={formatOptionsForSection(serviceOptions, 'services')}
+          onChange={handleServiceChange}
+          icon="🔧"
+          color="from-success-500 to-success-600"
+        />
+
+        {/* Delivery & Pickup */}
+        <ConfigSection
+          title={t('officeConfigs.deliveryPickup', 'Delivery & Pickup')}
+          description={t('officeConfigs.deliveryPickupDesc', 'Delivery and pickup options for your customers')}
+          options={formatOptionsForSection(deliveryOptions, 'delivery')}
+          onChange={handleDeliveryChange}
+          icon="🚛"
+          color="from-secondary-500 to-secondary-600"
+        />
+      </div>
+
+      {/* Save Section */}
+      <div className="bg-surface rounded-2xl border border-outline-variant p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h3 className="font-sakr font-bold text-lg text-on-surface mb-1">
+              {t('officeConfigs.saveChanges', 'Save Changes')}
+            </h3>
+            <p className="font-sakr font-normal text-sm text-on-surface-variant">
+              {t('officeConfigs.saveDescription', 'Apply your configuration changes to update your business settings')}
+            </p>
+          </div>
+          
+          <div className="flex gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => window.location.reload()}
+              disabled={isSaving}
+            >
+              {t('common.cancel', 'Cancel')}
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={handleSave}
+              isLoading={isSaving}
+              className="min-w-32 shadow-lg"
+            >
+              {t('common.save', 'Save Settings')}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Help Section */}
+      <div className="bg-surface-container rounded-2xl p-6 border border-outline-variant">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <span className="text-lg">💡</span>
+          </div>
+          <div>
+            <h4 className="font-sakr font-bold text-lg text-on-surface mb-2">
+              {t('officeConfigs.helpTitle', 'Need Help?')}
+            </h4>
+            <p className="font-sakr font-normal text-sm text-on-surface-variant leading-relaxed">
+              {t('officeConfigs.helpDescription', 'These settings help customers find and book your services. Enable options that match your business capabilities to improve customer satisfaction.')}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
