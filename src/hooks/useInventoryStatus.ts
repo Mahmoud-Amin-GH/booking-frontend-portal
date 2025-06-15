@@ -8,7 +8,7 @@ interface InventoryStatus {
   error: string | null;
 }
 
-export const useInventoryStatus = () => {
+export const useInventoryStatus = (userStatus?: string) => {
   const [status, setStatus] = useState<InventoryStatus>({
     isLoading: true,
     isEmpty: true,
@@ -17,14 +17,15 @@ export const useInventoryStatus = () => {
   });
 
   const checkInventoryStatus = async () => {
+    if (userStatus !== 'active') {
+      setStatus(prev => ({ ...prev, isLoading: false, isEmpty: true, totalCars: 0 }));
+      return;
+    }
     try {
       setStatus(prev => ({ ...prev, isLoading: true, error: null }));
-      
-      // Get just the first car to check if inventory exists
       const response = await CarApiService.getCars({ limit: 1, offset: 0 });
       const totalCars = response.total || 0;
       const isEmpty = totalCars === 0;
-
       setStatus({
         isLoading: false,
         isEmpty,
@@ -43,7 +44,8 @@ export const useInventoryStatus = () => {
 
   useEffect(() => {
     checkInventoryStatus();
-  }, []);
+    // Only re-run if userStatus changes
+  }, [userStatus]);
 
   const refreshStatus = () => {
     checkInventoryStatus();

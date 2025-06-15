@@ -47,6 +47,8 @@ export interface User {
   email: string;
   phone: string;
   is_verified: boolean;
+  status: string;
+  reason?: string | null;
   created_at: string;
 }
 
@@ -75,6 +77,13 @@ export const authAPI = {
       localStorage.setItem('auth_token', response.data.token);
     }
     return response.data;
+  },
+};
+
+export const userAPI = {
+  getCurrentUser: async (): Promise<User> => {
+    const response = await api.get('/user');
+    return response.data.user;
   },
 };
 

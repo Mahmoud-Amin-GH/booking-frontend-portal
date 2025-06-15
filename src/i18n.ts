@@ -309,7 +309,11 @@ const resources = {
       "actions.viewDetails": "View Details",
       "actions.addSpecialPrice": "Add Special Price for Period",
       "actions.markRented": "Mark as Rented from Office",
-      "actions.deleteVehicle": "Delete Vehicle"
+      "actions.deleteVehicle": "Delete Vehicle",
+      
+      // Pending State
+      "pendingState.title": "Your account is currently under review.",
+      "pendingState.subtitle": "Please wait while an admin approves your registration."
     }
   },
   ar: {
@@ -617,7 +621,11 @@ const resources = {
       "actions.viewDetails": "عرض التفاصيل",
       "actions.addSpecialPrice": "إضافة سعر خاص لفترة زمنيه معنيه",
       "actions.markRented": "تم حجز سيارة من المكتب",
-      "actions.deleteVehicle": "مسح السيارة"
+      "actions.deleteVehicle": "مسح السيارة",
+      
+      // Pending State - Arabic
+      "pendingState.title": "حسابك قيد المراجعة حالياً.",
+      "pendingState.subtitle": "يرجى الانتظار حتى يقوم المسؤول بالموافقة على تسجيلك."
     }
   }
 };
