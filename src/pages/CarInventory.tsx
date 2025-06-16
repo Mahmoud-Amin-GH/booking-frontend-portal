@@ -70,7 +70,8 @@ const CarInventory: React.FC = () => {
     trim_level: '',
     available_count: 1,
     transmission: 'automatic',
-    car_type: 'sedan'
+    car_type: 'sedan',
+    price_per_day: 0
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -122,7 +123,8 @@ const CarInventory: React.FC = () => {
         brands: options.brands || [],
         colors: options.colors || [],
         transmissions: options.transmissions || [],
-        car_types: options.car_types || []
+        car_types: options.car_types || [],
+        trim_levels: options.trim_levels || []
       });
     } catch (error) {
       console.error('Error loading car options:', error);
@@ -131,7 +133,8 @@ const CarInventory: React.FC = () => {
         brands: [],
         colors: [],
         transmissions: [],
-        car_types: []
+        car_types: [],
+        trim_levels: []
       });
     }
   };
@@ -196,6 +199,16 @@ const CarInventory: React.FC = () => {
       labelEn: carType.label_en,
       labelAr: carType.label_ar
     }));
+  }, [carOptions, language]);
+
+  const trimLevelOptions: SelectOption[] = useMemo(() => {
+    if (!carOptions) return [];
+    return carOptions.trim_levels?.map(trim => ({
+      value: trim.value,
+      label: getLocalizedDropdownLabel(trim, language),
+      labelEn: trim.label_en,
+      labelAr: trim.label_ar
+    })) || [];
   }, [carOptions, language]);
 
   // Handle search
@@ -291,7 +304,8 @@ const CarInventory: React.FC = () => {
       trim_level: '',
       available_count: 1,
       transmission: 'automatic',
-      car_type: 'sedan'
+      car_type: 'sedan',
+      price_per_day: 0
     });
     setFormErrors([]);
     setEditingCar(null);
@@ -314,7 +328,8 @@ const CarInventory: React.FC = () => {
       trim_level: car.trim_level,
       available_count: car.available_count,
       transmission: car.transmission,
-      car_type: car.car_type
+      car_type: car.car_type,
+      price_per_day: car.price_per_day
     });
     setIsEditModalOpen(true);
   };
@@ -336,7 +351,7 @@ const CarInventory: React.FC = () => {
   // Original single-step form component
   const CarForm = () => {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 pb-4">
         {formErrors.length > 0 && (
           <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
             <ul className="list-disc list-inside space-y-1">
@@ -369,8 +384,8 @@ const CarInventory: React.FC = () => {
           <Input
             type="number"
             label={t('cars.year')}
-            value={formData.year}
-            onChange={(value) => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
+            value={formData.year ?? ''}
+            onChange={e => setFormData(prev => ({ ...prev, year: Number(e.target.value) || 0 }))}
             min={1900}
             max={2030}
             required
@@ -379,8 +394,8 @@ const CarInventory: React.FC = () => {
           <Input
             type="number"
             label={t('cars.seats')}
-            value={formData.seats}
-            onChange={(value) => setFormData(prev => ({ ...prev, seats: Number(value) || 0 }))}
+            value={formData.seats ?? ''}
+            onChange={e => setFormData(prev => ({ ...prev, seats: Number(e.target.value) || 0 }))}
             min={1}
             max={12}
             required
@@ -394,18 +409,28 @@ const CarInventory: React.FC = () => {
             required
           />
 
-          <Input
+          <Select
             label={t('cars.trimLevel')}
-            value={formData.trim_level}
-            onChange={(e) => setFormData(prev => ({ ...prev, trim_level: e.target.value }))}
-            placeholder={t('cars.trimLevelPlaceholder')}
+            options={trimLevelOptions}
+            value={typeof formData.trim_level === 'string' ? formData.trim_level : (Array.isArray(formData.trim_level) ? formData.trim_level[0] : '')}
+            onValueChange={(value) => setFormData(prev => ({ ...prev, trim_level: String(value) }))}
+            required
           />
 
           <Input
             type="number"
             label={t('cars.availableCount')}
-            value={formData.available_count}
-            onChange={(value) => setFormData(prev => ({ ...prev, available_count: Number(value) || 0 }))}
+            value={formData.available_count ?? ''}
+            onChange={e => setFormData(prev => ({ ...prev, available_count: Number(e.target.value) || 0 }))}
+            min={0}
+            required
+          />
+
+          <Input
+            type="number"
+            label={t('cars.pricePerDay')}
+            value={formData.price_per_day ?? ''}
+            onChange={e => setFormData(prev => ({ ...prev, price_per_day: Number(e.target.value) || 0 }))}
             min={0}
             required
           />
@@ -441,6 +466,9 @@ const CarInventory: React.FC = () => {
             </p>
             <p className="font-sakr font-normal text-sm text-gray-600">
               {car.year} • {car.seats} seats • {car.color_name}
+            </p>
+            <p className="font-sakr font-normal text-sm text-primary-700">
+              {t('cars.pricePerDay')}: {car.price_per_day} {t('cars.kdPerDay')}
             </p>
           </div>
         </div>
@@ -661,6 +689,9 @@ const CarInventory: React.FC = () => {
                       <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
                         {t('cars.availableCount')}
                       </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.pricePerDay')}
+                      </th>
                       <th className="px-4 py-3 text-right font-sakr font-medium text-sm text-text-primary">
                         {t('common.actions')}
                       </th>
@@ -720,6 +751,11 @@ const CarInventory: React.FC = () => {
                               : 'bg-error-100 text-error-800'
                           }`}>
                             {car.available_count}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                            {car.price_per_day} {t('cars.kdPerDay')}
                           </span>
                         </td>
                         <td className="px-4 py-4 text-right">

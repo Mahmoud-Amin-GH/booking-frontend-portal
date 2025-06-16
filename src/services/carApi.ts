@@ -12,6 +12,7 @@ export interface Car {
   available_count: number;
   transmission: 'automatic' | 'manual';
   car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
+  price_per_day: number;
   created_at: string;
   updated_at: string;
   // Populated fields from joins
@@ -51,6 +52,7 @@ export interface CarOptions {
   colors: Color[];
   transmissions: DropdownOption[];
   car_types: DropdownOption[];
+  trim_levels: DropdownOption[];
 }
 
 export interface CarsResponse {
@@ -70,6 +72,7 @@ export interface CarFormData {
   available_count: number;
   transmission: 'automatic' | 'manual';
   car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
+  price_per_day: number;
 }
 
 // Car API Service
@@ -163,6 +166,9 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
   }
   if (!data.transmission) errors.push('Transmission is required');
   if (!data.car_type) errors.push('Car type is required');
+  if (data.price_per_day === undefined || data.price_per_day < 0) {
+    errors.push('Price per day must be 0 or greater');
+  }
 
   return errors;
 };

@@ -191,6 +191,8 @@ const resources = {
       "cars.carType.convertible": "Convertible",
       "cars.carType.pickup": "Pickup",
       "cars.carType.van": "Van",
+      "cars.pricePerDay": "Price/Day",
+      "cars.kdPerDay": "KD/day",
       
       // Office Configurations
       "officeConfigs.title": "Office Configurations",
@@ -502,6 +504,8 @@ const resources = {
       "cars.carType.convertible": "متحول",
       "cars.carType.pickup": "بيك أب",
       "cars.carType.van": "فان",
+      "cars.pricePerDay": "السعر/اليوم",
+      "cars.kdPerDay": "د.ك/يوم",
       
       // Office Configurations
       "officeConfigs.title": "إعدادات المكتب",
