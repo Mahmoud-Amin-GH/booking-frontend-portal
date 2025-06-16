@@ -9,7 +9,6 @@ import {
   Select,
   SelectOption
 } from '@mo_sami/web-design-system';
-// import { PricingTable } from '../design_system/components/PricingTable';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
 import {
@@ -467,15 +466,15 @@ const CarInventory: React.FC = () => {
             variant="ghost" 
             size="sm" 
             onClick={() => openEditModal(car)}
-            className="w-8 h-8 p-0 hover:bg-primary-100 text-primary-600 hover:text-primary-700"
+            className="w-8 h-8 p-0"
           >
             ✏️
           </Button>
           <Button 
-            variant="ghost" 
+            variant="destructive" 
             size="sm" 
             onClick={() => openDeleteDialog(car)} 
-            className="w-8 h-8 p-0 hover:bg-error-100 text-error-600 hover:text-error-700"
+            className="w-8 h-8 p-0"
           >
             🗑️
           </Button>
@@ -539,10 +538,10 @@ const CarInventory: React.FC = () => {
             {t('form.selectedItems', { count: selectedCars.size })}
           </p>
           <div className="flex gap-2">
-            <Button variant="outlined" size="small">
+            <Button variant="outline" size="small">
               {t('form.bulkEdit')}
             </Button>
-            <Button variant="outlined" size="small" className="text-error">
+            <Button variant="destructive" size="small">
               {t('form.deleteSelected')}
             </Button>
             <Button variant="text" size="small" onClick={() => setSelectedCars(new Set())}>
@@ -729,15 +728,15 @@ const CarInventory: React.FC = () => {
                               variant="ghost" 
                               size="sm" 
                               onClick={() => openEditModal(car)}
-                              className="w-8 h-8 p-0 hover:bg-primary-100 text-primary-600 hover:text-primary-700 transition-colors duration-200"
+                              className="w-8 h-8 p-0"
                             >
                               ✏️
                             </Button>
                             <Button 
-                              variant="ghost" 
+                              variant="destructive" 
                               size="sm" 
                               onClick={() => openDeleteDialog(car)} 
-                              className="w-8 h-8 p-0 hover:bg-error-100 text-error-600 hover:text-error-700 transition-colors duration-200"
+                              className="w-8 h-8 p-0"
                             >
                               🗑️
                             </Button>
@@ -865,10 +864,9 @@ const CarInventory: React.FC = () => {
               {t('common.cancel')}
             </Button>
             <Button 
-              variant="primary"
+              variant="destructive"
               onClick={handleDelete}
               disabled={isSubmitting}
-              className="!bg-red-600 hover:!bg-red-700 !text-white !border-red-600 hover:!border-red-700"
             >
               {isSubmitting ? t('common.loading') : t('common.delete')}
             </Button>

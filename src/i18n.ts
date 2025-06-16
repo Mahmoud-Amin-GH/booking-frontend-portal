@@ -66,7 +66,6 @@ const resources = {
       "common.next": "Next",
       "common.pageOfTotal": "Page {{current}} of {{total}}",
       "common.actions": "Actions",
-      "common.disabled": "Disabled",
       
       // Navigation (new improved labels)
       "nav.overview": "Overview",
@@ -378,7 +377,6 @@ const resources = {
       "common.next": "التالي",
       "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
       "common.actions": "الإجراءات",
-      "common.disabled": "معطل",
       
       // Navigation - Arabic
       "nav.overview": "نظرة عامة",

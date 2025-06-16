@@ -62,7 +62,7 @@ const DashboardLayout: React.FC = () => {
   const sidebarItems: SidebarItem[] = [
     {
       id: 'overview',
-      label: disabledNavItems.includes('overview') ? `${t('nav.overview')} (${t('common.disabled')})` : t('nav.overview'),
+      label: disabledNavItems.includes('overview') ? `${t('nav.overview')}` : t('nav.overview'),
       href: '/dashboard',
       active: location.pathname === '/dashboard',
       onClick: () => {
@@ -73,7 +73,7 @@ const DashboardLayout: React.FC = () => {
     },
     {
       id: 'cars',
-      label: disabledNavItems.includes('cars') ? `${t('nav.inventory')} (${t('common.disabled')})` : t('nav.inventory'),
+      label: disabledNavItems.includes('cars') ? `${t('nav.inventory')}` : t('nav.inventory'),
       href: '/dashboard/cars',
       active: location.pathname === '/dashboard/cars',
       onClick: () => {
@@ -84,7 +84,7 @@ const DashboardLayout: React.FC = () => {
     },
     {
       id: 'office-configs',
-      label: disabledNavItems.includes('settings') ? `${t('nav.settings')} (${t('common.disabled')})` : t('nav.settings'),
+      label: disabledNavItems.includes('settings') ? `${t('nav.settings')}` : t('nav.settings'),
       href: '/dashboard/office-configs',
       active: location.pathname === '/dashboard/office-configs',
       onClick: () => {
