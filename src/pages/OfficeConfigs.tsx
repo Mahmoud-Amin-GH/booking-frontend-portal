@@ -280,8 +280,10 @@ const OfficeConfigs: React.FC = () => {
                     {section.icon}
                   </div>
                   <div>
-                    <h3 className="font-sakr font-bold text-lg text-on-surface mb-1">{t(section.titleKey)}</h3>
-                    <p className="font-sakr font-medium text-xs text-on-surface-variant">{t(section.descKey)}</p>
+                    <div className={`flex flex-col items-start text-start`}>
+                      <h3 className="font-sakr font-bold text-lg text-on-surface mb-1">{t(section.titleKey)}</h3>
+                      <p className="font-sakr font-medium text-xs text-on-surface-variant">{t(section.descKey)}</p>
+                    </div>
                   </div>
                 </div>
                 <ChevronDownIcon className={`w-6 h-6 text-white ml-2 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
