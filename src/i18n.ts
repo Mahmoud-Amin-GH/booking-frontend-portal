@@ -197,6 +197,7 @@ const resources = {
       // Office Configurations
       "officeConfigs.title": "Office Configurations",
       "officeConfigs.description": "Configure your office settings, service options, and delivery preferences",
+      "officeConfigs.helpDescription": "These settings help customers find and book your services. Enable options that match your business capabilities to improve customer satisfaction.",
       "officeConfigs.saveSuccess": "Office configurations saved successfully",
       "officeConfigs.loadError": "Failed to load office configurations",
       "officeConfigs.saveError": "Failed to save office configurations",
@@ -510,6 +511,7 @@ const resources = {
       // Office Configurations
       "officeConfigs.title": "إعدادات المكتب",
       "officeConfigs.description": "تكوين إعدادات مكتبك، خيارات الخدمة، وتفضيلات التوصيل",
+      "officeConfigs.helpDescription": "هذه الإعدادات تساعد عملائك على العثور على وحدات التأجير والحجز. يمكنك تمكين الخيارات التي تتوافق مع قدرات عملك لتحسين رضا العملاء.",
       "officeConfigs.saveSuccess": "تم حفظ إعدادات المكتب بنجاح",
       "officeConfigs.loadError": "فشل تحميل إعدادات المكتب",
       "officeConfigs.saveError": "فشل حفظ إعدادات المكتب",
