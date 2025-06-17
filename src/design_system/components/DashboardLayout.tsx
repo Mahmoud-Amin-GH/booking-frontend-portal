@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Sidebar, type SidebarItem, Button } from '@mo_sami/web-design-system';
+import { Sidebar, type SidebarItem as BaseSidebarItem, Button } from '@mo_sami/web-design-system';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
 import { clearAuthToken, userAPI } from '../../services/api';
+
+// Extend SidebarItem type to support nested items
+interface SidebarItem extends BaseSidebarItem {
+  items?: SidebarItem[];
+}
 
 const DashboardLayout: React.FC = () => {
   const { t } = useTranslation();
@@ -74,13 +79,42 @@ const DashboardLayout: React.FC = () => {
     {
       id: 'cars',
       label: disabledNavItems.includes('cars') ? `${t('nav.inventory')}` : t('nav.inventory'),
-      href: '/dashboard/cars',
-      active: location.pathname === '/dashboard/cars',
-      onClick: () => {
-        if (!disabledNavItems.includes('cars')) {
-          navigate('/dashboard/cars');
+      active: location.pathname.startsWith('/dashboard/cars'),
+      children: [
+        {
+          id: 'daily-rentals',
+          label: t('nav.inventory.daily', 'Daily Rentals'),
+          href: '/dashboard/cars/daily',
+          active: location.pathname === '/dashboard/cars/daily',
+          onClick: () => {
+            if (!disabledNavItems.includes('cars')) {
+              navigate('/dashboard/cars/daily');
+            }
+          }
+        },
+        {
+          id: 'long-term-rentals',
+          label: t('nav.inventory.longTerm', 'Long-term Rentals'),
+          href: '/dashboard/cars/long-term',
+          active: location.pathname === '/dashboard/cars/long-term',
+          onClick: () => {
+            if (!disabledNavItems.includes('cars')) {
+              navigate('/dashboard/cars/long-term');
+            }
+          }
+        },
+        {
+          id: 'leasing',
+          label: t('nav.inventory.leasing', 'Leasing'),
+          href: '/dashboard/cars/leasing',
+          active: location.pathname === '/dashboard/cars/leasing',
+          onClick: () => {
+            if (!disabledNavItems.includes('cars')) {
+              navigate('/dashboard/cars/leasing');
+            }
+          }
         }
-      }
+      ]
     },
     {
       id: 'office-configs',
