@@ -9,6 +9,8 @@ import {
   Select,
   SelectOption
 } from '@mo_sami/web-design-system';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
 import {
@@ -71,7 +73,8 @@ const CarInventory: React.FC = () => {
     available_count: 1,
     transmission: 'automatic',
     car_type: 'sedan',
-    price_per_day: 0
+    price_per_day: 0,
+    allowed_kilometers: 250 // Default value
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -305,7 +308,8 @@ const CarInventory: React.FC = () => {
       available_count: 1,
       transmission: 'automatic',
       car_type: 'sedan',
-      price_per_day: 0
+      price_per_day: 0,
+      allowed_kilometers: 250 // Default value
     });
     setFormErrors([]);
     setEditingCar(null);
@@ -329,7 +333,8 @@ const CarInventory: React.FC = () => {
       available_count: car.available_count,
       transmission: car.transmission,
       car_type: car.car_type,
-      price_per_day: car.price_per_day
+      price_per_day: car.price_per_day,
+      allowed_kilometers: car.allowed_kilometers
     });
     setIsEditModalOpen(true);
   };
@@ -428,9 +433,18 @@ const CarInventory: React.FC = () => {
 
           <Input
             type="number"
-            label={t('cars.pricePerDay')}
+            label={t('cars.dailyPrice')}
             value={formData.price_per_day ?? ''}
             onChange={e => setFormData(prev => ({ ...prev, price_per_day: Number(e.target.value) || 0 }))}
+            min={0}
+            required
+          />
+
+          <Input
+            type="number"
+            label={t('cars.allowedKilometers')}
+            value={formData.allowed_kilometers ?? ''}
+            onChange={e => setFormData(prev => ({ ...prev, allowed_kilometers: Number(e.target.value) || 0 }))}
             min={0}
             required
           />
@@ -459,54 +473,42 @@ const CarInventory: React.FC = () => {
   const CarCard = ({ car }: { car: Car }) => (
     <div className="bg-surface rounded-lg border border-outline-variant p-4 md:hidden space-y-3">
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div>
-            <p className="font-sakr font-medium text-base">
-              {car.brand_name} {car.model_name}
+        <div className="flex-1">
+          <p className="font-sakr font-medium text-base">
+            {car.brand_name} {car.model_name}
+          </p>
+          <div className="mt-2 space-y-1">
+            <p className="font-sakr text-sm text-gray-600">
+              {t('cars.availableCount')}: <span className={car.available_count > 0 ? 'text-green-600' : 'text-red-600'}>
+                {car.available_count}
+              </span>
             </p>
-            <p className="font-sakr font-normal text-sm text-gray-600">
-              {car.year} • {car.seats} seats • {car.color_name}
+            <p className="font-sakr text-sm text-gray-600">
+              {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
             </p>
-            <p className="font-sakr font-normal text-sm text-primary-700">
-              {t('cars.pricePerDay')}: {car.price_per_day} {t('cars.kdPerDay')}
+            <p className="font-sakr text-sm text-gray-600">
+              {t('cars.allowedKilometers')}: {car.allowed_kilometers} {t('cars.km')}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-            car.available_count > 0 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
-            {car.available_count}
-          </span>
-        </div>
-      </div>
-      
-      <div className="flex justify-between items-center pt-2 border-t border-outline-variant">
-        <div className="flex gap-2">
-          <p className="font-sakr font-normal text-sm text-gray-600">
-            {t(`cars.transmission.${car.transmission}`)} • {t(`cars.carType.${car.car_type}`)}
-          </p>
-        </div>
-        <div className="flex gap-1">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => openEditModal(car)}
-            className="w-8 h-8 p-0"
-          >
-            ✏️
-          </Button>
-          <Button 
-            variant="destructive" 
-            size="sm" 
-            onClick={() => openDeleteDialog(car)} 
-            className="w-8 h-8 p-0"
-          >
-            🗑️
-          </Button>
-        </div>
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild>
+            <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+              <EllipsisVerticalIcon className="w-5 h-5" />
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
+              <DropdownMenu.Item 
+                className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                onClick={() => openDeleteDialog(car)}
+              >
+                <TrashIcon className="w-4 h-4" />
+                {t('cars.deleteCar')}
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
       </div>
     </div>
   );
@@ -666,35 +668,18 @@ const CarInventory: React.FC = () => {
                         />
                       </th>
                       <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.brand')}
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.model')}
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.year')}
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.seats')}
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.color')}
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.transmission')}
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.carType')}
+                        {t('cars.title')}
                       </th>
                       <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
                         {t('cars.availableCount')}
                       </th>
                       <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
-                        {t('cars.pricePerDay')}
+                        {t('cars.dailyPrice')}
                       </th>
-                      <th className="px-4 py-3 text-right font-sakr font-medium text-sm text-text-primary">
-                        {t('common.actions')}
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                        {t('cars.allowedKilometers')}
                       </th>
+                      <th className="w-10"></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-neutral-200">
@@ -708,43 +693,10 @@ const CarInventory: React.FC = () => {
                             onChange={(e) => handleSelectCar(car.id, e.target.checked)}
                           />
                         </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-primary">
-                          {car.brand_name}
+                        <td className="px-4 py-4 font-sakr font-medium text-sm text-text-primary">
+                          {car.brand_name} {car.model_name}
                         </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-primary">
-                          {car.model_name}
-                        </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
-                          {car.year}
-                        </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
-                          {car.seats}
-                        </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
-                          <div className="flex items-center gap-2">
-                            <div 
-                              className="w-4 h-4 rounded-full border border-neutral-300" 
-                              style={{ backgroundColor: car.color_name === 'White' ? '#ffffff' : 
-                                       car.color_name === 'Black' ? '#000000' : 
-                                       car.color_name === 'Red' ? '#ef4444' :
-                                       car.color_name === 'Blue' ? '#3b82f6' :
-                                       car.color_name === 'Gray' ? '#6b7280' :
-                                       car.color_name === 'Silver' ? '#d1d5db' : '#9ca3af' }}
-                            />
-                            {car.color_name}
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-neutral-100 text-neutral-800">
-                            {t(`cars.transmission.${car.transmission}`)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800">
-                            {t(`cars.carType.${car.car_type}`)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm">
+                        <td className="px-4 py-4">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             car.available_count > 0 
                               ? 'bg-success-100 text-success-800' 
@@ -753,30 +705,33 @@ const CarInventory: React.FC = () => {
                             {car.available_count}
                           </span>
                         </td>
-                        <td className="px-4 py-4 font-sakr font-normal text-sm text-text-secondary">
+                        <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                           <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
                             {car.price_per_day} {t('cars.kdPerDay')}
                           </span>
                         </td>
-                        <td className="px-4 py-4 text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              onClick={() => openEditModal(car)}
-                              className="w-8 h-8 p-0"
-                            >
-                              ✏️
-                            </Button>
-                            <Button 
-                              variant="destructive" 
-                              size="sm" 
-                              onClick={() => openDeleteDialog(car)} 
-                              className="w-8 h-8 p-0"
-                            >
-                              🗑️
-                            </Button>
-                          </div>
+                        <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                          {car.allowed_kilometers} {t('cars.km')}
+                        </td>
+                        <td className="px-4 py-4">
+                          <DropdownMenu.Root>
+                            <DropdownMenu.Trigger asChild>
+                              <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                                <EllipsisVerticalIcon className="w-5 h-5" />
+                              </Button>
+                            </DropdownMenu.Trigger>
+                            <DropdownMenu.Portal>
+                              <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
+                                <DropdownMenu.Item 
+                                  className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                                  onClick={() => openDeleteDialog(car)}
+                                >
+                                  <TrashIcon className="w-4 h-4" />
+                                  {t('cars.deleteCar')}
+                                </DropdownMenu.Item>
+                              </DropdownMenu.Content>
+                            </DropdownMenu.Portal>
+                          </DropdownMenu.Root>
                         </td>
                       </tr>
                     ))}

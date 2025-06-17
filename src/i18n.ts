@@ -160,6 +160,7 @@ const resources = {
       "error.resendFailed": "Failed to resend OTP",
       
       // Car Management
+      "cars.title": "Title",
       "cars.brand": "Brand",
       "cars.model": "Model",
       "cars.year": "Year",
@@ -191,8 +192,10 @@ const resources = {
       "cars.carType.convertible": "Convertible",
       "cars.carType.pickup": "Pickup",
       "cars.carType.van": "Van",
-      "cars.pricePerDay": "Price/Day",
+      "cars.dailyPrice": "Daily Price",
+      "cars.allowedKilometers": "Allowed Kilometers",
       "cars.kdPerDay": "KD/day",
+      "cars.km": "km",
       
       // Office Configurations
       "officeConfigs.title": "Office Configurations",
@@ -473,7 +476,8 @@ const resources = {
       "error.networkError": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
       "error.resendFailed": "فشل في إعادة إرسال رمز التحقق",
       
-      // Car Management
+      // Car Management - Arabic
+      "cars.title": "العنوان",
       "cars.brand": "العلامة",
       "cars.model": "الموديل",
       "cars.year": "السنة",
@@ -499,14 +503,16 @@ const resources = {
       "cars.transmission.automatic": "أوتوماتيكي",
       "cars.transmission.manual": "يدوي",
       "cars.carType.sedan": "سيدان",
-      "cars.carType.suv": "SUV",
+      "cars.carType.suv": "إس يو في",
       "cars.carType.hatchback": "هاتشباك",
-      "cars.carType.coupe": "كوبي",
-      "cars.carType.convertible": "متحول",
-      "cars.carType.pickup": "بيك أب",
+      "cars.carType.coupe": "كوبيه",
+      "cars.carType.convertible": "قابل للتحويل",
+      "cars.carType.pickup": "بيك آب",
       "cars.carType.van": "فان",
-      "cars.pricePerDay": "السعر/اليوم",
+      "cars.dailyPrice": "السعر اليومي",
+      "cars.allowedKilometers": "الكيلومترات المسموحة",
       "cars.kdPerDay": "د.ك/يوم",
+      "cars.km": "كم",
       
       // Office Configurations
       "officeConfigs.title": "إعدادات المكتب",

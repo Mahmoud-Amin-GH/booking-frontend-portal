@@ -3,6 +3,7 @@ import api from './api';
 // Types matching the backend API
 export interface Car {
   id: number;
+  user_id: number;
   brand_id: number;
   model_id: number;
   year: number;
@@ -10,9 +11,10 @@ export interface Car {
   color_id: number;
   trim_level: string;
   available_count: number;
-  transmission: 'automatic' | 'manual';
+  transmission: 'manual' | 'automatic';
   car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
   price_per_day: number;
+  allowed_kilometers: number;
   created_at: string;
   updated_at: string;
   // Populated fields from joins
@@ -70,9 +72,10 @@ export interface CarFormData {
   color_id: number;
   trim_level: string;
   available_count: number;
-  transmission: 'automatic' | 'manual';
+  transmission: 'manual' | 'automatic';
   car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
   price_per_day: number;
+  allowed_kilometers: number;
 }
 
 // Car API Service
