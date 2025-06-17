@@ -546,23 +546,55 @@ const CarInventory: React.FC = () => {
   const EmptyInventoryState = () => (
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center max-w-md mx-auto p-8">
-        {/* Icon/Illustration */}
-        <div className="w-24 h-24 mx-auto mb-6 bg-primary-100 rounded-full flex items-center justify-center">
-          <div className="text-4xl">🚗</div>
+        {/* Illustration */}
+        <div className="w-32 h-32 mx-auto mb-6 flex items-center justify-center">
+          <svg
+            viewBox="0 0 200 200"
+            className="w-full h-full text-primary-300"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Garage/Building Structure */}
+            <rect x="30" y="140" width="140" height="40" rx="4" fill="currentColor" opacity="0.2"/>
+            <rect x="40" y="130" width="120" height="10" fill="currentColor" opacity="0.3"/>
+            
+            {/* Garage Door */}
+            <rect x="50" y="140" width="100" height="35" rx="2" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.4"/>
+            <rect x="55" y="145" width="90" height="25" rx="1" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
+            
+            {/* Door Handle */}
+            <circle cx="140" cy="157" r="2" fill="currentColor" opacity="0.5"/>
+            
+            {/* Empty Parking Spaces */}
+            <rect x="60" y="155" width="25" height="15" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,2" opacity="0.4"/>
+            <rect x="87" y="155" width="25" height="15" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,2" opacity="0.4"/>
+            <rect x="114" y="155" width="25" height="15" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,2" opacity="0.4"/>
+            
+            {/* Plus Icon in Center */}
+            <circle cx="100" cy="90" r="25" fill="currentColor" opacity="0.15"/>
+            <circle cx="100" cy="90" r="20" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
+            <path d="M100 80v20M90 90h20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
+            
+            {/* Small clouds/decoration */}
+            <circle cx="60" cy="50" r="8" fill="currentColor" opacity="0.1"/>
+            <circle cx="68" cy="47" r="6" fill="currentColor" opacity="0.1"/>
+            <circle cx="140" cy="55" r="6" fill="currentColor" opacity="0.1"/>
+            <circle cx="146" cy="52" r="4" fill="currentColor" opacity="0.1"/>
+          </svg>
         </div>
         
         {/* Title */}
-        <h3 className="font-sakr font-bold text-2xl mb-4 text-on-surface">
+        <h3 className="font-sakr font-bold text-2xl mb-4 text-on-surface text-center">
           {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
         </h3>
         
         {/* Description */}
-        <p className="font-sakr font-normal text-lg text-on-surface-variant mb-8 leading-relaxed">
+        <p className="font-sakr font-normal text-lg text-on-surface-variant mb-8 leading-relaxed text-center">
           {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
         </p>
         
         {/* Action Button */}
-        <div className="space-y-4">
+        <div className="flex justify-center">
           {searchTerm ? (
             <Button variant="primary" size="lg" onClick={() => handleSearch('')}>
               {t('empty.clearFilters')}
@@ -573,13 +605,6 @@ const CarInventory: React.FC = () => {
             </Button>
           )}
         </div>
-        
-        {/* Optional Helper Text */}
-        {!searchTerm && (
-          <p className="font-sakr font-normal text-sm text-on-surface-variant mt-6">
-            {t('empty.getStartedHint')}
-          </p>
-        )}
       </div>
     </div>
   );
@@ -626,9 +651,12 @@ const CarInventory: React.FC = () => {
             {t('dashboard.carInventoryDesc')}
           </p>
         </div>
-        <Button onClick={openAddModal}>
-          {t('dashboard.addNewCar')}
-        </Button>
+        {/* Only show Add New Car button when inventory is not empty */}
+        {cars.length > 0 && (
+          <Button onClick={openAddModal}>
+            {t('dashboard.addNewCar')}
+          </Button>
+        )}
       </div>
 
       {/* Search - Only show when inventory has cars */}
