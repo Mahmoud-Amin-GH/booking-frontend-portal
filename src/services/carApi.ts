@@ -13,6 +13,7 @@ export interface Car {
   available_count: number;
   transmission: 'manual' | 'automatic';
   car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
+  rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
   created_at: string;
@@ -74,23 +75,28 @@ export interface CarFormData {
   available_count: number;
   transmission: 'manual' | 'automatic';
   car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
+  rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
+}
+
+export interface GetCarsParams {
+  limit?: number;
+  offset?: number;
+  search?: string;
+  rentalType?: string;
 }
 
 // Car API Service
 export class CarApiService {
   // Get cars with pagination and search
-  static async getCars(params?: {
-    limit?: number;
-    offset?: number;
-    search?: string;
-  }): Promise<CarsResponse> {
+  static async getCars(params?: GetCarsParams): Promise<CarsResponse> {
     const queryParams = new URLSearchParams();
     
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.offset) queryParams.append('offset', params.offset.toString());
     if (params?.search) queryParams.append('search', params.search);
+    if (params?.rentalType) queryParams.append('rental_type', params.rentalType);
 
     const response = await api.get(`/cars?${queryParams.toString()}`);
     return response.data;

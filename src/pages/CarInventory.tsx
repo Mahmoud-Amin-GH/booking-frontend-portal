@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
 import { 
   Button, 
   Input,
@@ -37,13 +37,30 @@ interface InventoryContext {
   refreshStatus: () => void;
 }
 
+// Add rental type enum
+export enum RentalType {
+  Daily = 'daily',
+  LongTerm = 'long_term',
+  Leasing = 'leasing'
+}
+
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const { language, isRTL } = useLanguage();
   
   // Get inventory context from outlet
   const inventoryContext = useOutletContext<InventoryContext>();
+
+  // Determine rental type from URL
+  const rentalType = useMemo(() => {
+    const path = location.pathname;
+    if (path.endsWith('/daily')) return RentalType.Daily;
+    if (path.endsWith('/long-term')) return RentalType.LongTerm;
+    if (path.endsWith('/leasing')) return RentalType.Leasing;
+    return null; // No specific rental type (all cars)
+  }, [location.pathname]);
 
   // State management
   const [cars, setCars] = useState<Car[]>([]);
@@ -73,8 +90,9 @@ const CarInventory: React.FC = () => {
     available_count: 1,
     transmission: 'automatic',
     car_type: 'sedan',
+    rental_type: rentalType || 'daily', // Set default based on current view
     price_per_day: 0,
-    allowed_kilometers: 250 // Default value
+    allowed_kilometers: 250
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -103,7 +121,8 @@ const CarInventory: React.FC = () => {
       const response = await CarApiService.getCars({
         limit: pageSize,
         offset: (currentPage - 1) * pageSize,
-        search: searchTerm || undefined
+        search: searchTerm || undefined,
+        rentalType: rentalType || undefined
       });
       setCars(response.cars || []);
       setTotalCars(response.total || 0);
@@ -308,8 +327,9 @@ const CarInventory: React.FC = () => {
       available_count: 1,
       transmission: 'automatic',
       car_type: 'sedan',
+      rental_type: rentalType || 'daily', // Set default based on current view
       price_per_day: 0,
-      allowed_kilometers: 250 // Default value
+      allowed_kilometers: 250
     });
     setFormErrors([]);
     setEditingCar(null);
@@ -333,6 +353,7 @@ const CarInventory: React.FC = () => {
       available_count: car.available_count,
       transmission: car.transmission,
       car_type: car.car_type,
+      rental_type: car.rental_type,
       price_per_day: car.price_per_day,
       allowed_kilometers: car.allowed_kilometers
     });
@@ -639,13 +660,21 @@ const CarInventory: React.FC = () => {
 
   const totalPages = Math.ceil(totalCars / pageSize);
 
+  // Update header text based on rental type
+  const getHeaderText = () => {
+    if (rentalType === RentalType.Daily) return t('nav.inventory.daily');
+    if (rentalType === RentalType.LongTerm) return t('nav.inventory.longTerm');
+    if (rentalType === RentalType.Leasing) return t('nav.inventory.leasing');
+    return t('nav.inventory');
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
         <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
           <h2 className="font-sakr font-bold text-2xl mb-2 text-gray-900">
-            {t('nav.inventory')}
+            {getHeaderText()}
           </h2>
           <p className="font-sakr font-normal text-lg text-gray-600">
             {t('dashboard.carInventoryDesc')}
