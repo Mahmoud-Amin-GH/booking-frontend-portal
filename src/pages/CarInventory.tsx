@@ -367,103 +367,132 @@ const CarInventory: React.FC = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <Select
-            label={t('cars.brand')}
-            options={brandOptions}
-            value={formData.brand_id ? formData.brand_id.toString() : ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) || 0 }))}
-            required
-          />
+        {/* Car Specs Section */}
+        <div>
+          <h3 className="font-sakr font-medium text-lg text-gray-900 mb-4">
+            {t('form.carSpecs')}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <Select
+              label={t('cars.brand')}
+              options={brandOptions}
+              value={formData.brand_id ? formData.brand_id.toString() : ''}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) || 0 }))}
+              required
+            />
 
-          <Select
-            label={t('cars.model')}
-            options={modelOptions}
-            value={formData.model_id ? formData.model_id.toString() : ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) || 0 }))}
-            disabled={!formData.brand_id || modelOptions.length === 0}
-            placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')}
-            required
-          />
+            <Select
+              label={t('cars.model')}
+              options={modelOptions}
+              value={formData.model_id ? formData.model_id.toString() : ''}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) || 0 }))}
+              disabled={!formData.brand_id || modelOptions.length === 0}
+              placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')}
+              required
+            />
 
-          <Input
-            type="number"
-            label={t('cars.year')}
-            value={formData.year ?? ''}
-            onChange={e => setFormData(prev => ({ ...prev, year: Number(e.target.value) || 0 }))}
-            min={1900}
-            max={2030}
-            required
-          />
+            <Input
+              type="number"
+              label={t('cars.year')}
+              value={formData.year ?? ''}
+              onChange={e => {
+                const value = e.target.value;
+                setFormData(prev => ({ ...prev, year: value === '' ? 0 : Number(value) }));
+              }}
+              min={1900}
+              max={2030}
+              required
+            />
 
-          <Input
-            type="number"
-            label={t('cars.seats')}
-            value={formData.seats ?? ''}
-            onChange={e => setFormData(prev => ({ ...prev, seats: Number(e.target.value) || 0 }))}
-            min={1}
-            max={12}
-            required
-          />
+            <Select
+              label={t('cars.trimLevel')}
+              options={trimLevelOptions}
+              value={typeof formData.trim_level === 'string' ? formData.trim_level : (Array.isArray(formData.trim_level) ? formData.trim_level[0] : '')}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, trim_level: String(value) }))}
+              required
+            />
 
-          <Select
-            label={t('cars.color')}
-            options={colorOptions}
-            value={formData.color_id ? formData.color_id.toString() : ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
-            required
-          />
+            <Select
+              label={t('cars.transmission')}
+              options={transmissionOptions}
+              value={formData.transmission || ''}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
+              required
+            />
 
-          <Select
-            label={t('cars.trimLevel')}
-            options={trimLevelOptions}
-            value={typeof formData.trim_level === 'string' ? formData.trim_level : (Array.isArray(formData.trim_level) ? formData.trim_level[0] : '')}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, trim_level: String(value) }))}
-            required
-          />
+            <Select
+              label={t('cars.color')}
+              options={colorOptions}
+              value={formData.color_id ? formData.color_id.toString() : ''}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
+              required
+            />
 
-          <Input
-            type="number"
-            label={t('cars.availableCount')}
-            value={formData.available_count ?? ''}
-            onChange={e => setFormData(prev => ({ ...prev, available_count: Number(e.target.value) || 0 }))}
-            min={0}
-            required
-          />
+            <Input
+              type="number"
+              label={t('cars.seats')}
+              value={formData.seats ?? ''}
+              onChange={e => {
+                const value = e.target.value;
+                setFormData(prev => ({ ...prev, seats: value === '' ? 0 : Number(value) }));
+              }}
+              min={1}
+              max={12}
+              required
+            />
 
-          <Input
-            type="number"
-            label={t('cars.dailyPrice')}
-            value={formData.price_per_day ?? ''}
-            onChange={e => setFormData(prev => ({ ...prev, price_per_day: Number(e.target.value) || 0 }))}
-            min={0}
-            required
-          />
+            <Select
+              label={t('cars.carType')}
+              options={carTypeOptions}
+              value={formData.car_type || ''}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, car_type: value as 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van' }))}
+              required
+            />
+          </div>
+        </div>
 
-          <Input
-            type="number"
-            label={t('cars.allowedKilometers')}
-            value={formData.allowed_kilometers ?? ''}
-            onChange={e => setFormData(prev => ({ ...prev, allowed_kilometers: Number(e.target.value) || 0 }))}
-            min={0}
-            required
-          />
+        {/* Rental Specs Section */}
+        <div>
+          <h3 className="font-sakr font-medium text-lg text-gray-900 mb-4">
+            {t('form.rentalSpecs')}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <Input
+              type="number"
+              label={t('cars.dailyPrice')}
+              value={formData.price_per_day ?? ''}
+              onChange={e => {
+                const value = e.target.value;
+                setFormData(prev => ({ ...prev, price_per_day: value === '' ? 0 : Number(value) }));
+              }}
+              min={0}
+              required
+            />
 
-          <Select
-            label={t('cars.transmission')}
-            options={transmissionOptions}
-            value={formData.transmission || ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
-            required
-          />
+            <Input
+              type="number"
+              label={t('cars.availableCount')}
+              value={formData.available_count ?? ''}
+              onChange={e => {
+                const value = e.target.value;
+                setFormData(prev => ({ ...prev, available_count: value === '' ? 0 : Number(value) }));
+              }}
+              min={0}
+              required
+            />
 
-          <Select
-            label={t('cars.carType')}
-            options={carTypeOptions}
-            value={formData.car_type || ''}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, car_type: value as 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van' }))}
-            required
-          />
+            <Input
+              type="number"
+              label={t('cars.allowedKilometers')}
+              value={formData.allowed_kilometers ?? ''}
+              onChange={e => {
+                const value = e.target.value;
+                setFormData(prev => ({ ...prev, allowed_kilometers: value === '' ? 0 : Number(value) }));
+              }}
+              min={0}
+              required
+            />
+          </div>
         </div>
       </div>
     );

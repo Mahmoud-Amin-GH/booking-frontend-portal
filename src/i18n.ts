@@ -104,6 +104,8 @@ const resources = {
       "form.selectedItems": "{{count}} items selected",
       "form.bulkEdit": "Edit Selected",
       "form.deleteSelected": "Delete Selected",
+      "form.carSpecs": "Car Specifications",
+      "form.rentalSpecs": "Rental Specifications",
       
       // Stats and Trends
       "stats.totalVehicles": "Total Vehicles",
@@ -421,6 +423,8 @@ const resources = {
       "form.selectedItems": "{{count}} عناصر محددة",
       "form.bulkEdit": "تعديل المحدد",
       "form.deleteSelected": "حذف المحدد",
+      "form.carSpecs": "مواصفات السيارة",
+      "form.rentalSpecs": "مواصفات التأجير",
       
       // Stats and Trends - Arabic
       "stats.totalVehicles": "إجمالي المركبات",
