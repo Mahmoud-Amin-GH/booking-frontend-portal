@@ -142,12 +142,15 @@ const CarInventory: React.FC = () => {
       if (rentalType === RentalType.LongTerm) apiRentalType = 'long_term';
       if (rentalType === RentalType.Leasing) apiRentalType = 'leasing';
       
-      const response = await CarApiService.getCars({
+      const requestParams = {
         limit: pageSize,
         offset: (currentPage - 1) * pageSize,
         search: searchTerm || undefined,
         rentalType: apiRentalType
-      });
+      };
+      
+      const response = await CarApiService.getCars(requestParams);
+      
       setCars(response.cars || []);
       setTotalCars(response.total || 0);
       setSelectedCars(new Set()); // Clear selection when loading new data
