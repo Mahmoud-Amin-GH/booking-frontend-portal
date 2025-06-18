@@ -97,15 +97,13 @@ const Login: React.FC = () => {
 
       // Login successful - OTP sent, navigate to verification
       if (response.message && response.user_id) {
-        // navigate to dashboard
-        navigate('/dashboard');
         // navigate to verify otp
-        // navigate('/verify-otp', { 
-        //   state: { 
-        //     phone: preparePhoneForAPI(form.phone),
-        //     fromSignup: false 
-        //   }
-        // });
+        navigate('/verify-otp', { 
+          state: { 
+            phone: preparePhoneForAPI(form.phone),
+            fromSignup: false 
+          }
+        });
       } else {
         setErrorMessage(response.message || t('error.loginFailed'));
       }

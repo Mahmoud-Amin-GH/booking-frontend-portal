@@ -59,7 +59,7 @@ const CarInventory: React.FC = () => {
     if (path.endsWith('/daily')) return RentalType.Daily;
     if (path.endsWith('/long-term')) return RentalType.LongTerm;
     if (path.endsWith('/leasing')) return RentalType.Leasing;
-    return null; // No specific rental type (all cars)
+    return RentalType.Daily; // No specific rental type (all cars)
   }, [location.pathname]);
 
   // State management
