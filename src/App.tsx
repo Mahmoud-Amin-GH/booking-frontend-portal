@@ -5,6 +5,7 @@ import Signup from './pages/Signup';
 import OTPVerification from './pages/OTPVerification';
 import CarInventory from './pages/CarInventory';
 import OfficeConfigs from './pages/OfficeConfigs';
+import { PriceTiers } from './pages/PriceTiers';
 import { DashboardLayout } from './design_system';
 import '@mo_sami/web-design-system/dist/style.css';
 import './i18n';
@@ -43,6 +44,7 @@ function App() {
               <Route path="cars/long-term" element={<CarInventory />} />
               <Route path="cars/leasing" element={<CarInventory />} />
               <Route path="office-configs" element={<OfficeConfigs />} />
+              <Route path="price-tiers" element={<PriceTiers />} />
             </Route>
           </Routes>
         </Router>

@@ -1,5 +1,13 @@
 import api from './api';
 
+// TieredPrice interface from price tiers API
+export interface TieredPrice {
+  tier_name: string;
+  min_days: number;
+  max_days: number | null;
+  price: number;
+}
+
 // Types matching the backend API
 export interface Car {
   id: number;
@@ -19,6 +27,8 @@ export interface Car {
   months_36_price?: number;   // for long-term & leasing
   months_48_price?: number;   // for long-term & leasing
   final_payment?: number;     // for leasing only
+  // Tiered pricing for daily rentals
+  tiered_prices?: TieredPrice[];
   created_at: string;
   updated_at: string;
   // Populated fields from joins

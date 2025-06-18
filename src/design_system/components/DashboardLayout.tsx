@@ -50,7 +50,8 @@ const DashboardLayout: React.FC = () => {
 
   // If user is pending, disable all nav
   const allNavDisabled = userStatus === 'pending';
-  const disabledNavItems = allNavDisabled ? ['overview', 'cars', 'settings'] : (isEmpty ? ['overview', 'settings'] : []);
+  // Only disable overview when inventory is empty, office configs and price tiers should always be available
+  const disabledNavItems = allNavDisabled ? ['overview', 'cars', 'office-configs', 'price-tiers'] : (isEmpty ? ['overview'] : []);
 
   // Handle logout
   const handleLogout = () => {
@@ -117,12 +118,23 @@ const DashboardLayout: React.FC = () => {
       ]
     },
     {
+      id: 'price-tiers',
+      label: disabledNavItems.includes('price-tiers') ? `${t('nav.priceTiers')}` : t('nav.priceTiers'),
+      href: '/dashboard/price-tiers',
+      active: location.pathname === '/dashboard/price-tiers',
+      onClick: () => {
+        if (!disabledNavItems.includes('price-tiers')) {
+          navigate('/dashboard/price-tiers');
+        }
+      }
+    },
+    {
       id: 'office-configs',
-      label: disabledNavItems.includes('settings') ? `${t('nav.settings')}` : t('nav.settings'),
+      label: disabledNavItems.includes('office-configs') ? `${t('nav.settings')}` : t('nav.settings'),
       href: '/dashboard/office-configs',
       active: location.pathname === '/dashboard/office-configs',
       onClick: () => {
-        if (!disabledNavItems.includes('settings')) {
+        if (!disabledNavItems.includes('office-configs')) {
           navigate('/dashboard/office-configs');
         }
       }

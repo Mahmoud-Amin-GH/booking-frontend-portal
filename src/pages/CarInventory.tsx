@@ -628,9 +628,19 @@ const CarInventory: React.FC = () => {
             </p>
             {/* Conditional pricing for mobile cards */}
             {rentalType === RentalType.Daily && (
-              <p className="font-sakr text-sm text-gray-600">
-                {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
-              </p>
+              <div className="space-y-1">
+                {car.tiered_prices && car.tiered_prices.length > 0 ? (
+                  car.tiered_prices.map((tier) => (
+                    <p key={tier.tier_name} className="font-sakr text-sm text-gray-600">
+                      {tier.tier_name}: {tier.price} {t('cars.kdPerDay')}
+                    </p>
+                  ))
+                ) : (
+                  <p className="font-sakr text-sm text-gray-600">
+                    {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
+                  </p>
+                )}
+              </div>
             )}
             {rentalType === RentalType.LongTerm && (
               <>
@@ -875,7 +885,16 @@ const CarInventory: React.FC = () => {
                       {rentalType === RentalType.Daily && (
                         <>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            {t('cars.dailyPrice')}
+                            {t('cars.priceTier1to7Days')}
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            {t('cars.priceTier8to30Days')}
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            {t('cars.priceTier31to90Days')}
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            {t('cars.priceTier90PlusDays')}
                           </th>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                             {t('cars.allowedKilometers')}
@@ -937,11 +956,40 @@ const CarInventory: React.FC = () => {
                         {/* Conditional pricing data based on rental type */}
                         {rentalType === RentalType.Daily && (
                           <>
-                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.price_per_day} {t('cars.kdPerDay')}
-                              </span>
-                            </td>
+                            {/* Display tiered prices if available, otherwise fall back to base price */}
+                            {car.tiered_prices && car.tiered_prices.length > 0 ? (
+                              car.tiered_prices.map((tier, index) => (
+                                <td key={tier.tier_name} className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                    {tier.price} {t('cars.kdPerDay')}
+                                  </span>
+                                </td>
+                              ))
+                            ) : (
+                              // Fallback to show base price in all tiers if no tiered prices
+                              <>
+                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                    {car.price_per_day} {t('cars.kdPerDay')}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                    {car.price_per_day} {t('cars.kdPerDay')}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                    {car.price_per_day} {t('cars.kdPerDay')}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                    {car.price_per_day} {t('cars.kdPerDay')}
+                                  </span>
+                                </td>
+                              </>
+                            )}
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               {car.allowed_kilometers} {t('cars.km')}
                             </td>
