@@ -33,9 +33,10 @@ const DashboardLayout: React.FC = () => {
   // Handle conditional navigation based on inventory status
   useEffect(() => {
     if (!isLoading && isEmpty) {
-      // If inventory is empty and user is trying to access overview or settings
-      if (location.pathname === '/dashboard' || location.pathname === '/dashboard/office-configs') {
-        navigate('/dashboard/cars', { replace: true });
+      // set the active sidebar item to daily rentals
+      const carsSidebarItem = sidebarItems.find(item => item.id === 'daily-rentals');
+      if (carsSidebarItem) {
+        carsSidebarItem.active = true;
       }
     }
   }, [isLoading, isEmpty, location.pathname, navigate]);
@@ -65,21 +66,20 @@ const DashboardLayout: React.FC = () => {
 
   // Create sidebar navigation items with disabled state handling
   const sidebarItems: SidebarItem[] = [
-    {
-      id: 'overview',
-      label: disabledNavItems.includes('overview') ? `${t('nav.overview')}` : t('nav.overview'),
-      href: '/dashboard',
-      active: location.pathname === '/dashboard',
-      onClick: () => {
-        if (!disabledNavItems.includes('overview')) {
-          navigate('/dashboard');
-        }
-      }
-    },
+    // {
+    //   id: 'overview',
+    //   label: disabledNavItems.includes('overview') ? `${t('nav.overview')}` : t('nav.overview'),
+    //   href: '/dashboard',
+    //   active: location.pathname === '/dashboard',
+    //   onClick: () => {
+    //     if (!disabledNavItems.includes('overview')) {
+    //       navigate('/dashboard');
+    //     }
+    //   }
+    // },
     {
       id: 'cars',
       label: disabledNavItems.includes('cars') ? `${t('nav.inventory')}` : t('nav.inventory'),
-      active: location.pathname.startsWith('/dashboard/cars'),
       children: [
         {
           id: 'daily-rentals',

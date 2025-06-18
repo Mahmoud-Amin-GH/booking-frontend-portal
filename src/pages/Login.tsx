@@ -97,12 +97,15 @@ const Login: React.FC = () => {
 
       // Login successful - OTP sent, navigate to verification
       if (response.message && response.user_id) {
-        navigate('/verify-otp', { 
-          state: { 
-            phone: preparePhoneForAPI(form.phone),
-            fromSignup: false 
-          }
-        });
+        // navigate to dashboard
+        navigate('/dashboard');
+        // navigate to verify otp
+        // navigate('/verify-otp', { 
+        //   state: { 
+        //     phone: preparePhoneForAPI(form.phone),
+        //     fromSignup: false 
+        //   }
+        // });
       } else {
         setErrorMessage(response.message || t('error.loginFailed'));
       }
@@ -175,18 +178,18 @@ const Login: React.FC = () => {
           {/* Header */}
           <div className="text-center lg:text-left mb-8">
             {/* Mobile Logo */}
-            <div className="lg:hidden mb-6 flex justify-center">
+            {/* <div className="lg:hidden mb-6 flex justify-center">
               <div className="bg-primary-50 rounded-xl p-4">
                 <img src="/assets/4sale-logo.svg" alt="4Sale" className="h-12 w-auto" />
               </div>
-            </div>
+            </div> */}
             
             <h2 className="font-sakr font-bold text-3xl mb-2 text-on-surface">
               {t('auth.login')}
             </h2>
-            <p className="font-sakr font-normal text-lg text-on-surface-variant">
+            {/* <p className="font-sakr font-normal text-lg text-on-surface-variant">
               {t('auth.loginSubtitle', 'Welcome back! Please sign in to your account')}
-            </p>
+            </p> */}
           </div>
 
           {/* Form Container */}
@@ -268,11 +271,11 @@ const Login: React.FC = () => {
           </div>
 
           {/* Trust Indicator */}
-          <div className="mt-6 text-center">
+          {/* <div className="mt-6 text-center">
             <p className="font-sakr text-sm text-on-surface-variant">
               {t('auth.secureLogin', 'Your information is secured with industry-standard encryption')}
             </p>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

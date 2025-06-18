@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import Signup from './pages/Signup';
 import OTPVerification from './pages/OTPVerification';
-import DashboardOverview from './pages/DashboardOverview';
 import CarInventory from './pages/CarInventory';
 import OfficeConfigs from './pages/OfficeConfigs';
 import { DashboardLayout } from './design_system';
@@ -38,8 +37,8 @@ function App() {
             
             {/* Dashboard routes */}
             <Route path="/dashboard" element={<DashboardLayout />}>
-              <Route index element={<DashboardOverview />} />
-              <Route path="cars" element={<CarInventory />} />
+              <Route index element={<Navigate to="/dashboard/cars/daily" replace />} />
+              <Route path="cars" element={<Navigate to="/dashboard/cars/daily" replace />} />
               <Route path="cars/daily" element={<CarInventory />} />
               <Route path="cars/long-term" element={<CarInventory />} />
               <Route path="cars/leasing" element={<CarInventory />} />

@@ -70,6 +70,9 @@ const resources = {
       // Navigation (new improved labels)
       "nav.overview": "Overview",
       "nav.inventory": "Inventory", 
+      "nav.inventory.daily": "Daily Rentals",
+      "nav.inventory.longTerm": "Long-term Rentals", 
+      "nav.inventory.leasing": "Leasing",
       "nav.settings": "Settings",
       
       // Onboarding
@@ -389,6 +392,9 @@ const resources = {
       // Navigation - Arabic
       "nav.overview": "نظرة عامة",
       "nav.inventory": "المخزون",
+      "nav.inventory.daily": "الإيجارات اليومية",
+      "nav.inventory.longTerm": "الإيجارات طويلة المدة",
+      "nav.inventory.leasing": "التأجير",
       "nav.settings": "الإعدادات",
       
       // Onboarding - Arabic

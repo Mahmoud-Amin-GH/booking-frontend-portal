@@ -90,7 +90,13 @@ const CarInventory: React.FC = () => {
     available_count: 1,
     transmission: 'automatic',
     car_type: 'sedan',
-    rental_type: rentalType || 'daily', // Set default based on current view
+    rental_type: (() => {
+      // Convert URL format to API format for rental type
+      if (rentalType === RentalType.Daily) return 'daily';
+      if (rentalType === RentalType.LongTerm) return 'long_term';
+      if (rentalType === RentalType.Leasing) return 'leasing';
+      return 'daily';
+    })(),
     price_per_day: 0,
     allowed_kilometers: 250
   });
@@ -103,7 +109,7 @@ const CarInventory: React.FC = () => {
   useEffect(() => {
     loadCars();
     loadCarOptions();
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm, rentalType]);
 
   // Load models when brand changes
   useEffect(() => {
@@ -115,14 +121,32 @@ const CarInventory: React.FC = () => {
     }
   }, [formData.brand_id]);
 
+  // Update form rental type when route changes
+  useEffect(() => {
+    const defaultRentalType = (() => {
+      if (rentalType === RentalType.Daily) return 'daily';
+      if (rentalType === RentalType.LongTerm) return 'long_term';
+      if (rentalType === RentalType.Leasing) return 'leasing';
+      return 'daily';
+    })();
+    
+    setFormData(prev => ({ ...prev, rental_type: defaultRentalType }));
+  }, [rentalType]);
+
   const loadCars = async () => {
     try {
       setLoading(true);
+      // Convert URL format to API format for rental type
+      let apiRentalType: string | undefined = undefined;
+      if (rentalType === RentalType.Daily) apiRentalType = 'daily';
+      if (rentalType === RentalType.LongTerm) apiRentalType = 'long_term';
+      if (rentalType === RentalType.Leasing) apiRentalType = 'leasing';
+      
       const response = await CarApiService.getCars({
         limit: pageSize,
         offset: (currentPage - 1) * pageSize,
         search: searchTerm || undefined,
-        rentalType: rentalType || undefined
+        rentalType: apiRentalType
       });
       setCars(response.cars || []);
       setTotalCars(response.total || 0);
@@ -317,6 +341,12 @@ const CarInventory: React.FC = () => {
 
   // Form helpers
   const resetForm = () => {
+    // Convert URL format to API format for rental type
+    let defaultRentalType: 'daily' | 'long_term' | 'leasing' = 'daily';
+    if (rentalType === RentalType.Daily) defaultRentalType = 'daily';
+    if (rentalType === RentalType.LongTerm) defaultRentalType = 'long_term';
+    if (rentalType === RentalType.Leasing) defaultRentalType = 'leasing';
+    
     setFormData({
       brand_id: 0,
       model_id: 0,
@@ -327,7 +357,7 @@ const CarInventory: React.FC = () => {
       available_count: 1,
       transmission: 'automatic',
       car_type: 'sedan',
-      rental_type: rentalType || 'daily', // Set default based on current view
+      rental_type: defaultRentalType,
       price_per_day: 0,
       allowed_kilometers: 250
     });
