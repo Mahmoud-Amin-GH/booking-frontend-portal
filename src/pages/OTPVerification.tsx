@@ -152,10 +152,10 @@ const OTPVerification: React.FC = () => {
           {/* Typography */}
           <div className="text-center max-w-md">
             <h1 className="font-sakr font-bold text-4xl xl:text-5xl mb-4 text-white">
-              {t('auth.almostThere', 'Almost There!')}
+              {t('auth.almostThere')}
             </h1>
             <p className="font-sakr font-normal text-lg xl:text-xl text-primary-100 mb-6">
-              {t('auth.verificationDescription', 'We\'ve sent a verification code to secure your account')}
+              {t('auth.verificationDescription')}
             </p>
             
             {/* Security Features */}
@@ -163,19 +163,19 @@ const OTPVerification: React.FC = () => {
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
                 <span className="font-sakr font-medium text-primary-100">
-                  {t('security.smsVerification', 'SMS verification')}
+                  {t('security.smsVerification')}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
                 <span className="font-sakr font-medium text-primary-100">
-                  {t('security.secureAccess', 'Secure account access')}
+                  {t('security.secureAccess')}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
                 <span className="font-sakr font-medium text-primary-100">
-                  {t('security.protectedData', 'Protected personal data')}
+                  {t('security.protectedData')}
                 </span>
               </div>
             </div>
@@ -199,7 +199,7 @@ const OTPVerification: React.FC = () => {
               {t('auth.verifyPhone')}
             </h2>
             <p className="font-sakr font-normal text-lg text-on-surface-variant mb-4">
-              {t('auth.otpSentTo', 'We\'ve sent a 6-digit code to')}
+              {t('auth.otpSentTo')}
             </p>
             <div className="inline-flex items-center px-4 py-2 bg-primary-50 rounded-xl">
               <span className="font-sakr font-bold text-lg text-primary-700">
@@ -224,7 +224,7 @@ const OTPVerification: React.FC = () => {
               {/* OTP Input */}
               <div className="text-center">
                 <label className="font-sakr font-medium text-lg text-on-surface mb-3 block">
-                  {t('auth.enterCode', 'Enter verification code')}
+                  {t('auth.enterCode')}
                 </label>
                 <Input
                   value={otp}
@@ -235,7 +235,7 @@ const OTPVerification: React.FC = () => {
                   maxLength={6}
                 />
                 <p className="font-sakr text-sm text-on-surface-variant mt-2">
-                  {t('auth.codeLength', 'Enter the 6-digit code sent to your phone')}
+                  {t('auth.codeInstructions')}
                 </p>
               </div>
 
@@ -267,7 +267,7 @@ const OTPVerification: React.FC = () => {
                     size="sm"
                     className="text-primary-500 hover:text-primary-600"
                   >
-                    {t('auth.resendCode', 'Resend Code')}
+                    {t('auth.resendCode')}
                   </Button>
                 ) : (
                   <div className="flex items-center justify-center gap-2 py-2">
@@ -279,7 +279,7 @@ const OTPVerification: React.FC = () => {
                       />
                     </div>
                     <span className="font-sakr text-sm text-on-surface-variant">
-                      {t('auth.resendIn', 'Resend in')} {countdown}s
+                      {t('auth.resendIn')} {countdown}s
                     </span>
                   </div>
                 )}
@@ -294,20 +294,20 @@ const OTPVerification: React.FC = () => {
               onClick={handleBackToLogin}
               className="text-on-surface-variant hover:text-on-surface"
             >
-              ← {t('auth.backToLogin', 'Back to Login')}
+              ← {t('auth.backToLogin')}
             </Button>
           </div>
 
           {/* Help Text */}
           <div className="mt-6 text-center">
             <p className="font-sakr text-xs text-on-surface-variant">
-              {t('auth.troubleReceiving', 'Having trouble receiving the code?')}{' '}
+              {t('auth.troubleReceiving')}{' '}
               <button 
                 type="button"
                 className="text-primary-500 hover:text-primary-600 no-underline"
                 onClick={() => {/* Handle help */}}
               >
-                {t('auth.contactSupport', 'Contact Support')}
+                {t('auth.contactSupport')}
               </button>
             </p>
           </div>

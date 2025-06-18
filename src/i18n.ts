@@ -30,6 +30,16 @@ const resources = {
       "auth.back": "Back",
       "auth.logout": "Logout",
       "auth.forgotPassword": "Forgot Password?",
+      "auth.almostThere": "Almost There!",
+      "auth.verificationDescription": "We've sent a verification code to secure your account",
+      "auth.enterCode": "Enter verification code",
+      "auth.codeInstructions": "Enter the 6-digit code sent to your phone",
+      "auth.resendCode": "Resend Code",
+      "auth.resendIn": "Resend in",
+      "auth.backToLogin": "Back to Login",
+      "auth.troubleReceiving": "Having trouble receiving the code?",
+      "auth.contactSupport": "Contact Support",
+      "auth.otpSentTo": "We've sent a 6-digit code to",
       
       // Placeholders
       "placeholders.enterFullName": "Enter your full name",
@@ -333,7 +343,12 @@ const resources = {
       
       // Pending State
       "pendingState.title": "Your account is currently under review.",
-      "pendingState.subtitle": "Please wait while an admin approves your registration."
+      "pendingState.subtitle": "Please wait while an admin approves your registration.",
+      
+      // Security features
+      "security.smsVerification": "SMS verification",
+      "security.secureAccess": "Secure account access",
+      "security.protectedData": "Protected personal data"
     }
   },
   ar: {
@@ -362,6 +377,16 @@ const resources = {
       "auth.back": "رجوع",
       "auth.logout": "تسجيل الخروج",
       "auth.forgotPassword": "هل نسيت كلمة المرور؟",
+      "auth.almostThere": "تقريباً هناك!",
+      "auth.verificationDescription": "لقد أرسلنا رمز تحقق لضمان حسابك",
+      "auth.enterCode": "أدخل رمز التحقق",
+      "auth.codeInstructions": "أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك",
+      "auth.resendCode": "إعادة إرسال الرمز",
+      "auth.resendIn": "إعادة إرسال في",
+      "auth.backToLogin": "العودة إلى تسجيل الدخول",
+      "auth.troubleReceiving": "هل تواجه مشكلة في تلقي الرمز؟",
+      "auth.contactSupport": "اتصل بدعم الخدمة",
+      "auth.otpSentTo": "لقد أرسلنا رمزًا مكونًا من 6 أرقام إلى",
       
       // Placeholders
       "placeholders.enterFullName": "أدخل اسمك الكامل",
@@ -665,7 +690,12 @@ const resources = {
       
       // Pending State - Arabic
       "pendingState.title": "حسابك قيد المراجعة حالياً.",
-      "pendingState.subtitle": "يرجى الانتظار حتى يقوم المسؤول بالموافقة على تسجيلك."
+      "pendingState.subtitle": "يرجى الانتظار حتى يقوم المسؤول بالموافقة على تسجيلك.",
+      
+      // Security features
+      "security.smsVerification": "تحقق الرسالة القصيرة",
+      "security.secureAccess": "تأمين علوم الدخول",
+      "security.protectedData": "بيانات شخصية حميعة"
     }
   }
 };
