@@ -5,7 +5,10 @@ export interface TieredPrice {
   tier_name: string;
   min_days: number;
   max_days: number | null;
-  price: number;
+  base_price: number;
+  tier_price: number;
+  multiplier: number;
+  discount_percentage: number;
 }
 
 // Types matching the backend API

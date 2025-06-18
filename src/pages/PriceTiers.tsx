@@ -17,6 +17,7 @@ import {
   deletePriceTier,
   resetPriceTiersToDefaults
 } from '../services/priceTiersApi';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export const PriceTiers: React.FC = () => {
   const { t } = useTranslation();
@@ -32,6 +33,7 @@ export const PriceTiers: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const { isRTL } = useLanguage();
 
   // Form state
   const [formData, setFormData] = useState<PriceTierFormData>({
@@ -169,6 +171,24 @@ export const PriceTiers: React.FC = () => {
     return t('priceTiers.dayRange', { min: tier.min_days, max: tier.max_days });
   };
 
+  const formatTierName = (tierName: string): string => {
+    // Check if it's one of the default tier names that should be translated
+    const tierNameMap: Record<string, string> = {
+      '1-7 Days': 'priceTiers.tierNames.1to7Days',
+      '8-30 Days': 'priceTiers.tierNames.8to30Days', 
+      '31-90 Days': 'priceTiers.tierNames.31to90Days',
+      '90+ Days': 'priceTiers.tierNames.90plusDays'
+    };
+
+    // If it's a standard tier name, translate it
+    if (tierNameMap[tierName]) {
+      return t(tierNameMap[tierName]);
+    }
+
+    // Otherwise, return the custom tier name as-is
+    return tierName;
+  };
+
   const formatDiscount = (multiplier: number): string => {
     const discount = Math.round((1 - multiplier) * 100);
     return discount > 0 ? `-${discount}%` : '0%';
@@ -232,16 +252,16 @@ export const PriceTiers: React.FC = () => {
             <table className="w-full">
               <thead className="bg-neutral-50 border-b border-neutral-200">
                 <tr>
-                  <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                  <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                     {t('priceTiers.table.tierName')}
                   </th>
-                  <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary text-left">
+                  <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary text-left" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                     {t('priceTiers.table.dayRange')}
                   </th>
-                  <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary text-left">
+                  <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary text-left" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                     {t('priceTiers.table.multiplier')}
                   </th>
-                  <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary text-left">
+                  <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary text-left" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                     {t('priceTiers.table.discount')}
                   </th>
                   <th className="w-10"></th>
@@ -262,7 +282,7 @@ export const PriceTiers: React.FC = () => {
                   tiers.map((tier) => (
                     <tr key={tier.id} className="hover:bg-neutral-25 transition-colors">
                       <td className="px-4 py-4 font-sakr font-medium text-sm text-text-primary">
-                        {tier.tier_name}
+                        {formatTierName(tier.tier_name)}
                       </td>
                       <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                         {formatDayRange(tier)}

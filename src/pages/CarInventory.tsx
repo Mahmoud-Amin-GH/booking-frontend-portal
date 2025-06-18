@@ -7,7 +7,8 @@ import {
   Modal,
   ModalFooter,
   Select,
-  SelectOption
+  SelectOption,
+  Alert
 } from '@mo_sami/web-design-system';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -27,8 +28,11 @@ import {
   getLocalizedColorName,
   getLocalizedDropdownLabel,
   validateCarForm,
-  formatCarDisplayName
+  formatCarDisplayName,
+  TieredPrice
 } from '../services/carApi';
+import { PriceTier, getPriceTiers } from '../services/priceTiersApi';
+import { useInventoryStatus } from '../hooks/useInventoryStatus';
 
 // Inventory context type from DashboardLayout
 interface InventoryContext {
@@ -71,6 +75,7 @@ const CarInventory: React.FC = () => {
   const [carOptions, setCarOptions] = useState<CarOptions | null>(null);
   const [availableModels, setAvailableModels] = useState<Model[]>([]);
   const [selectedCars, setSelectedCars] = useState<Set<number>>(new Set());
+  const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -112,6 +117,9 @@ const CarInventory: React.FC = () => {
   useEffect(() => {
     loadCars();
     loadCarOptions();
+    if (rentalType === RentalType.Daily) {
+      loadUserPriceTiers();
+    }
   }, [currentPage, searchTerm, rentalType]);
 
   // Load models when brand changes
@@ -200,6 +208,16 @@ const CarInventory: React.FC = () => {
       console.error('Error loading models:', error);
       // Defensive: Reset to empty array on error
       setAvailableModels([]);
+    }
+  };
+
+  const loadUserPriceTiers = async () => {
+    try {
+      const tiers = await getPriceTiers();
+      setUserPriceTiers(tiers);
+    } catch (error) {
+      console.error('Error loading price tiers:', error);
+      setUserPriceTiers([]);
     }
   };
 
@@ -629,17 +647,21 @@ const CarInventory: React.FC = () => {
             {/* Conditional pricing for mobile cards */}
             {rentalType === RentalType.Daily && (
               <div className="space-y-1">
-                {car.tiered_prices && car.tiered_prices.length > 0 ? (
-                  car.tiered_prices.map((tier) => (
+                {/* Base daily price */}
+                <p className="font-sakr text-sm text-gray-600">
+                  {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
+                </p>
+                {/* Show tiered prices if user has configured tiers */}
+                {userPriceTiers.length > 0 && userPriceTiers.map((tier) => {
+                  const tierPrice = car.tiered_prices?.find(tp => tp.tier_name === tier.tier_name);
+                  const displayPrice = tierPrice ? tierPrice.tier_price : car.price_per_day;
+                  
+                  return (
                     <p key={tier.tier_name} className="font-sakr text-sm text-gray-600">
-                      {tier.tier_name}: {tier.price} {t('cars.kdPerDay')}
+                      {tier.tier_name}: {displayPrice} {t('cars.kdPerDay')}
                     </p>
-                  ))
-                ) : (
-                  <p className="font-sakr text-sm text-gray-600">
-                    {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
-                  </p>
-                )}
+                  );
+                })}
               </div>
             )}
             {rentalType === RentalType.LongTerm && (
@@ -885,17 +907,13 @@ const CarInventory: React.FC = () => {
                       {rentalType === RentalType.Daily && (
                         <>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            {t('cars.priceTier1to7Days')}
+                            {t('cars.dailyPrice')}
                           </th>
-                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            {t('cars.priceTier8to30Days')}
-                          </th>
-                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            {t('cars.priceTier31to90Days')}
-                          </th>
-                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            {t('cars.priceTier90PlusDays')}
-                          </th>
+                          {userPriceTiers.map((tier) => (
+                            <th key={tier.tier_name} className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                              {tier.tier_name}
+                            </th>
+                          ))}
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                             {t('cars.allowedKilometers')}
                           </th>
@@ -956,40 +974,26 @@ const CarInventory: React.FC = () => {
                         {/* Conditional pricing data based on rental type */}
                         {rentalType === RentalType.Daily && (
                           <>
-                            {/* Display tiered prices if available, otherwise fall back to base price */}
-                            {car.tiered_prices && car.tiered_prices.length > 0 ? (
-                              car.tiered_prices.map((tier, index) => (
+                            {/* Base daily price */}
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.price_per_day} {t('cars.kdPerDay')}
+                              </span>
+                            </td>
+                            {/* Dynamic tier prices */}
+                            {userPriceTiers.map((tier) => {
+                              // Find matching tier price from car's tiered_prices
+                              const tierPrice = car.tiered_prices?.find(tp => tp.tier_name === tier.tier_name);
+                              const displayPrice = tierPrice ? tierPrice.tier_price : car.price_per_day;
+                              
+                              return (
                                 <td key={tier.tier_name} className="px-4 py-4 font-sakr text-sm text-text-secondary">
                                   <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                    {tier.price} {t('cars.kdPerDay')}
+                                    {displayPrice} {t('cars.kdPerDay')}
                                   </span>
                                 </td>
-                              ))
-                            ) : (
-                              // Fallback to show base price in all tiers if no tiered prices
-                              <>
-                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                    {car.price_per_day} {t('cars.kdPerDay')}
-                                  </span>
-                                </td>
-                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                    {car.price_per_day} {t('cars.kdPerDay')}
-                                  </span>
-                                </td>
-                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                    {car.price_per_day} {t('cars.kdPerDay')}
-                                  </span>
-                                </td>
-                                <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                                  <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                    {car.price_per_day} {t('cars.kdPerDay')}
-                                  </span>
-                                </td>
-                              </>
-                            )}
+                              );
+                            })}
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               {car.allowed_kilometers} {t('cars.km')}
                             </td>
