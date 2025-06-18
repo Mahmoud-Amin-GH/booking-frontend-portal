@@ -778,24 +778,17 @@ const CarInventory: React.FC = () => {
                 <table className="w-full">
                   <thead className="bg-neutral-50 border-b border-neutral-200">
                     <tr>
-                      <th className="px-4 py-3 text-left">
-                        <input 
-                          type="checkbox" 
-                          className="rounded border-neutral-300 text-primary-500 focus:ring-primary-500"
-                          onChange={(e) => handleSelectAll(e.target.checked)}
-                          checked={selectedCars.size === cars.length && cars.length > 0}
-                        />
-                      </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                      <th className="px-4 py-3 text-left"></th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.title')}
                       </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                      <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.availableCount')}
                       </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                      <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.dailyPrice')}
                       </th>
-                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary">
+                      <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.allowedKilometers')}
                       </th>
                       <th className="w-10"></th>
@@ -825,7 +818,7 @@ const CarInventory: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                          <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
                             {car.price_per_day} {t('cars.kdPerDay')}
                           </span>
                         </td>
@@ -842,7 +835,7 @@ const CarInventory: React.FC = () => {
                             <DropdownMenu.Portal>
                               <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
                                 <DropdownMenu.Item 
-                                  className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                                  className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                                   onClick={() => openDeleteDialog(car)}
                                 >
                                   <TrashIcon className="w-4 h-4" />
