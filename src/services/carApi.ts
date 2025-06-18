@@ -7,12 +7,10 @@ export interface Car {
   brand_id: number;
   model_id: number;
   year: number;
-  seats: number;
   color_id: number;
   trim_level: string;
   available_count: number;
   transmission: 'manual' | 'automatic';
-  car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
@@ -74,12 +72,10 @@ export interface CarFormData {
   brand_id: number;
   model_id: number;
   year: number;
-  seats: number;
   color_id: number;
   trim_level: string;
   available_count: number;
   transmission: 'manual' | 'automatic';
-  car_type: 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van';
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
@@ -176,15 +172,11 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
   if (!data.year || data.year < 1900 || data.year > 2030) {
     errors.push('Year must be between 1900 and 2030');
   }
-  if (!data.seats || data.seats < 1 || data.seats > 12) {
-    errors.push('Seats must be between 1 and 12');
-  }
   if (!data.color_id) errors.push('Color is required');
   if (data.available_count === undefined || data.available_count < 0) {
     errors.push('Available count must be 0 or greater');
   }
   if (!data.transmission) errors.push('Transmission is required');
-  if (!data.car_type) errors.push('Car type is required');
   
   // Conditional validation based on rental type
   if (data.rental_type === 'daily') {

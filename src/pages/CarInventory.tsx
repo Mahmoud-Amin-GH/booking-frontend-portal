@@ -84,12 +84,10 @@ const CarInventory: React.FC = () => {
     brand_id: 0,
     model_id: 0,
     year: new Date().getFullYear(),
-    seats: 5,
     color_id: 0,
     trim_level: '',
     available_count: 1,
     transmission: 'automatic',
-    car_type: 'sedan',
     rental_type: (() => {
       // Convert URL format to API format for rental type
       if (rentalType === RentalType.Daily) return 'daily';
@@ -245,16 +243,6 @@ const CarInventory: React.FC = () => {
     }));
   }, [carOptions, language]);
 
-  const carTypeOptions: SelectOption[] = useMemo(() => {
-    if (!carOptions) return [];
-    return carOptions.car_types.map(carType => ({
-      value: carType.value,
-      label: getLocalizedDropdownLabel(carType, language),
-      labelEn: carType.label_en,
-      labelAr: carType.label_ar
-    }));
-  }, [carOptions, language]);
-
   const trimLevelOptions: SelectOption[] = useMemo(() => {
     if (!carOptions) return [];
     return carOptions.trim_levels?.map(trim => ({
@@ -359,12 +347,10 @@ const CarInventory: React.FC = () => {
       brand_id: 0,
       model_id: 0,
       year: new Date().getFullYear(),
-      seats: 5,
       color_id: 0,
       trim_level: '',
       available_count: 1,
       transmission: 'automatic',
-      car_type: 'sedan',
       rental_type: defaultRentalType,
       price_per_day: 0,
       allowed_kilometers: 250,
@@ -390,12 +376,10 @@ const CarInventory: React.FC = () => {
       brand_id: car.brand_id,
       model_id: car.model_id,
       year: car.year,
-      seats: car.seats,
       color_id: car.color_id,
       trim_level: car.trim_level,
       available_count: car.available_count,
       transmission: car.transmission,
-      car_type: car.car_type,
       rental_type: car.rental_type,
       price_per_day: car.price_per_day,
       allowed_kilometers: car.allowed_kilometers,
@@ -496,27 +480,6 @@ const CarInventory: React.FC = () => {
               onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
               required
             />
-
-            <Input
-              type="number"
-              label={t('cars.seats')}
-              value={formData.seats ?? ''}
-              onChange={e => {
-                const value = e.target.value;
-                setFormData(prev => ({ ...prev, seats: value === '' ? 0 : Number(value) }));
-              }}
-              min={1}
-              max={12}
-              required
-            />
-
-            <Select
-              label={t('cars.carType')}
-              options={carTypeOptions}
-              value={formData.car_type || ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, car_type: value as 'sedan' | 'suv' | 'hatchback' | 'coupe' | 'convertible' | 'pickup' | 'van' }))}
-              required
-            />
           </div>
         </div>
 
@@ -559,7 +522,7 @@ const CarInventory: React.FC = () => {
               <>
                 <Input
                   type="number"
-                  label="36 Months (K.D./month)"
+                  label={t('cars.months36Price')}
                   value={formData.months_36_price ?? ''}
                   onChange={e => {
                     const value = e.target.value;
@@ -570,7 +533,7 @@ const CarInventory: React.FC = () => {
                 />
                 <Input
                   type="number"
-                  label="48 Months (K.D./month)"
+                  label={t('cars.months48Price')}
                   value={formData.months_48_price ?? ''}
                   onChange={e => {
                     const value = e.target.value;
@@ -587,7 +550,7 @@ const CarInventory: React.FC = () => {
               <>
                 <Input
                   type="number"
-                  label="Downpayment (K.D.)"
+                  label={t('cars.downpayment')}
                   value={formData.downpayment ?? ''}
                   onChange={e => {
                     const value = e.target.value;
@@ -598,7 +561,7 @@ const CarInventory: React.FC = () => {
                 />
                 <Input
                   type="number"
-                  label="36 Months (K.D./month)"
+                  label={t('cars.months36Price')}
                   value={formData.months_36_price ?? ''}
                   onChange={e => {
                     const value = e.target.value;
@@ -609,7 +572,7 @@ const CarInventory: React.FC = () => {
                 />
                 <Input
                   type="number"
-                  label="48 Months (K.D./month)"
+                  label={t('cars.months48Price')}
                   value={formData.months_48_price ?? ''}
                   onChange={e => {
                     const value = e.target.value;
@@ -620,7 +583,7 @@ const CarInventory: React.FC = () => {
                 />
                 <Input
                   type="number"
-                  label="Final Payment (K.D.)"
+                  label={t('cars.finalPayment')}
                   value={formData.final_payment ?? ''}
                   onChange={e => {
                     const value = e.target.value;
@@ -672,26 +635,26 @@ const CarInventory: React.FC = () => {
             {rentalType === RentalType.LongTerm && (
               <>
                 <p className="font-sakr text-sm text-gray-600">
-                  36 Months: {car.months_36_price || 0} K.D./month
+                  {t('cars.months36')}: {car.months_36_price || 0} {t('cars.kdPerMonth')}
                 </p>
                 <p className="font-sakr text-sm text-gray-600">
-                  48 Months: {car.months_48_price || 0} K.D./month
+                  {t('cars.months48')}: {car.months_48_price || 0} {t('cars.kdPerMonth')}
                 </p>
               </>
             )}
             {rentalType === RentalType.Leasing && (
               <>
                 <p className="font-sakr text-sm text-gray-600">
-                  Downpayment: {car.downpayment || 0} K.D.
+                  {t('cars.downpaymentLabel')}: {car.downpayment || 0} {t('cars.kd')}
                 </p>
                 <p className="font-sakr text-sm text-gray-600">
-                  36 Months: {car.months_36_price || 0} K.D./month
+                  {t('cars.months36')}: {car.months_36_price || 0} {t('cars.kdPerMonth')}
                 </p>
                 <p className="font-sakr text-sm text-gray-600">
-                  48 Months: {car.months_48_price || 0} K.D./month
+                  {t('cars.months48')}: {car.months_48_price || 0} {t('cars.kdPerMonth')}
                 </p>
                 <p className="font-sakr text-sm text-gray-600">
-                  Final Payment: {car.final_payment || 0} K.D.
+                  {t('cars.finalPaymentLabel')}: {car.final_payment || 0} {t('cars.kd')}
                 </p>
               </>
             )}
@@ -910,33 +873,38 @@ const CarInventory: React.FC = () => {
                       </th>
                       {/* Conditional pricing columns based on rental type */}
                       {rentalType === RentalType.Daily && (
-                        <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                          {t('cars.dailyPrice')}
-                        </th>
+                        <>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            {t('cars.dailyPrice')}
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            {t('cars.allowedKilometers')}
+                          </th>
+                        </>
                       )}
                       {rentalType === RentalType.LongTerm && (
                         <>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            36 Months
+                            {t('cars.months36')}
                           </th>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            48 Months
+                            {t('cars.months48')}
                           </th>
                         </>
                       )}
                       {rentalType === RentalType.Leasing && (
                         <>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            Downpayment
+                            {t('cars.downpaymentLabel')}
                           </th>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            36 Months
+                            {t('cars.months36')}
                           </th>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            48 Months
+                            {t('cars.months48')}
                           </th>
                           <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                            Final Payment
+                            {t('cars.finalPaymentLabel')}
                           </th>
                         </>
                       )}
@@ -968,22 +936,27 @@ const CarInventory: React.FC = () => {
                         </td>
                         {/* Conditional pricing data based on rental type */}
                         {rentalType === RentalType.Daily && (
-                          <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                            <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                              {car.price_per_day} {t('cars.kdPerDay')}
-                            </span>
-                          </td>
+                          <>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.price_per_day} {t('cars.kdPerDay')}
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              {car.allowed_kilometers} {t('cars.km')}
+                            </td>
+                          </>
                         )}
                         {rentalType === RentalType.LongTerm && (
                           <>
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.months_36_price || 0} K.D./month
+                                {car.months_36_price || 0} {t('cars.kdPerMonth')}
                               </span>
                             </td>
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.months_48_price || 0} K.D./month
+                                {car.months_48_price || 0} {t('cars.kdPerMonth')}
                               </span>
                             </td>
                           </>
@@ -992,22 +965,22 @@ const CarInventory: React.FC = () => {
                           <>
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.downpayment || 0} K.D.
+                                {car.downpayment || 0} {t('cars.kd')}
                               </span>
                             </td>
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.months_36_price || 0} K.D./month
+                                {car.months_36_price || 0} {t('cars.kdPerMonth')}
                               </span>
                             </td>
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.months_48_price || 0} K.D./month
+                                {car.months_48_price || 0} {t('cars.kdPerMonth')}
                               </span>
                             </td>
                             <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
                               <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                                {car.final_payment || 0} K.D.
+                                {car.final_payment || 0} {t('cars.kd')}
                               </span>
                             </td>
                           </>
