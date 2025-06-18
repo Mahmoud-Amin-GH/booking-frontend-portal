@@ -16,6 +16,11 @@ export interface Car {
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
+  // New fields for long-term and leasing
+  downpayment?: number;       // for leasing only
+  months_36_price?: number;   // for long-term & leasing
+  months_48_price?: number;   // for long-term & leasing
+  final_payment?: number;     // for leasing only
   created_at: string;
   updated_at: string;
   // Populated fields from joins
@@ -78,6 +83,11 @@ export interface CarFormData {
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
+  // New fields for long-term and leasing
+  downpayment?: number;       // for leasing only
+  months_36_price?: number;   // for long-term & leasing
+  months_48_price?: number;   // for long-term & leasing
+  final_payment?: number;     // for leasing only
 }
 
 export interface GetCarsParams {
@@ -175,8 +185,35 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
   }
   if (!data.transmission) errors.push('Transmission is required');
   if (!data.car_type) errors.push('Car type is required');
-  if (data.price_per_day === undefined || data.price_per_day < 0) {
-    errors.push('Price per day must be 0 or greater');
+  
+  // Conditional validation based on rental type
+  if (data.rental_type === 'daily') {
+    if (data.price_per_day === undefined || data.price_per_day <= 0) {
+      errors.push('Price per day is required and must be greater than 0 for daily rentals');
+    }
+    if (data.allowed_kilometers === undefined || data.allowed_kilometers <= 0) {
+      errors.push('Allowed kilometers is required and must be greater than 0 for daily rentals');
+    }
+  } else if (data.rental_type === 'long_term') {
+    if (!data.months_36_price || data.months_36_price <= 0) {
+      errors.push('36 months price is required and must be greater than 0 for long-term rentals');
+    }
+    if (!data.months_48_price || data.months_48_price <= 0) {
+      errors.push('48 months price is required and must be greater than 0 for long-term rentals');
+    }
+  } else if (data.rental_type === 'leasing') {
+    if (!data.downpayment || data.downpayment <= 0) {
+      errors.push('Downpayment is required and must be greater than 0 for leasing');
+    }
+    if (!data.months_36_price || data.months_36_price <= 0) {
+      errors.push('36 months price is required and must be greater than 0 for leasing');
+    }
+    if (!data.months_48_price || data.months_48_price <= 0) {
+      errors.push('48 months price is required and must be greater than 0 for leasing');
+    }
+    if (!data.final_payment || data.final_payment <= 0) {
+      errors.push('Final payment is required and must be greater than 0 for leasing');
+    }
   }
 
   return errors;

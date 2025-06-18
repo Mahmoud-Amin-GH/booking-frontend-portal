@@ -392,9 +392,9 @@ const resources = {
       // Navigation - Arabic
       "nav.overview": "نظرة عامة",
       "nav.inventory": "المخزون",
-      "nav.inventory.daily": "الإيجارات اليومية",
-      "nav.inventory.longTerm": "الإيجارات طويلة المدة",
-      "nav.inventory.leasing": "التأجير",
+      "nav.inventory.daily": "التأجير اليومي",
+      "nav.inventory.longTerm": "التأجير التشغيلي",
+      "nav.inventory.leasing": "التأجير التمليكي",
       "nav.settings": "الإعدادات",
       
       // Onboarding - Arabic

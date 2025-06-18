@@ -98,7 +98,12 @@ const CarInventory: React.FC = () => {
       return 'daily';
     })(),
     price_per_day: 0,
-    allowed_kilometers: 250
+    allowed_kilometers: 250,
+    // New pricing fields
+    downpayment: 0,
+    months_36_price: 0,
+    months_48_price: 0,
+    final_payment: 0
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -362,7 +367,12 @@ const CarInventory: React.FC = () => {
       car_type: 'sedan',
       rental_type: defaultRentalType,
       price_per_day: 0,
-      allowed_kilometers: 250
+      allowed_kilometers: 250,
+      // New pricing fields
+      downpayment: 0,
+      months_36_price: 0,
+      months_48_price: 0,
+      final_payment: 0
     });
     setFormErrors([]);
     setEditingCar(null);
@@ -388,7 +398,12 @@ const CarInventory: React.FC = () => {
       car_type: car.car_type,
       rental_type: car.rental_type,
       price_per_day: car.price_per_day,
-      allowed_kilometers: car.allowed_kilometers
+      allowed_kilometers: car.allowed_kilometers,
+      // New pricing fields
+      downpayment: car.downpayment,
+      months_36_price: car.months_36_price,
+      months_48_price: car.months_48_price,
+      final_payment: car.final_payment
     });
     setIsEditModalOpen(true);
   };
@@ -511,17 +526,111 @@ const CarInventory: React.FC = () => {
             {t('form.rentalSpecs')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <Input
-              type="number"
-              label={t('cars.dailyPrice')}
-              value={formData.price_per_day ?? ''}
-              onChange={e => {
-                const value = e.target.value;
-                setFormData(prev => ({ ...prev, price_per_day: value === '' ? 0 : Number(value) }));
-              }}
-              min={0}
-              required
-            />
+            {/* Daily Rental Pricing */}
+            {formData.rental_type === 'daily' && (
+              <>
+                <Input
+                  type="number"
+                  label={t('cars.dailyPrice')}
+                  value={formData.price_per_day ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, price_per_day: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+                <Input
+                  type="number"
+                  label={t('cars.allowedKilometers')}
+                  value={formData.allowed_kilometers ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, allowed_kilometers: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+              </>
+            )}
+
+            {/* Long-term Rental Pricing */}
+            {formData.rental_type === 'long_term' && (
+              <>
+                <Input
+                  type="number"
+                  label="36 Months (K.D./month)"
+                  value={formData.months_36_price ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+                <Input
+                  type="number"
+                  label="48 Months (K.D./month)"
+                  value={formData.months_48_price ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+              </>
+            )}
+
+            {/* Leasing Pricing */}
+            {formData.rental_type === 'leasing' && (
+              <>
+                <Input
+                  type="number"
+                  label="Downpayment (K.D.)"
+                  value={formData.downpayment ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, downpayment: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+                <Input
+                  type="number"
+                  label="36 Months (K.D./month)"
+                  value={formData.months_36_price ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+                <Input
+                  type="number"
+                  label="48 Months (K.D./month)"
+                  value={formData.months_48_price ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+                <Input
+                  type="number"
+                  label="Final Payment (K.D.)"
+                  value={formData.final_payment ?? ''}
+                  onChange={e => {
+                    const value = e.target.value;
+                    setFormData(prev => ({ ...prev, final_payment: value === '' ? 0 : Number(value) }));
+                  }}
+                  min={0}
+                  required
+                />
+              </>
+            )}
 
             <Input
               type="number"
@@ -530,18 +639,6 @@ const CarInventory: React.FC = () => {
               onChange={e => {
                 const value = e.target.value;
                 setFormData(prev => ({ ...prev, available_count: value === '' ? 0 : Number(value) }));
-              }}
-              min={0}
-              required
-            />
-
-            <Input
-              type="number"
-              label={t('cars.allowedKilometers')}
-              value={formData.allowed_kilometers ?? ''}
-              onChange={e => {
-                const value = e.target.value;
-                setFormData(prev => ({ ...prev, allowed_kilometers: value === '' ? 0 : Number(value) }));
               }}
               min={0}
               required
@@ -566,12 +663,38 @@ const CarInventory: React.FC = () => {
                 {car.available_count}
               </span>
             </p>
-            <p className="font-sakr text-sm text-gray-600">
-              {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
-            </p>
-            <p className="font-sakr text-sm text-gray-600">
-              {t('cars.allowedKilometers')}: {car.allowed_kilometers} {t('cars.km')}
-            </p>
+            {/* Conditional pricing for mobile cards */}
+            {rentalType === RentalType.Daily && (
+              <p className="font-sakr text-sm text-gray-600">
+                {t('cars.dailyPrice')}: {car.price_per_day} {t('cars.kdPerDay')}
+              </p>
+            )}
+            {rentalType === RentalType.LongTerm && (
+              <>
+                <p className="font-sakr text-sm text-gray-600">
+                  36 Months: {car.months_36_price || 0} K.D./month
+                </p>
+                <p className="font-sakr text-sm text-gray-600">
+                  48 Months: {car.months_48_price || 0} K.D./month
+                </p>
+              </>
+            )}
+            {rentalType === RentalType.Leasing && (
+              <>
+                <p className="font-sakr text-sm text-gray-600">
+                  Downpayment: {car.downpayment || 0} K.D.
+                </p>
+                <p className="font-sakr text-sm text-gray-600">
+                  36 Months: {car.months_36_price || 0} K.D./month
+                </p>
+                <p className="font-sakr text-sm text-gray-600">
+                  48 Months: {car.months_48_price || 0} K.D./month
+                </p>
+                <p className="font-sakr text-sm text-gray-600">
+                  Final Payment: {car.final_payment || 0} K.D.
+                </p>
+              </>
+            )}
           </div>
         </div>
         <DropdownMenu.Root>
@@ -785,12 +908,38 @@ const CarInventory: React.FC = () => {
                       <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.availableCount')}
                       </th>
-                      <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                        {t('cars.dailyPrice')}
-                      </th>
-                      <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
-                        {t('cars.allowedKilometers')}
-                      </th>
+                      {/* Conditional pricing columns based on rental type */}
+                      {rentalType === RentalType.Daily && (
+                        <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                          {t('cars.dailyPrice')}
+                        </th>
+                      )}
+                      {rentalType === RentalType.LongTerm && (
+                        <>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            36 Months
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            48 Months
+                          </th>
+                        </>
+                      )}
+                      {rentalType === RentalType.Leasing && (
+                        <>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            Downpayment
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            36 Months
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            48 Months
+                          </th>
+                          <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                            Final Payment
+                          </th>
+                        </>
+                      )}
                       <th className="w-10"></th>
                     </tr>
                   </thead>
@@ -817,14 +966,52 @@ const CarInventory: React.FC = () => {
                             {car.available_count}
                           </span>
                         </td>
-                        <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                          <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
-                            {car.price_per_day} {t('cars.kdPerDay')}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
-                          {car.allowed_kilometers} {t('cars.km')}
-                        </td>
+                        {/* Conditional pricing data based on rental type */}
+                        {rentalType === RentalType.Daily && (
+                          <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                            <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                              {car.price_per_day} {t('cars.kdPerDay')}
+                            </span>
+                          </td>
+                        )}
+                        {rentalType === RentalType.LongTerm && (
+                          <>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.months_36_price || 0} K.D./month
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.months_48_price || 0} K.D./month
+                              </span>
+                            </td>
+                          </>
+                        )}
+                        {rentalType === RentalType.Leasing && (
+                          <>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.downpayment || 0} K.D.
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.months_36_price || 0} K.D./month
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.months_48_price || 0} K.D./month
+                              </span>
+                            </td>
+                            <td className="px-4 py-4 font-sakr text-sm text-text-secondary">
+                              <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
+                                {car.final_payment || 0} K.D.
+                              </span>
+                            </td>
+                          </>
+                        )}
                         <td className="px-4 py-4">
                           <DropdownMenu.Root>
                             <DropdownMenu.Trigger asChild>
