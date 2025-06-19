@@ -29,10 +29,12 @@ import {
   getLocalizedDropdownLabel,
   validateCarForm,
   formatCarDisplayName,
-  TieredPrice
+  TieredPrice,
+  BulkUploadResult
 } from '../services/carApi';
 import { PriceTier, getPriceTiers } from '../services/priceTiersApi';
 import { useInventoryStatus } from '../hooks/useInventoryStatus';
+import BulkCarUpload from '../components/BulkCarUpload';
 
 // Inventory context type from DashboardLayout
 interface InventoryContext {
@@ -83,6 +85,9 @@ const CarInventory: React.FC = () => {
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [carToDelete, setCarToDelete] = useState<Car | null>(null);
+
+  // Bulk upload state
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<Partial<CarFormData>>({
@@ -422,6 +427,17 @@ const CarInventory: React.FC = () => {
 
   const handleFormDataChange = (newData: Partial<CarFormData>) => {
     setFormData(newData);
+  };
+
+  // Handle bulk upload completion
+  const handleBulkUploadComplete = () => {
+    // Refresh the car list to show newly uploaded cars
+    loadCars();
+    
+    // Refresh inventory status if available
+    if (inventoryContext?.refreshStatus) {
+      inventoryContext.refreshStatus();
+    }
   };
 
   // Original single-step form component
@@ -765,16 +781,37 @@ const CarInventory: React.FC = () => {
           {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
         </p>
         
-        {/* Action Button */}
-        <div className="flex justify-center">
+        {/* Action Buttons */}
+        <div className="flex flex-col gap-4 items-center">
           {searchTerm ? (
             <Button variant="primary" size="lg" onClick={() => handleSearch('')}>
               {t('empty.clearFilters')}
             </Button>
           ) : (
-            <Button variant="primary" size="lg" onClick={openAddModal}>
-              {t('empty.addFirstCar')}
-            </Button>
+            <>
+              <div className="flex gap-3">
+                <Button variant="primary" size="lg" onClick={openAddModal}>
+                  {t('empty.addFirstCar')}
+                </Button>
+                {/* Show bulk upload option only for daily rentals */}
+                {rentalType === RentalType.Daily && (
+                  <Button variant="outline" size="lg" onClick={() => setShowBulkUpload(true)}>
+                    {t('bulkUpload.bulkUpload', 'Bulk Upload')}
+                  </Button>
+                )}
+              </div>
+              
+              {/* Bulk Upload Section for Empty State */}
+              {rentalType === RentalType.Daily && (
+                <div className="mt-6 w-full max-w-2xl">
+                  <BulkCarUpload
+                    onUploadComplete={handleBulkUploadComplete}
+                    isVisible={showBulkUpload}
+                    onToggle={() => setShowBulkUpload(!showBulkUpload)}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -833,11 +870,28 @@ const CarInventory: React.FC = () => {
         </div>
         {/* Only show Add New Car button when inventory is not empty */}
         {cars.length > 0 && (
-          <Button onClick={openAddModal}>
-            {t('dashboard.addNewCar')}
-          </Button>
+          <div className="flex gap-3">
+            <Button onClick={openAddModal}>
+              {t('dashboard.addNewCar')}
+            </Button>
+            {/* Show bulk upload option only for daily rentals */}
+            {rentalType === RentalType.Daily && !showBulkUpload && (
+              <Button variant="outline" onClick={() => setShowBulkUpload(true)}>
+                {t('bulkUpload.bulkUpload')}
+              </Button>
+            )}
+          </div>
         )}
       </div>
+
+      {/* Bulk Upload Section - Only show for daily rentals when toggled */}
+      {rentalType === RentalType.Daily && cars.length > 0 && (
+        <BulkCarUpload
+          onUploadComplete={handleBulkUploadComplete}
+          isVisible={showBulkUpload}
+          onToggle={() => setShowBulkUpload(!showBulkUpload)}
+        />
+      )}
 
       {/* Search - Only show when inventory has cars */}
       {cars.length > 0 && (

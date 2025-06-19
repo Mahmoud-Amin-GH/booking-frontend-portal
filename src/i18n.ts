@@ -56,6 +56,7 @@ const resources = {
       
       // Common
       "common.loading": "Loading...",
+      "common.uploading": "Uploading...",
       "common.error": "An error occurred",
       "common.success": "Success",
       "common.dashboard": "Dashboard",
@@ -76,6 +77,7 @@ const resources = {
       "common.next": "Next",
       "common.pageOfTotal": "Page {{current}} of {{total}}",
       "common.actions": "Actions",
+      "common.hide": "Hide",
       
       // Navigation (new improved labels)
       "nav.overview": "Overview",
@@ -228,6 +230,31 @@ const resources = {
       "cars.finalPaymentLabel": "Final Payment",
       "cars.kdPerMonth": "K.D./month",
       "cars.kd": "K.D.",
+      
+      // Bulk Upload
+      "bulkUpload.title": "Bulk Upload Cars",
+      "bulkUpload.description": "Upload multiple cars at once using our Excel template",
+      "bulkUpload.downloadTemplate": "Download Template",
+      "bulkUpload.downloading": "Downloading...",
+      "bulkUpload.templateHelp": "Download the template to see the required format",
+      "bulkUpload.dropZone": "Drag and drop your Excel file here",
+      "bulkUpload.orSelectFile": "or click to select a file",
+      "bulkUpload.selectFile": "Select File",
+      "bulkUpload.upload": "Upload File",
+      "bulkUpload.bulkUpload": "Bulk Upload",
+      "bulkUpload.results": "Upload Results",
+      "bulkUpload.totalRows": "Total Rows",
+      "bulkUpload.successful": "Successful",
+      "bulkUpload.errors": "Errors",
+      "bulkUpload.processed": "Processed",
+      "bulkUpload.errorDetails": "Error Details",
+      "bulkUpload.downloadError": "Failed to download template. Please try again.",
+      "bulkUpload.uploadError": "Failed to upload file. Please check your connection and try again.",
+      "bulkUpload.errorRow": "Row",
+      "bulkUpload.errorValue": "Value",
+      "bulkUpload.fileValidation.invalidFormat": "Only .xlsx files are supported. Please select a valid Excel file.",
+      "bulkUpload.fileValidation.fileTooLarge": "File size must be less than 10MB.",
+      "bulkUpload.fileValidation.ready": "File \"{{fileName}}\" is ready for upload.",
       
       // Office Configurations
       "officeConfigs.title": "Office Configurations",
@@ -468,6 +495,7 @@ const resources = {
       
       // Common - Arabic
       "common.loading": "جاري التحميل...",
+      "common.uploading": "جاري الرفع...",
       "common.error": "حدث خطأ",
       "common.success": "نجح",
       "common.dashboard": "لوحة التحكم",
@@ -488,6 +516,7 @@ const resources = {
       "common.next": "التالي",
       "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
       "common.actions": "الإجراءات",
+      "common.hide": "إخفاء",
       
       // Navigation - Arabic
       "nav.overview": "نظرة عامة",
@@ -640,6 +669,31 @@ const resources = {
       "cars.finalPaymentLabel": "دفعة نهائية",
       "cars.kdPerMonth": "د.ك/شهر",
       "cars.kd": "د.ك",
+      
+      // Bulk Upload - Arabic
+      "bulkUpload.title": "رفع مجمع للسيارات",
+      "bulkUpload.description": "رفع عدة سيارات في مرة واحدة باستخدام قالب Excel",
+      "bulkUpload.downloadTemplate": "تحميل القالب",
+      "bulkUpload.downloading": "جاري التحميل...",
+      "bulkUpload.templateHelp": "حمل القالب لمعرفة التنسيق المطلوب",
+      "bulkUpload.dropZone": "اسحب وأفلت ملف Excel هنا",
+      "bulkUpload.orSelectFile": "أو انقر لاختيار ملف",
+      "bulkUpload.selectFile": "اختيار ملف",
+      "bulkUpload.upload": "رفع الملف",
+      "bulkUpload.bulkUpload": "رفع مجمع",
+      "bulkUpload.results": "نتائج الرفع",
+      "bulkUpload.totalRows": "إجمالي الصفوف",
+      "bulkUpload.successful": "نجح",
+      "bulkUpload.errors": "أخطاء",
+      "bulkUpload.processed": "تمت معالجتها",
+      "bulkUpload.errorDetails": "تفاصيل الأخطاء",
+      "bulkUpload.downloadError": "فشل في تحميل القالب. يرجى المحاولة مرة أخرى.",
+      "bulkUpload.uploadError": "فشل في رفع الملف. يرجى التحقق من الاتصال والمحاولة مرة أخرى.",
+      "bulkUpload.errorRow": "الصف",
+      "bulkUpload.errorValue": "القيمة",
+      "bulkUpload.fileValidation.invalidFormat": "فقط ملفات .xlsx مدعومة. يرجى اختيار ملف Excel صحيح.",
+      "bulkUpload.fileValidation.fileTooLarge": "حجم الملف يجب أن يكون أقل من 10 ميجابايت.",
+      "bulkUpload.fileValidation.ready": "الملف \"{{fileName}}\" جاهز للرفع.",
       
       // Office Configurations
       "officeConfigs.title": "إعدادات المكتب",

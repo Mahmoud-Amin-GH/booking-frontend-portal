@@ -106,6 +106,28 @@ export interface GetCarsParams {
   rentalType?: string;
 }
 
+// Bulk upload types
+export interface BulkUploadResult {
+  message: string;
+  result: ImportResult;
+}
+
+export interface ImportResult {
+  total_rows: number;
+  processed_rows: number;
+  success_count: number;
+  error_count: number;
+  errors: ImportError[];
+  created_cars: Car[];
+}
+
+export interface ImportError {
+  row: number;
+  column: string;
+  message: string;
+  value: string;
+}
+
 // Car API Service
 export class CarApiService {
   // Get cars with pagination and search
@@ -155,6 +177,37 @@ export class CarApiService {
   static async getModelsByBrand(brandId: number): Promise<{ models: Model[] }> {
     const response = await api.get(`/brands/${brandId}/models`);
     return response.data;
+  }
+
+  // Bulk upload cars via Excel file
+  static async bulkUploadCars(file: File): Promise<BulkUploadResult> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.post('/cars/bulk-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  }
+
+  // Download Excel template
+  static async downloadTemplate(): Promise<void> {
+    const response = await api.get('/cars/template/download', {
+      responseType: 'blob',
+    });
+    
+    // Create download link
+    const blob = response.data;
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'car_inventory_template_daily_rentals.xlsx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   }
 }
 
@@ -243,4 +296,7 @@ export const getLocalizedDropdownLabel = (option: DropdownOption, language: stri
 
 export const formatCarDisplayName = (car: Car, language: string = 'en'): string => {
   return `${car.brand_name || ''} ${car.model_name || ''} ${car.year}`.trim();
-}; 
+};
+
+// Export CarApiService as CarApi for new component compatibility
+export const CarApi = CarApiService; 
