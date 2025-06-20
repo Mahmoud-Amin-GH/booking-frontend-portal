@@ -38,8 +38,8 @@ export const PriceTiers: React.FC = () => {
   // Form state
   const [formData, setFormData] = useState<PriceTierFormData>({
     tier_name: '',
-    min_days: 1,
-    max_days: null,
+    days_from: 1,
+    days_to: null,
     multiplier: 1.0
   });
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -72,8 +72,8 @@ export const PriceTiers: React.FC = () => {
   const resetForm = () => {
     setFormData({
       tier_name: '',
-      min_days: 1,
-      max_days: null,
+      days_from: 1,
+      days_to: null,
       multiplier: 1.0
     });
     setFormErrors({});
@@ -87,12 +87,12 @@ export const PriceTiers: React.FC = () => {
       errors.tier_name = t('priceTiers.errors.tierNameRequired');
     }
 
-    if (!formData.min_days || formData.min_days <= 0) {
-      errors.min_days = t('priceTiers.errors.minDaysPositive');
+    if (!formData.days_from || formData.days_from <= 0) {
+      errors.days_from = t('priceTiers.errors.minDaysPositive');
     }
 
-    if (formData.max_days !== null && formData.max_days !== undefined && formData.max_days <= formData.min_days) {
-      errors.max_days = t('priceTiers.errors.maxDaysGreater');
+    if (formData.days_to !== null && formData.days_to !== undefined && formData.days_to <= formData.days_from) {
+      errors.days_to = t('priceTiers.errors.maxDaysGreater');
     }
 
     if (!formData.multiplier || formData.multiplier <= 0) {
@@ -130,8 +130,8 @@ export const PriceTiers: React.FC = () => {
     setEditingTier(tier);
     setFormData({
       tier_name: tier.tier_name,
-      min_days: tier.min_days,
-      max_days: tier.max_days,
+      days_from: tier.days_from,
+      days_to: tier.days_to,
       multiplier: tier.multiplier
     });
     setModalOpen(true);
@@ -165,10 +165,10 @@ export const PriceTiers: React.FC = () => {
   };
 
   const formatDayRange = (tier: PriceTier): string => {
-    if (tier.max_days === null) {
-      return t('priceTiers.dayRangeUnlimited', { min: tier.min_days });
+    if (tier.days_to === null) {
+      return t('priceTiers.dayRangeUnlimited', { min: tier.days_from });
     }
-    return t('priceTiers.dayRange', { min: tier.min_days, max: tier.max_days });
+    return t('priceTiers.dayRange', { min: tier.days_from, max: tier.days_to });
   };
 
   const formatTierName = (tierName: string): string => {
@@ -363,9 +363,9 @@ export const PriceTiers: React.FC = () => {
               <Input
                 type="number"
                 min="1"
-                value={formData.min_days.toString()}
-                onChange={(e) => setFormData({ ...formData, min_days: parseInt(e.target.value) || 1 })}
-                error={formErrors.min_days}
+                value={formData.days_from.toString()}
+                onChange={(e) => setFormData({ ...formData, days_from: parseInt(e.target.value) || 1 })}
+                error={formErrors.days_from}
               />
             </div>
 
@@ -376,10 +376,10 @@ export const PriceTiers: React.FC = () => {
               <Input
                 type="number"
                 min="1"
-                value={formData.max_days?.toString() || ''}
+                value={formData.days_to?.toString() || ''}
                 onChange={(e) => setFormData({ 
                   ...formData, 
-                  max_days: e.target.value ? parseInt(e.target.value) : null 
+                  days_to: e.target.value ? parseInt(e.target.value) : null 
                 })}
                 placeholder={t('priceTiers.form.maxDaysUnlimited')}
                 error={formErrors.max_days}

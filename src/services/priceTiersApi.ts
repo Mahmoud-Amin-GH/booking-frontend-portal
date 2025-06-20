@@ -4,8 +4,8 @@ export interface PriceTier {
   id: number;
   user_id: number;
   tier_name: string;
-  min_days: number;
-  max_days?: number | null;
+  days_from: number;
+  days_to?: number | null;
   multiplier: number;
   created_at: string;
   updated_at: string;
@@ -13,8 +13,8 @@ export interface PriceTier {
 
 export interface TieredPrice {
   tier_name: string;
-  min_days: number;
-  max_days?: number | null;
+  days_from: number;
+  days_to?: number | null;
   base_price: number;
   tier_price: number;
   multiplier: number;
@@ -23,8 +23,8 @@ export interface TieredPrice {
 
 export interface PriceTierFormData {
   tier_name: string;
-  min_days: number;
-  max_days?: number | null;
+  days_from: number;
+  days_to?: number | null;
   multiplier: number;
 }
 
