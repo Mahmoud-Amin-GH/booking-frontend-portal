@@ -94,9 +94,10 @@ const Login: React.FC = () => {
         phone: preparePhoneForAPI(form.phone),
         password: form.password,
       });
-
+      console.log("response", response);
+      console.log("response.message", response.message);
       // Login successful - OTP sent, navigate to verification
-      if (response.message && response.user_id) {
+      if (!response.token && response.user_id) {
         // navigate to verify otp
         navigate('/verify-otp', { 
           state: { 
@@ -104,6 +105,9 @@ const Login: React.FC = () => {
             fromSignup: false 
           }
         });
+      } else if (response.token && response.user_id) {
+        // navigate to dashboard
+        navigate('/dashboard');
       } else {
         setErrorMessage(response.message || t('error.loginFailed'));
       }
