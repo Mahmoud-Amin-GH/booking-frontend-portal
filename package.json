@@ -51,7 +51,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "setup:env": "node scripts/deploy-setup.js",
+    "dev": "npm start",
+    "build:dev": "REACT_APP_ENV=development npm run build",
+    "build:prod": "REACT_APP_ENV=production npm run build",
+    "preview": "npx serve -s build"
   },
   "eslintConfig": {
     "extends": [
