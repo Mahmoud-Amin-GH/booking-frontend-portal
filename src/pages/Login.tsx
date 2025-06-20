@@ -106,6 +106,8 @@ const Login: React.FC = () => {
           }
         });
       } else if (response.token && response.user_id) {
+        // set the token in local storage
+        localStorage.setItem('auth_token', response.token);
         // navigate to dashboard
         navigate('/dashboard');
       } else {
