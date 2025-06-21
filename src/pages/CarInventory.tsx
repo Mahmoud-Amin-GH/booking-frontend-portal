@@ -790,12 +790,12 @@ const CarInventory: React.FC = () => {
           ) : (
             <>
               <div className="flex gap-3">
-                <Button variant="primary" size="lg" onClick={openAddModal}>
+                <Button variant="outline" size="lg" onClick={openAddModal}>
                   {t('empty.addFirstCar')}
                 </Button>
                 {/* Show bulk upload option only for daily rentals */}
                 {rentalType === RentalType.Daily && (
-                  <Button variant="outline" size="lg" onClick={() => setShowBulkUpload(true)}>
+                  <Button variant="primary" size="lg" onClick={() => setShowBulkUpload(true)}>
                     {t('bulkUpload.bulkUpload', 'Bulk Upload')}
                   </Button>
                 )}
