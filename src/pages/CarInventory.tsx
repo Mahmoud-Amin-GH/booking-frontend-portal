@@ -790,7 +790,7 @@ const CarInventory: React.FC = () => {
           ) : (
             <>
               <div className="flex gap-3">
-                <Button variant="outline" size="lg" onClick={openAddModal}>
+                <Button variant={rentalType === RentalType.Daily ? 'outline' : 'primary'} size="lg" onClick={openAddModal}>
                   {t('empty.addFirstCar')}
                 </Button>
                 {/* Show bulk upload option only for daily rentals */}

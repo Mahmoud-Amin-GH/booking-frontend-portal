@@ -185,10 +185,10 @@ const OfficeConfigs: React.FC = () => {
       };
       
       await OfficeConfigsApiService.updateOfficeConfigs(request);
-      showAlertMessage(t('officeConfigs.success.saved', 'Configuration saved successfully!'), 'success');
+      showAlertMessage(t('officeConfigs.saveSuccess'), 'success');
     } catch (error) {
       console.error('Error saving office configurations:', error);
-      showAlertMessage(t('officeConfigs.errors.saveFailed', 'Failed to save configuration. Please try again.'), 'error');
+      showAlertMessage(t('officeConfigs.saveError'), 'error');
     } finally {
       setIsSaving(false);
     }
