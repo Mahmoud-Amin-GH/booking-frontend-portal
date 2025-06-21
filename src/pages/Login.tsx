@@ -266,8 +266,7 @@ const Login: React.FC = () => {
             </form>
 
             {/* Footer Links */}
-            <div className="mt-6 pt-4 border-t border-outline-variant space-y-4 text-center">
-              {/* Forgot Password Link */}
+            {/* <div className="mt-6 pt-4 border-t border-outline-variant space-y-4 text-center">
               <button
                 type="button"
                 onClick={() => navigate('/forgot-password')}
@@ -275,8 +274,6 @@ const Login: React.FC = () => {
               >
                 {t('auth.forgotPassword')}
               </button>
-
-              {/* Sign up Link */}
               <div className="text-sm">
                 <span className="font-sakr text-on-surface-variant">
                   {t('auth.dontHaveAccount')}{' '}
@@ -289,7 +286,7 @@ const Login: React.FC = () => {
                   {t('auth.signup')}
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Trust Indicator */}
