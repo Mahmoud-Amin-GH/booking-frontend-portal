@@ -194,7 +194,7 @@ export class CarApiService {
 
   // Download Excel template
   static async downloadTemplate(): Promise<void> {
-    const response = await api.get('/cars/template/download', {
+    const response = await api.get('/cars/template', {
       responseType: 'blob',
     });
     
@@ -203,7 +203,7 @@ export class CarApiService {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'car_inventory_template_daily_rentals.xlsx';
+    link.download = 'car_inventory_template.xlsx';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
