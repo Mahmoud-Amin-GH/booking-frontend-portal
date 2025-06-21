@@ -950,7 +950,6 @@ const CarInventory: React.FC = () => {
                 <table className="w-full">
                   <thead className="bg-neutral-50 border-b border-neutral-200">
                     <tr>
-                      <th className="px-4 py-3 text-left"></th>
                       <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.title')}
                       </th>
@@ -1005,14 +1004,6 @@ const CarInventory: React.FC = () => {
                   <tbody className="divide-y divide-neutral-200">
                     {cars.map((car) => (
                       <tr key={car.id} className="hover:bg-neutral-25 transition-colors">
-                        <td className="px-4 py-4">
-                          <input 
-                            type="checkbox" 
-                            className="rounded border-neutral-300 text-primary-500 focus:ring-primary-500"
-                            checked={selectedCars.has(car.id)}
-                            onChange={(e) => handleSelectCar(car.id, e.target.checked)}
-                          />
-                        </td>
                         <td className="px-4 py-4 font-sakr font-medium text-sm text-text-primary">
                           {car.brand_name} {car.model_name}
                         </td>

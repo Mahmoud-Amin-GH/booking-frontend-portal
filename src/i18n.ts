@@ -180,7 +180,7 @@ const resources = {
       "error.resendFailed": "Failed to resend OTP",
       
       // Car Management
-      "cars.title": "Title",
+      "cars.title": "Car",
       "cars.brand": "Brand",
       "cars.model": "Model",
       "cars.year": "Year",
@@ -619,13 +619,13 @@ const resources = {
       "error.resendFailed": "فشل في إعادة إرسال رمز التحقق",
       
       // Car Management - Arabic
-      "cars.title": "العنوان",
+      "cars.title": "السيارة",
       "cars.brand": "العلامة",
       "cars.model": "الموديل",
       "cars.year": "السنة",
       "cars.seats": "المقاعد",
       "cars.color": "اللون",
-      "cars.trimLevel": "مستوى التشطيب",
+      "cars.trimLevel": "مستوى التجهيز",
       "cars.trimLevelPlaceholder": "مثل، سبورت، LX، جيليكس",
       "cars.availableCount": "عدد المتاح",
       "cars.transmission": "ناقل الحركة",
