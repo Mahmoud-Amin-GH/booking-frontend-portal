@@ -51,7 +51,7 @@ const DashboardLayout: React.FC = () => {
   // If user is pending, disable all nav
   const allNavDisabled = userStatus === 'pending';
   // Only disable overview when inventory is empty, office configs and price tiers should always be available
-  const disabledNavItems = allNavDisabled ? ['overview', 'cars', 'office-configs', 'price-tiers'] : (isEmpty ? ['overview'] : []);
+  const disabledNavItems = allNavDisabled ? ['overview', 'cars', 'office-configs', 'price-tiers'] : (isEmpty ? ['overview', 'office-configs', 'price-tiers'] : []);
 
   // Handle logout
   const handleLogout = () => {
