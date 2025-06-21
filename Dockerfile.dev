@@ -1,0 +1,32 @@
+# Development Dockerfile for hot-reload
+FROM --platform=linux/amd64 node:18-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm ci --silent
+
+# Copy source code
+COPY . .
+
+# Set environment variables
+ENV NODE_ENV=development
+ENV REACT_APP_API_URL=${REACT_APP_API_URL:-https://booking-api.q84sale.com/api}
+ENV REACT_APP_ENV=development
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Start development server
+CMD ["npm", "start"] 
