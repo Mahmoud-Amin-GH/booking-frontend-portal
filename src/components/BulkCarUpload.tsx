@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@mo_sami/web-design-system';
 import { CarApi, BulkUploadResult } from '../services/carApi';
 
 interface BulkCarUploadProps {
@@ -102,15 +103,16 @@ const BulkCarUpload: React.FC<BulkCarUploadProps> = ({
   if (!isVisible) {
     return (
       <div className="mb-6">
-        <button
+        <Button
           onClick={onToggle}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          variant="primary"
+          className="flex items-center space-x-2"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
           </svg>
           <span>{t('bulkUpload.bulkUpload')}</span>
-        </button>
+        </Button>
       </div>
     );
   }
@@ -149,10 +151,11 @@ const BulkCarUpload: React.FC<BulkCarUploadProps> = ({
 
         {/* Download Template Section */}
         <div className="mb-6">
-          <button
+          <Button
             onClick={handleDownloadTemplate}
             disabled={downloading}
-            className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            variant="outline"
+            className="inline-flex items-center"
           >
             {downloading ? (
               <>
@@ -170,7 +173,7 @@ const BulkCarUpload: React.FC<BulkCarUploadProps> = ({
                 {t('bulkUpload.downloadTemplate')}
               </>
             )}
-          </button>
+          </Button>
           <p className="text-xs text-gray-500 mt-2">{t('bulkUpload.templateHelp')}</p>
         </div>
 
@@ -225,10 +228,12 @@ const BulkCarUpload: React.FC<BulkCarUploadProps> = ({
         {/* Action Buttons */}
         {selectedFile && (
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
-            <button
+            <Button
               onClick={handleUpload}
               disabled={uploading}
-              className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              variant="primary"
+              size="lg"
+              className="inline-flex items-center justify-center"
             >
               {uploading ? (
                 <>
@@ -246,14 +251,16 @@ const BulkCarUpload: React.FC<BulkCarUploadProps> = ({
                   {t('bulkUpload.upload')}
                 </>
               )}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={resetForm}
               disabled={uploading}
-              className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              variant="outline"
+              size="lg"
+              className="inline-flex items-center justify-center"
             >
               {t('common.cancel')}
-            </button>
+            </Button>
           </div>
         )}
 
