@@ -33,6 +33,9 @@ export const PriceTiers: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { isRTL } = useLanguage();
 
   // Form state
@@ -106,6 +109,7 @@ export const PriceTiers: React.FC = () => {
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
+    setIsSubmitting(true);
     try {
       if (editingTier) {
         await updatePriceTier(editingTier.id, formData);
@@ -123,6 +127,8 @@ export const PriceTiers: React.FC = () => {
         ? t('priceTiers.errors.updateFailed')
         : t('priceTiers.errors.createFailed');
       showToastMessage(errorMessage, 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -140,6 +146,7 @@ export const PriceTiers: React.FC = () => {
   const handleDelete = async () => {
     if (!tierToDelete) return;
 
+    setIsDeleting(true);
     try {
       await deletePriceTier(tierToDelete.id);
       showToastMessage(t('priceTiers.success.deleted'), 'success');
@@ -149,10 +156,13 @@ export const PriceTiers: React.FC = () => {
     } catch (error) {
       console.error('Error deleting tier:', error);
       showToastMessage(t('priceTiers.errors.deleteFailed'), 'error');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   const handleResetToDefaults = async () => {
+    setIsResetting(true);
     try {
       await resetPriceTiersToDefaults();
       showToastMessage(t('priceTiers.success.reset'), 'success');
@@ -161,6 +171,8 @@ export const PriceTiers: React.FC = () => {
     } catch (error) {
       console.error('Error resetting tiers:', error);
       showToastMessage(t('priceTiers.errors.resetFailed'), 'error');
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -413,11 +425,12 @@ export const PriceTiers: React.FC = () => {
                 setModalOpen(false);
                 resetForm();
               }}
+              disabled={isSubmitting}
             >
               {t('priceTiers.form.cancel')}
             </Button>
-            <Button onClick={handleSubmit}>
-              {t('priceTiers.form.save')}
+            <Button onClick={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting ? t('common.loading') : t('priceTiers.form.save')}
             </Button>
           </div>
         </ModalFooter>
@@ -452,14 +465,16 @@ export const PriceTiers: React.FC = () => {
             <Button
               variant="text"
               onClick={() => setDeleteConfirmOpen(false)}
+              disabled={isDeleting}
             >
               {t('priceTiers.form.cancel')}
             </Button>
             <Button
               variant="destructive"
               onClick={handleDelete}
+              disabled={isDeleting}
             >
-              {t('priceTiers.table.delete')}
+              {isDeleting ? t('common.loading') : t('priceTiers.table.delete')}
             </Button>
           </div>
         </ModalFooter>
@@ -489,14 +504,16 @@ export const PriceTiers: React.FC = () => {
             <Button
               variant="text"
               onClick={() => setResetConfirmOpen(false)}
+              disabled={isResetting}
             >
               {t('priceTiers.form.cancel')}
             </Button>
             <Button
               variant="destructive"
               onClick={handleResetToDefaults}
+              disabled={isResetting}
             >
-              {t('priceTiers.resetDefaults')}
+              {isResetting ? t('common.loading') : t('priceTiers.resetDefaults')}
             </Button>
           </div>
         </ModalFooter>

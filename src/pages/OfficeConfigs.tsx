@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@mo_sami/web-design-system';
+import { Button, Alert } from '@mo_sami/web-design-system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { OfficeConfigsApiService, OfficeConfigData, UpdateOfficeConfigsRequest } from '../services/officeConfigsApi';
 import { MapIcon, Cog6ToothIcon, TruckIcon, ChevronDownIcon, LightBulbIcon } from '@heroicons/react/24/outline';
@@ -23,6 +23,9 @@ const OfficeConfigs: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [configs, setConfigs] = useState<OfficeConfigState>({
     locations: {},
     services: {},
@@ -132,6 +135,14 @@ const OfficeConfigs: React.FC = () => {
     initializeConfigs();
   }, []);
 
+  // Show alert message
+  const showAlertMessage = (message: string, type: 'success' | 'error') => {
+    setAlertMessage(message);
+    setAlertType(type);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
+  };
+
   // Handle option changes
   const handleLocationChange = (optionKey: string, enabled: boolean) => {
     setConfigs(prev => ({
@@ -174,8 +185,10 @@ const OfficeConfigs: React.FC = () => {
       };
       
       await OfficeConfigsApiService.updateOfficeConfigs(request);
+      showAlertMessage(t('officeConfigs.success.saved', 'Configuration saved successfully!'), 'success');
     } catch (error) {
       console.error('Error saving office configurations:', error);
+      showAlertMessage(t('officeConfigs.errors.saveFailed', 'Failed to save configuration. Please try again.'), 'error');
     } finally {
       setIsSaving(false);
     }
@@ -258,6 +271,13 @@ const OfficeConfigs: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Alert Messages */}
+      {showAlert && (
+        <Alert variant={alertType === 'error' ? 'error' : 'success'}>
+          {alertMessage}
+        </Alert>
+      )}
 
       {/* Accordion UI using DS Accordion */}
       <Accordion
