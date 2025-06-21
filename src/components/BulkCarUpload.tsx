@@ -143,7 +143,7 @@ const BulkCarUpload: React.FC<BulkCarUploadProps> = ({
           <Button
             onClick={handleDownloadTemplate}
             disabled={downloading}
-            variant="outline"
+            variant="secondary"
             className="inline-flex items-center"
           >
             {downloading ? (
