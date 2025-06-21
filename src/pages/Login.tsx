@@ -33,6 +33,7 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>('');
 
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
@@ -89,6 +90,7 @@ const Login: React.FC = () => {
     try {
       setIsLoading(true);
       setErrorMessage('');
+      setSuccessMessage('');
 
       const response = await authAPI.login({
         phone: preparePhoneForAPI(form.phone),
@@ -96,20 +98,27 @@ const Login: React.FC = () => {
       });
       console.log("response", response);
       console.log("response.message", response.message);
+      
       // Login successful - OTP sent, navigate to verification
       if (!response.token && response.user_id) {
-        // navigate to verify otp
-        navigate('/verify-otp', { 
-          state: { 
-            phone: preparePhoneForAPI(form.phone),
-            fromSignup: false 
-          }
-        });
+        setSuccessMessage(t('auth.otpSent', 'Verification code sent successfully!'));
+        // Brief delay to show success message before navigation
+        setTimeout(() => {
+          navigate('/verify-otp', { 
+            state: { 
+              phone: preparePhoneForAPI(form.phone),
+              fromSignup: false 
+            }
+          });
+        }, 1000);
       } else if (response.token && response.user_id) {
+        setSuccessMessage(t('auth.loginSuccess', 'Login successful! Redirecting...'));
         // set the token in local storage
         localStorage.setItem('auth_token', response.token);
-        // navigate to dashboard
-        navigate('/dashboard');
+        // Brief delay to show success message before navigation
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
       } else {
         setErrorMessage(response.message || t('error.loginFailed'));
       }
@@ -198,6 +207,15 @@ const Login: React.FC = () => {
 
           {/* Form Container */}
           <div className="bg-surface rounded-2xl border border-outline-variant p-6 shadow-sm">
+            {/* Success Alert */}
+            {successMessage && (
+              <div className="mb-4">
+                <Alert variant="success">
+                  {successMessage}
+                </Alert>
+              </div>
+            )}
+
             {/* Error Alert */}
             {errorMessage && (
               <div className="mb-4">
@@ -240,9 +258,9 @@ const Login: React.FC = () => {
                   size="lg"
                   fullWidth
                   isLoading={isLoading}
-                  disabled={!form.phone || !form.password}
+                  disabled={!form.phone || !form.password || isLoading}
                 >
-                  {t('auth.login')}
+                  {isLoading ? t('common.loading') : t('auth.login')}
                 </Button>
               </div>
             </form>
