@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@4saletech/web-design-system": "github:4SaleTech/web-design-system",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@heroicons/react": "^2.2.0",
     "@mo_sami/web-design-system": "^1.0.0",
     "@radix-ui/react-checkbox": "^1.3.2",
