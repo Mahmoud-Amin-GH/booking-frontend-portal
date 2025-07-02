@@ -10,6 +10,9 @@ import { DashboardLayout } from './design_system';
 import '@mo_sami/web-design-system/dist/style.css';
 import './i18n';
 import Login from './pages/Login';
+import CarAvailability from './pages/CarAvailability';
+import QuarterlyPlanning from './pages/QuarterlyPlanning';
+import MaintenanceSchedule from './pages/MaintenanceSchedule';
 
 // Simple wrapper component for RTL support
 const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -45,6 +48,11 @@ function App() {
               <Route path="cars/leasing" element={<CarInventory />} />
               <Route path="office-configs" element={<OfficeConfigs />} />
               <Route path="price-tiers" element={<PriceTiers />} />
+              
+              {/* Availability Management Routes */}
+              <Route path="availability" element={<CarAvailability />} />
+              <Route path="quarterly-planning" element={<QuarterlyPlanning />} />
+              <Route path="maintenance" element={<MaintenanceSchedule />} />
             </Route>
           </Routes>
         </Router>

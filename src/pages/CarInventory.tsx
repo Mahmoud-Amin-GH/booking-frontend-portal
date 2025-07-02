@@ -6,10 +6,9 @@ import {
   Input,
   Modal,
   ModalFooter,
-  Select,
-  SelectOption,
   Alert
 } from '@mo_sami/web-design-system';
+import * as Select from '@radix-ui/react-select';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -48,6 +47,13 @@ export enum RentalType {
   Daily = 'daily',
   LongTerm = 'long_term',
   Leasing = 'leasing'
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+  labelEn: string;
+  labelAr: string;
 }
 
 const CarInventory: React.FC = () => {
@@ -460,23 +466,52 @@ const CarInventory: React.FC = () => {
             {t('form.carSpecs')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <Select
-              label={t('cars.brand')}
-              options={brandOptions}
-              value={formData.brand_id ? formData.brand_id.toString() : ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) || 0 }))}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.brand')} <span className="text-red-500">*</span>
+              </label>
+              <Select.Root
+                value={formData.brand_id ? formData.brand_id.toString() : ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) || 0 }))}
+              >
+                <Select.Trigger className="w-full">
+                  <Select.Value placeholder={t('cars.brand')} />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Viewport>
+                    {brandOptions.map(option => (
+                      <Select.Item key={option.value} value={option.value}>
+                        <Select.ItemText>{option.label}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Viewport>
+                </Select.Content>
+              </Select.Root>
+            </div>
 
-            <Select
-              label={t('cars.model')}
-              options={modelOptions}
-              value={formData.model_id ? formData.model_id.toString() : ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) || 0 }))}
-              disabled={!formData.brand_id || modelOptions.length === 0}
-              placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.model')} <span className="text-red-500">*</span>
+              </label>
+              <Select.Root
+                value={formData.model_id ? formData.model_id.toString() : ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) || 0 }))}
+                disabled={!formData.brand_id || modelOptions.length === 0}
+              >
+                <Select.Trigger className="w-full">
+                  <Select.Value placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')} />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Viewport>
+                    {modelOptions.map(option => (
+                      <Select.Item key={option.value} value={option.value}>
+                        <Select.ItemText>{option.label}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Viewport>
+                </Select.Content>
+              </Select.Root>
+            </div>
 
             <Input
               type="number"
@@ -491,29 +526,74 @@ const CarInventory: React.FC = () => {
               required
             />
 
-            <Select
-              label={t('cars.trimLevel')}
-              options={trimLevelOptions}
-              value={typeof formData.trim_level === 'string' ? formData.trim_level : (Array.isArray(formData.trim_level) ? formData.trim_level[0] : '')}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, trim_level: String(value) }))}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.trimLevel')} <span className="text-red-500">*</span>
+              </label>
+              <Select.Root
+                value={typeof formData.trim_level === 'string' ? formData.trim_level : (Array.isArray(formData.trim_level) ? formData.trim_level[0] : '')}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, trim_level: String(value) }))}
+              >
+                <Select.Trigger className="w-full">
+                  <Select.Value placeholder={t('cars.trimLevel')} />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Viewport>
+                    {trimLevelOptions.map(option => (
+                      <Select.Item key={option.value} value={option.value}>
+                        <Select.ItemText>{option.label}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Viewport>
+                </Select.Content>
+              </Select.Root>
+            </div>
 
-            <Select
-              label={t('cars.transmission')}
-              options={transmissionOptions}
-              value={formData.transmission || ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.transmission')} <span className="text-red-500">*</span>
+              </label>
+              <Select.Root
+                value={formData.transmission || ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
+              >
+                <Select.Trigger className="w-full">
+                  <Select.Value placeholder={t('cars.transmission')} />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Viewport>
+                    {transmissionOptions.map(option => (
+                      <Select.Item key={option.value} value={option.value}>
+                        <Select.ItemText>{option.label}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Viewport>
+                </Select.Content>
+              </Select.Root>
+            </div>
 
-            <Select
-              label={t('cars.color')}
-              options={colorOptions}
-              value={formData.color_id ? formData.color_id.toString() : ''}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.color')} <span className="text-red-500">*</span>
+              </label>
+              <Select.Root
+                value={formData.color_id ? formData.color_id.toString() : ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
+              >
+                <Select.Trigger className="w-full">
+                  <Select.Value placeholder={t('cars.color')} />
+                </Select.Trigger>
+                <Select.Content>
+                  <Select.Viewport>
+                    {colorOptions.map(option => (
+                      <Select.Item key={option.value} value={option.value}>
+                        <Select.ItemText>{option.label}</Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Viewport>
+                </Select.Content>
+              </Select.Root>
+            </div>
           </div>
         </div>
 
