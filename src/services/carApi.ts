@@ -15,10 +15,11 @@ export interface TieredPrice {
 export interface Car {
   id: number;
   user_id: number;
-  brand_id: number;
-  model_id: number;
+  remote_brand_id: number;
+  remote_model_id: number;
+  remote_color_id: number;
+  remote_body_type_id?: number;
   year: number;
-  color_id: number;
   trim_level: string;
   available_count: number;
   transmission: 'manual' | 'automatic';
@@ -34,10 +35,11 @@ export interface Car {
   tiered_prices?: TieredPrice[];
   created_at: string;
   updated_at: string;
-  // Populated fields from joins
+  // Display names populated from remote API
   brand_name?: string;
   model_name?: string;
   color_name?: string;
+  body_type_name?: string;
 }
 
 export interface Brand {
@@ -82,10 +84,11 @@ export interface CarsResponse {
 }
 
 export interface CarFormData {
-  brand_id: number;
-  model_id: number;
+  remote_brand_id: number;
+  remote_model_id: number;
+  remote_color_id: number;
+  remote_body_type_id?: number;
   year: number;
-  color_id: number;
   trim_level: string;
   available_count: number;
   transmission: 'manual' | 'automatic';
@@ -233,12 +236,12 @@ export interface ApiError {
 export const validateCarForm = (data: Partial<CarFormData>): string[] => {
   const errors: string[] = [];
 
-  if (!data.brand_id) errors.push('Brand is required');
-  if (!data.model_id) errors.push('Model is required');
+  if (!data.remote_brand_id) errors.push('Brand is required');
+  if (!data.remote_model_id) errors.push('Model is required');
   if (!data.year || data.year < 1900 || data.year > 2030) {
     errors.push('Year must be between 1900 and 2030');
   }
-  if (!data.color_id) errors.push('Color is required');
+  if (!data.remote_color_id) errors.push('Color is required');
   if (data.available_count === undefined || data.available_count < 0) {
     errors.push('Available count must be 0 or greater');
   }

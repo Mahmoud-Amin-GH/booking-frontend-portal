@@ -34,6 +34,14 @@ import {
 import { PriceTier, getPriceTiers } from '../services/priceTiersApi';
 import { useInventoryStatus } from '../hooks/useInventoryStatus';
 import BulkCarUpload from '../components/BulkCarUpload';
+import {
+  getCarAttributes,
+  getAttributeOptions,
+  getOptionLabel,
+  getModelsForBrand,
+  Attribute,
+  AttributeOption
+} from '../services/attributesApi';
 
 // Inventory context type from DashboardLayout
 interface InventoryContext {
@@ -84,6 +92,9 @@ const CarInventory: React.FC = () => {
   const [availableModels, setAvailableModels] = useState<Model[]>([]);
   const [selectedCars, setSelectedCars] = useState<Set<number>>(new Set());
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
+  const [attributes, setAttributes] = useState<Attribute[] | null>(null);
+  const [attrLoading, setAttrLoading] = useState(true);
+  const [attrError, setAttrError] = useState<string | null>(null);
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -97,10 +108,11 @@ const CarInventory: React.FC = () => {
 
   // Form state
   const [formData, setFormData] = useState<Partial<CarFormData>>({
-    brand_id: 0,
-    model_id: 0,
+    remote_brand_id: 0,
+    remote_model_id: 0,
+    remote_color_id: 0,
+    remote_body_type_id: 0,
     year: new Date().getFullYear(),
-    color_id: 0,
     trim_level: '',
     available_count: 1,
     transmission: 'automatic',
@@ -127,7 +139,16 @@ const CarInventory: React.FC = () => {
   // Load initial data
   useEffect(() => {
     loadCars();
-    loadCarOptions();
+    setAttrLoading(true);
+    getCarAttributes()
+      .then(attrs => {
+        setAttributes(attrs);
+        setAttrLoading(false);
+      })
+      .catch(err => {
+        setAttrError('Failed to load car attributes');
+        setAttrLoading(false);
+      });
     if (rentalType === RentalType.Daily) {
       loadUserPriceTiers();
     }
@@ -135,13 +156,13 @@ const CarInventory: React.FC = () => {
 
   // Load models when brand changes
   useEffect(() => {
-    if (formData.brand_id && formData.brand_id > 0) {
-      loadModelsForBrand(formData.brand_id);
+    if (formData.remote_brand_id && formData.remote_brand_id > 0) {
+      // Models are filtered dynamically from attributes
+      setFormData(prev => ({ ...prev, remote_model_id: 0 }));
     } else {
-      setAvailableModels([]);
-      setFormData(prev => ({ ...prev, model_id: 0 }));
+      setFormData(prev => ({ ...prev, remote_model_id: 0 }));
     }
-  }, [formData.brand_id]);
+  }, [formData.remote_brand_id]);
 
   // Update form rental type when route changes
   useEffect(() => {
@@ -232,45 +253,50 @@ const CarInventory: React.FC = () => {
     }
   };
 
-  // Convert data to SelectOption format
-  const brandOptions: SelectOption[] = useMemo(() => {
-    if (!carOptions) return [];
-    return carOptions.brands.map(brand => ({
-      value: brand.id.toString(),
-      label: getLocalizedBrandName(brand, language),
-      labelEn: brand.name_en,
-      labelAr: brand.name_ar
-    }));
-  }, [carOptions, language]);
+  // Helper function to find local ID by matching remote attribute label
+  const findLocalIdByLabel = (remoteId: number, remoteOptions: AttributeOption[], localOptions: any[], language: string) => {
+    const remoteOption = remoteOptions.find(opt => opt.id === remoteId);
+    if (!remoteOption) return 0;
+    
+    const remoteLabel = language === 'ar' ? remoteOption.label_ar : remoteOption.label_en;
+    const localOption = localOptions.find(opt => {
+      const localLabel = language === 'ar' ? opt.name_ar || opt.label_ar : opt.name_en || opt.label_en;
+      return localLabel?.toLowerCase() === remoteLabel?.toLowerCase();
+    });
+    
+    return localOption ? localOption.id : 0;
+  };
 
-  const modelOptions: SelectOption[] = useMemo(() => {
-    return availableModels.map(model => ({
-      value: model.id.toString(),
-      label: getLocalizedModelName(model, language),
-      labelEn: model.name_en,
-      labelAr: model.name_ar
-    }));
-  }, [availableModels, language]);
+  // Convert data to SelectOption format - use dynamic attributes directly
+  const brandOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'brand') : [],
+    [attributes]
+  );
 
-  const colorOptions: SelectOption[] = useMemo(() => {
-    if (!carOptions) return [];
-    return carOptions.colors.map(color => ({
-      value: color.id.toString(),
-      label: getLocalizedColorName(color, language),
-      labelEn: color.name_en,
-      labelAr: color.name_ar
-    }));
-  }, [carOptions, language]);
+  const modelOptions: AttributeOption[] = useMemo(() =>
+    attributes && formData.remote_brand_id ? getModelsForBrand(attributes, formData.remote_brand_id) : [],
+    [attributes, formData.remote_brand_id]
+  );
 
-  const transmissionOptions: SelectOption[] = useMemo(() => {
-    if (!carOptions) return [];
-    return carOptions.transmissions.map(transmission => ({
-      value: transmission.value,
-      label: getLocalizedDropdownLabel(transmission, language),
-      labelEn: transmission.label_en,
-      labelAr: transmission.label_ar
-    }));
-  }, [carOptions, language]);
+  const colorOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'Color-Exterior') : [],
+    [attributes]
+  );
+
+  const yearOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'Year') : [],
+    [attributes]
+  );
+
+  const transmissionOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'transmission') : [],
+    [attributes]
+  );
+
+  const bodyTypeOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'Body Type') : [],
+    [attributes]
+  );
 
   const trimLevelOptions: SelectOption[] = useMemo(() => {
     if (!carOptions) return [];
@@ -373,10 +399,11 @@ const CarInventory: React.FC = () => {
     if (rentalType === RentalType.Leasing) defaultRentalType = 'leasing';
     
     setFormData({
-      brand_id: 0,
-      model_id: 0,
+      remote_brand_id: 0,
+      remote_model_id: 0,
+      remote_color_id: 0,
+      remote_body_type_id: 0,
       year: new Date().getFullYear(),
-      color_id: 0,
       trim_level: '',
       available_count: 1,
       transmission: 'automatic',
@@ -402,17 +429,18 @@ const CarInventory: React.FC = () => {
   const openEditModal = (car: Car) => {
     setEditingCar(car);
     setFormData({
-      brand_id: car.brand_id,
-      model_id: car.model_id,
+      remote_brand_id: car.remote_brand_id,
+      remote_model_id: car.remote_model_id,
+      remote_color_id: car.remote_color_id,
+      remote_body_type_id: car.remote_body_type_id,
       year: car.year,
-      color_id: car.color_id,
       trim_level: car.trim_level,
       available_count: car.available_count,
       transmission: car.transmission,
       rental_type: car.rental_type,
       price_per_day: car.price_per_day,
       allowed_kilometers: car.allowed_kilometers,
-      // New pricing fields
+      // Pricing fields
       downpayment: car.downpayment,
       months_36_price: car.months_36_price,
       months_48_price: car.months_48_price,
@@ -471,8 +499,8 @@ const CarInventory: React.FC = () => {
                 {t('cars.brand')} <span className="text-red-500">*</span>
               </label>
               <Select.Root
-                value={formData.brand_id ? formData.brand_id.toString() : ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, brand_id: Number(value) || 0 }))}
+                value={formData.remote_brand_id ? formData.remote_brand_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_brand_id: Number(value) || 0 }))}
               >
                 <Select.Trigger className="w-full">
                   <Select.Value placeholder={t('cars.brand')} />
@@ -480,8 +508,8 @@ const CarInventory: React.FC = () => {
                 <Select.Content>
                   <Select.Viewport>
                     {brandOptions.map(option => (
-                      <Select.Item key={option.value} value={option.value}>
-                        <Select.ItemText>{option.label}</Select.ItemText>
+                      <Select.Item key={option.id} value={option.id.toString()}>
+                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
                       </Select.Item>
                     ))}
                   </Select.Viewport>
@@ -494,18 +522,18 @@ const CarInventory: React.FC = () => {
                 {t('cars.model')} <span className="text-red-500">*</span>
               </label>
               <Select.Root
-                value={formData.model_id ? formData.model_id.toString() : ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, model_id: Number(value) || 0 }))}
-                disabled={!formData.brand_id || modelOptions.length === 0}
+                value={formData.remote_model_id ? formData.remote_model_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_model_id: Number(value) || 0 }))}
+                disabled={!formData.remote_brand_id || modelOptions.length === 0}
               >
                 <Select.Trigger className="w-full">
-                  <Select.Value placeholder={!formData.brand_id ? t('form.selectBrandFirst') : t('common.select')} />
+                  <Select.Value placeholder={!formData.remote_brand_id ? t('form.selectBrandFirst') : t('common.select')} />
                 </Select.Trigger>
                 <Select.Content>
                   <Select.Viewport>
                     {modelOptions.map(option => (
-                      <Select.Item key={option.value} value={option.value}>
-                        <Select.ItemText>{option.label}</Select.ItemText>
+                      <Select.Item key={option.id} value={option.id.toString()}>
+                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
                       </Select.Item>
                     ))}
                   </Select.Viewport>
@@ -563,8 +591,8 @@ const CarInventory: React.FC = () => {
                 <Select.Content>
                   <Select.Viewport>
                     {transmissionOptions.map(option => (
-                      <Select.Item key={option.value} value={option.value}>
-                        <Select.ItemText>{option.label}</Select.ItemText>
+                      <Select.Item key={option.id} value={option.id.toString()}>
+                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
                       </Select.Item>
                     ))}
                   </Select.Viewport>
@@ -577,8 +605,8 @@ const CarInventory: React.FC = () => {
                 {t('cars.color')} <span className="text-red-500">*</span>
               </label>
               <Select.Root
-                value={formData.color_id ? formData.color_id.toString() : ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, color_id: Number(value) || 0 }))}
+                value={formData.remote_color_id ? formData.remote_color_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_color_id: Number(value) || 0 }))}
               >
                 <Select.Trigger className="w-full">
                   <Select.Value placeholder={t('cars.color')} />
@@ -586,8 +614,8 @@ const CarInventory: React.FC = () => {
                 <Select.Content>
                   <Select.Viewport>
                     {colorOptions.map(option => (
-                      <Select.Item key={option.value} value={option.value}>
-                        <Select.ItemText>{option.label}</Select.ItemText>
+                      <Select.Item key={option.id} value={option.id.toString()}>
+                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
                       </Select.Item>
                     ))}
                   </Select.Viewport>
