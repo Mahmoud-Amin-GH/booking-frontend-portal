@@ -4,6 +4,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Button, Progress } from '@mo_sami/web-design-system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CarApiService } from '../services/carApi';
+import { getCarAttributes, getAttributeOptions } from '../services/attributesApi';
 
 // Inventory context type from DashboardLayout
 interface InventoryContext {
@@ -16,10 +17,10 @@ const DashboardOverview: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isRTL } = useLanguage();
-  
+
   // Get inventory context from outlet
   const inventoryContext = useOutletContext<InventoryContext>();
-  
+
   // Use inventory context to refresh status when needed
   const { isEmpty, isLoading, refreshStatus } = inventoryContext || { isEmpty: false, isLoading: false, refreshStatus: () => {} };
 
@@ -39,19 +40,21 @@ const DashboardOverview: React.FC = () => {
     try {
       setStatsLoading(true);
       // Get basic car inventory stats
-      const [carsResponse, optionsResponse] = await Promise.all([
+      const [carsResponse, attributes] = await Promise.all([
         CarApiService.getCars({ limit: 1, offset: 0 }), // Just to get total count
-        CarApiService.getCarOptions(),
+        getCarAttributes(),
       ]);
 
       // Calculate available cars (sum of all available_count)
       const allCarsResponse = await CarApiService.getCars({ limit: 1000, offset: 0 });
       const availableCars = allCarsResponse.cars?.reduce((sum, car) => sum + car.available_count, 0) || 0;
 
+      const brandOptions = getAttributeOptions(attributes, 'brand');
+
       setCarStats({
         totalCars: carsResponse.total || 0,
         availableCars,
-        brands: optionsResponse.options?.brands?.length || 0,
+        brands: brandOptions.length || 0,
         models: 0, // Will be calculated when we have brand selection
       });
     } catch (error) {
@@ -92,11 +95,11 @@ const DashboardOverview: React.FC = () => {
             {subtitle}
           </p>
         </div>
-        
+
         {trend && (
           <div className="mt-4 pt-3 border-t border-outline-variant/50">
             <div className={`flex items-center gap-1 text-xs font-sakr font-medium ${
-              trend.direction === 'up' ? 'text-success' : 
+              trend.direction === 'up' ? 'text-success' :
               trend.direction === 'down' ? 'text-error' : 'text-on-surface-variant'
             }`}>
               <span>
@@ -104,7 +107,7 @@ const DashboardOverview: React.FC = () => {
               </span>
               <span>
                 {trend.direction !== 'same' && `${trend.value}% `}
-                {t(trend.direction === 'up' ? 'stats.increase' : trend.direction === 'down' ? 'stats.decrease' : 'stats.stable', 
+                {t(trend.direction === 'up' ? 'stats.increase' : trend.direction === 'down' ? 'stats.decrease' : 'stats.stable',
                    trend.direction === 'up' ? 'increase' : trend.direction === 'down' ? 'decrease' : 'stable')}
               </span>
             </div>
@@ -167,7 +170,7 @@ const DashboardOverview: React.FC = () => {
               </span>
             </div>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               variant="primary"
@@ -198,7 +201,7 @@ const DashboardOverview: React.FC = () => {
             {t('dashboard.keyMetrics', 'Key metrics for your rental business')}
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           {statCards.map((card, index) => (
             <StatCard key={index} {...card} />
@@ -216,9 +219,9 @@ const DashboardOverview: React.FC = () => {
             {t('dashboard.quickActionsDesc', 'Common tasks to manage your business')}
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-          <div 
+          <div
             className="group bg-primary-50 hover:bg-primary-100 rounded-xl p-6 border border-primary-200 cursor-pointer transition-all duration-200"
             onClick={() => navigate('/dashboard/cars')}
           >
@@ -236,7 +239,7 @@ const DashboardOverview: React.FC = () => {
             </p>
           </div>
 
-          <div 
+          <div
             className="group bg-success-50 hover:bg-success-100 rounded-xl p-6 border border-success-200 cursor-pointer transition-all duration-200"
             onClick={() => navigate('/dashboard/cars')}
           >
@@ -254,7 +257,7 @@ const DashboardOverview: React.FC = () => {
             </p>
           </div>
 
-          <div 
+          <div
             className="group bg-secondary-50 hover:bg-secondary-100 rounded-xl p-6 border border-secondary-200 cursor-pointer transition-all duration-200"
             onClick={() => navigate('/dashboard/office-configs')}
           >
@@ -301,4 +304,4 @@ const DashboardOverview: React.FC = () => {
   );
 };
 
-export default DashboardOverview; 
+export default DashboardOverview;

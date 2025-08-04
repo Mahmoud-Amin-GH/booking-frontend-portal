@@ -40,20 +40,20 @@ const resources = {
       "auth.troubleReceiving": "Having trouble receiving the code?",
       "auth.contactSupport": "Contact Support",
       "auth.otpSentTo": "We've sent a 6-digit code to",
-      
+
       // Placeholders
       "placeholders.enterFullName": "Enter your full name",
       "placeholders.emailExample": "user@example.com",
       "placeholders.minimumPassword": "Minimum 6 characters",
       "placeholders.otpHelper": "Enter the 6-digit code sent to your phone",
       "placeholders.otpError": "Please enter a valid 6-digit code",
-      
+
       // Validation messages
       "validation.required": "This field is required",
       "validation.email": "Please enter a valid email",
       "validation.phone": "Please enter a valid Kuwaiti phone number (+965 XXXX XXXX)",
       "validation.password": "Password must be at least 6 characters",
-      
+
       // Common
       "common.loading": "Loading...",
       "common.uploading": "Uploading...",
@@ -78,12 +78,12 @@ const resources = {
       "common.pageOfTotal": "Page {{current}} of {{total}}",
       "common.actions": "Actions",
       "common.hide": "Hide",
-      
+
       // Navigation (new improved labels)
       "nav.overview": "Overview",
-      "nav.inventory": "Inventory", 
+      "nav.inventory": "Inventory",
       "nav.inventory.daily": "Daily Rentals",
-      "nav.inventory.longTerm": "Long-term Rentals", 
+      "nav.inventory.longTerm": "Long-term Rentals",
       "nav.inventory.leasing": "Leasing",
       "nav.availability": "Availability",
       "nav.availability.manage": "Manage Availability",
@@ -93,19 +93,19 @@ const resources = {
       "nav.dashboard": "Dashboard",
       "nav.officeConfigs": "Office Configurations",
       "nav.priceTiers": "Price Tiers",
-      
+
       // Onboarding
       "onboarding.welcome": "Welcome to Car Rental Portal",
       "onboarding.step1Title": "Navigate with Ease",
       "onboarding.step1Content": "Use this sidebar to navigate between different sections. Click the arrow to collapse it.",
       "onboarding.step2Title": "Manage Your Fleet",
       "onboarding.step2Content": "Add and manage your car inventory from the Inventory section.",
-      "onboarding.step3Title": "Quick Actions", 
+      "onboarding.step3Title": "Quick Actions",
       "onboarding.step3Content": "Use search and filters to quickly find specific cars in your inventory.",
       "onboarding.skip": "Skip Tour",
       "onboarding.next": "Next",
       "onboarding.finish": "Get Started",
-      
+
       // Enhanced Empty States
       "empty.noInventory": "Your inventory is empty",
       "empty.noInventoryDesc": "Start by adding your first car to begin managing your rental inventory",
@@ -114,11 +114,11 @@ const resources = {
       "empty.noSearchResultsDesc": "Try adjusting your search terms or filters",
       "empty.clearFilters": "Clear Filters",
       "empty.getStartedHint": "Get started by adding vehicles to build your rental fleet",
-      
+
       // Form Enhancement
       "form.step": "Step {{current}} of {{total}}",
       "form.basicInfo": "Basic Information",
-      "form.specifications": "Specifications", 
+      "form.specifications": "Specifications",
       "form.availability": "Availability & Pricing",
       "form.selectBrandFirst": "Please select a brand first",
       "form.quickEdit": "Quick Edit",
@@ -128,7 +128,7 @@ const resources = {
       "form.deleteSelected": "Delete Selected",
       "form.carSpecs": "Car Specifications",
       "form.rentalSpecs": "Rental Specifications",
-      
+
       // Stats and Trends
       "stats.totalVehicles": "Total Vehicles",
       "stats.availableNow": "Available Now",
@@ -141,12 +141,12 @@ const resources = {
       "stats.readyForRental": "Ready for rental",
       "stats.differentManufacturers": "Different manufacturers",
       "stats.comingSoon": "Coming soon",
-      
+
       // Dashboard
       "dashboard.welcome": "Welcome to your car rental management portal",
       "dashboard.portalTitle": "Car Rental Portal",
       "dashboard.carInventory": "Car Inventory",
-      "dashboard.carInventoryDesc": "Manage brands, models, years, and availability",
+      "dashboard.carInventoryDesc": "Manage your cars and their availability",
       "dashboard.officeConfigs": "Office Configurations",
       "dashboard.officeConfigsDesc": "Set up services and delivery options",
       "dashboard.kuwaitLocations": "Kuwait Locations",
@@ -158,10 +158,6 @@ const resources = {
       "dashboard.addNewCar": "Add New Car",
       "dashboard.viewReports": "View Reports",
       "dashboard.quickActions": "Quick Actions",
-      "dashboard.manageBrand": "Brand & Model Management",
-      "dashboard.manageSeats": "Year & Seat Configuration",
-      "dashboard.manageColors": "Color & Trim Options",
-      "dashboard.manageTransmission": "Transmission Types",
       "dashboard.service24h": "24 Hours Service",
       "dashboard.fullInsurance": "Full Insurance",
       "dashboard.roadServices": "Road Services",
@@ -175,7 +171,7 @@ const resources = {
       "dashboard.paymentMethods": "Payment Methods",
       "dashboard.preferences": "Preferences",
       "dashboard.manage": "Manage {{item}}",
-      
+
       // Availability Management
       "availability.title": "Car Availability Management",
       "availability.subtitle": "Manage car availability periods and maintenance schedules",
@@ -208,12 +204,12 @@ const resources = {
       "availability.errors.loadData": "Failed to load availability data",
       "availability.errors.save": "Failed to save availability period",
       "availability.errors.delete": "Failed to delete availability period",
-      
+
       // Quarterly Planning
       "quarterlyPlanning.title": "Quarterly Planning",
       "quarterlyPlanning.subtitle": "Plan and manage quarterly availability targets and maintenance schedules",
       "quarterlyPlanning.addPlan": "Add Quarterly Plan",
-      "quarterlyPlanning.editPlan": "Edit Quarterly Plan", 
+      "quarterlyPlanning.editPlan": "Edit Quarterly Plan",
       "quarterlyPlanning.quarterYear": "Q{{quarter}} {{year}}",
       "quarterlyPlanning.activate": "Activate",
       "quarterlyPlanning.targetUtilization": "Target Utilization",
@@ -226,12 +222,12 @@ const resources = {
       "quarterlyPlanning.status.active": "Active",
       "quarterlyPlanning.status.completed": "Completed",
       "quarterlyPlanning.success.created": "Quarterly plan created successfully",
-      "quarterlyPlanning.success.updated": "Quarterly plan updated successfully", 
+      "quarterlyPlanning.success.updated": "Quarterly plan updated successfully",
       "quarterlyPlanning.success.activated": "Quarterly plan activated successfully",
       "quarterlyPlanning.errors.loadPlans": "Failed to load quarterly plans",
       "quarterlyPlanning.errors.save": "Failed to save quarterly plan",
       "quarterlyPlanning.errors.activate": "Failed to activate quarterly plan",
-      
+
       // Maintenance Schedule
       "maintenance.title": "Maintenance Schedule",
       "maintenance.subtitle": "Schedule and track vehicle maintenance activities",
@@ -262,14 +258,14 @@ const resources = {
       "maintenance.errors.loadSchedules": "Failed to load maintenance schedules",
       "maintenance.errors.save": "Failed to save maintenance schedule",
       "maintenance.errors.complete": "Failed to complete maintenance",
-      
+
       // Error messages
       "error.loginFailed": "Login failed. Please check your credentials.",
       "error.signupFailed": "Sign up failed. Please try again.",
       "error.otpFailed": "Invalid verification code. Please try again.",
       "error.networkError": "Network error. Please check your connection.",
       "error.resendFailed": "Failed to resend OTP",
-      
+
       // Car Management
       "cars.title": "Car",
       "cars.brand": "Brand",
@@ -305,7 +301,7 @@ const resources = {
       "cars.carType.van": "Van",
       "cars.dailyPrice": "Daily Price",
       "cars.priceTier1to7Days": "1-7 Days",
-      "cars.priceTier8to30Days": "8-30 Days", 
+      "cars.priceTier8to30Days": "8-30 Days",
       "cars.priceTier31to90Days": "31-90 Days",
       "cars.priceTier90PlusDays": "90+ Days",
       "cars.allowedKilometers": "Allowed Kilometers",
@@ -313,7 +309,7 @@ const resources = {
       "cars.km": "km",
       "cars.downpayment": "Down Payment (K.D.)",
       "cars.months36Price": "36 Months (K.D./month)",
-      "cars.months48Price": "48 Months (K.D./month)", 
+      "cars.months48Price": "48 Months (K.D./month)",
       "cars.finalPayment": "Final Payment (K.D.)",
       "cars.months36": "36 Months",
       "cars.months48": "48 Months",
@@ -321,7 +317,7 @@ const resources = {
       "cars.finalPaymentLabel": "Final Payment",
       "cars.kdPerMonth": "K.D./month",
       "cars.kd": "K.D.",
-      
+
       // Bulk Upload
       "bulkUpload.title": "Bulk Upload Cars",
       "bulkUpload.description": "Upload multiple cars at once using our Excel template",
@@ -346,7 +342,7 @@ const resources = {
       "bulkUpload.fileValidation.invalidFormat": "Only .xlsx files are supported. Please select a valid Excel file.",
       "bulkUpload.fileValidation.fileTooLarge": "File size must be less than 10MB.",
       "bulkUpload.fileValidation.ready": "File \"{{fileName}}\" is ready for upload.",
-      
+
       // Office Configurations
       "officeConfigs.title": "Office Configurations",
       "officeConfigs.description": "Configure your office settings, service options, and delivery preferences",
@@ -354,7 +350,7 @@ const resources = {
       "officeConfigs.saveSuccess": "Office configurations saved successfully",
       "officeConfigs.loadError": "Failed to load office configurations",
       "officeConfigs.saveError": "Failed to save office configurations",
-      
+
       // Categories
       "officeConfigs.locationCoverage": "Location Coverage",
       "officeConfigs.locationCoverageDesc": "Select districts where your service is available",
@@ -362,7 +358,7 @@ const resources = {
       "officeConfigs.serviceOptionsDesc": "Configure available services for your customers",
       "officeConfigs.deliveryPickup": "Delivery & Pickup",
       "officeConfigs.deliveryPickupDesc": "Set delivery and pickup options",
-      
+
       // Kuwait Districts - Al Asimah Governorate
       "officeConfigs.locations.kuwaitCity": "Kuwait City",
       "officeConfigs.locations.dasman": "Dasman",
@@ -375,7 +371,7 @@ const resources = {
       "officeConfigs.locations.nuzha": "Nuzha",
       "officeConfigs.locations.wattan": "Adailiya",
       "officeConfigs.locations.bneid": "Bneid al-Qar",
-      
+
       // Hawalli Governorate
       "officeConfigs.locations.hawalli": "Hawalli",
       "officeConfigs.locations.salmiya": "Salmiya",
@@ -386,7 +382,7 @@ const resources = {
       "officeConfigs.locations.salwa": "Salwa",
       "officeConfigs.locations.jabriiya": "Jabriiya",
       "officeConfigs.locations.surra": "Surra",
-      
+
       // Farwaniya Governorate
       "officeConfigs.locations.farwaniya": "Farwaniya",
       "officeConfigs.locations.jleeb": "Jleeb Al-Shuyoukh",
@@ -396,7 +392,7 @@ const resources = {
       "officeConfigs.locations.khairan": "Khairan",
       "officeConfigs.locations.sabahiya": "Sabahiya",
       "officeConfigs.locations.riggae": "Riggae",
-      
+
       // Ahmadi Governorate
       "officeConfigs.locations.ahmadi": "Ahmadi",
       "officeConfigs.locations.fahaheel": "Fahaheel",
@@ -405,7 +401,7 @@ const resources = {
       "officeConfigs.locations.mahboula": "Mahboula",
       "officeConfigs.locations.sabahAlAhmad": "Sabah Al-Ahmad",
       "officeConfigs.locations.wafra": "Wafra",
-      
+
       // Mubarak Al-Kabeer Governorate
       "officeConfigs.locations.mubarakAlKabeer": "Mubarak Al-Kabeer",
       "officeConfigs.locations.qurain": "Qurain",
@@ -413,14 +409,14 @@ const resources = {
       "officeConfigs.locations.adan": "Adan",
       "officeConfigs.locations.qusor": "Qusor",
       "officeConfigs.locations.sabhan": "Sabhan",
-      
+
       // Jahra Governorate
       "officeConfigs.locations.jahra": "Jahra",
       "officeConfigs.locations.qasr": "Qasr",
       "officeConfigs.locations.warah": "Warah",
       "officeConfigs.locations.nasseem": "Nasseem",
       "officeConfigs.locations.sulaibiya": "Sulaibiya",
-      
+
       // Service Options
       "officeConfigs.services.24hours": "24 Hours Service",
       "officeConfigs.services.24hoursDesc": "Round-the-clock availability for rentals and support",
@@ -430,7 +426,7 @@ const resources = {
       "officeConfigs.services.roadAssistanceDesc": "Emergency roadside assistance and support",
       "officeConfigs.services.withDriver": "Professional Driver Available",
       "officeConfigs.services.withDriverDesc": "Professional chauffeur service available",
-      
+
       // Delivery Options
       "officeConfigs.delivery.airportDelivery": "Airport Delivery",
       "officeConfigs.delivery.airportDeliveryDesc": "Pick up and drop off at Kuwait International Airport",
@@ -440,7 +436,7 @@ const resources = {
       "officeConfigs.delivery.noConditionsDesc": "Rent without additional requirements or guarantees",
       "officeConfigs.delivery.freeCancellation": "Free Cancellation",
       "officeConfigs.delivery.freeCancellationDesc": "Cancel reservations without penalty",
-      
+
       // Pricing Table
       "pricing.allowedKm": "Allowed Kilometers",
       "pricing.kmPerDay": "km / day",
@@ -454,22 +450,22 @@ const resources = {
       "pricing.vehicle": "Vehicle",
       "pricing.name": "Name",
       "pricing.image": "Image",
-      
+
       // Status Tags
       "status.inStock": "In Stock",
       "status.rented": "Rented",
       "status.available": "Available",
-      
+
       // Actions Menu
       "actions.viewDetails": "View Details",
       "actions.addSpecialPrice": "Add Special Price for Period",
       "actions.markRented": "Mark as Rented from Office",
       "actions.deleteVehicle": "Delete Vehicle",
-      
+
       // Pending State
       "pendingState.title": "Your account is currently under review.",
       "pendingState.subtitle": "Please wait while an admin approves your registration.",
-      
+
       // Security features
       "security.smsVerification": "SMS verification",
       "security.secureAccess": "Secure account access",
@@ -505,7 +501,7 @@ const resources = {
       "priceTiers.dayRangeUnlimited": "{{min}}+ days",
       "priceTiers.noTiers": "No price tiers configured",
       "priceTiers.tierNames.1to7Days": "1-7 Days",
-      "priceTiers.tierNames.8to30Days": "8-30 Days", 
+      "priceTiers.tierNames.8to30Days": "8-30 Days",
       "priceTiers.tierNames.31to90Days": "31-90 Days",
       "priceTiers.tierNames.90plusDays": "90+ Days",
       "priceTiers.errors.tierNameRequired": "Tier name is required",
@@ -528,7 +524,7 @@ const resources = {
       "pricing.tierPrices": "Tiered Prices",
       "pricing.basePrice": "Base Price",
       "pricing.tier1to7": "1-7 Days",
-      "pricing.tier8to30": "8-30 Days", 
+      "pricing.tier8to30": "8-30 Days",
       "pricing.tier31to90": "31-90 Days",
       "pricing.tier90plus": "90+ Days",
       "pricing.perDay": "per day"
@@ -569,20 +565,20 @@ const resources = {
         "auth.troubleReceiving": "هل تواجه مشكلة في تلقي الرمز؟",
         "auth.contactSupport": "اتصل بدعم الخدمة",
         "auth.otpSentTo": "لقد أرسلنا رمزًا مكونًا من 6 أرقام إلى",
-        
+
         // Placeholders
         "placeholders.enterFullName": "أدخل اسمك الكامل",
         "placeholders.emailExample": "user@example.com",
         "placeholders.minimumPassword": "6 أحرف على الأقل",
         "placeholders.otpHelper": "أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك",
         "placeholders.otpError": "يرجى إدخال رمز صحيح مكون من 6 أرقام",
-        
+
         // Validation messages - Arabic
         "validation.required": "هذا الحقل مطلوب",
         "validation.email": "يرجى إدخال بريد إلكتروني صحيح",
         "validation.phone": "يرجى إدخال رقم هاتف كويتي صحيح (+965 XXXX XXXX)",
         "validation.password": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
-        
+
         // Common - Arabic
         "common.loading": "جاري التحميل...",
         "common.uploading": "جاري الرفع...",
@@ -607,7 +603,7 @@ const resources = {
         "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
         "common.actions": "الإجراءات",
         "common.hide": "إخفاء",
-        
+
         // Navigation - Arabic
         "nav.overview": "نظرة عامة",
         "nav.inventory": "المخزون",
@@ -622,7 +618,7 @@ const resources = {
         "nav.dashboard": "لوحة التحكم",
         "nav.officeConfigs": "إعدادات المكتب",
         "nav.priceTiers": "مستويات الأسعار",
-        
+
         // Onboarding - Arabic
         "onboarding.welcome": "مرحباً ببوابة تأجير السيارات",
         "onboarding.step1Title": "تنقل بسهولة",
@@ -634,7 +630,7 @@ const resources = {
         "onboarding.skip": "تخطي الجولة",
         "onboarding.next": "التالي",
         "onboarding.finish": "ابدأ الآن",
-        
+
         // Enhanced Empty States - Arabic
         "empty.noInventory": "مخزونك فارغ",
         "empty.noInventoryDesc": "ابدأ بإضافة سيارتك الأولى لبدء إدارة مخزون التأجير الخاص بك",
@@ -643,7 +639,7 @@ const resources = {
         "empty.noSearchResultsDesc": "جرب تعديل مصطلحات البحث أو المرشحات",
         "empty.clearFilters": "مسح المرشحات",
         "empty.getStartedHint": "ابدأ بإضافة المركبات لبناء أسطول التأجير الخاص بك",
-        
+
         // Form Enhancement - Arabic
         "form.step": "الخطوة {{current}} من {{total}}",
         "form.basicInfo": "المعلومات الأساسية",
@@ -657,7 +653,7 @@ const resources = {
         "form.deleteSelected": "حذف المحدد",
         "form.carSpecs": "مواصفات السيارة",
         "form.rentalSpecs": "مواصفات التأجير",
-        
+
         // Stats and Trends - Arabic
         "stats.totalVehicles": "إجمالي المركبات",
         "stats.availableNow": "متاح الآن",
@@ -670,12 +666,12 @@ const resources = {
         "stats.readyForRental": "جاهز للإيجار",
         "stats.differentManufacturers": "صانعون مختلفون",
         "stats.comingSoon": "قريباً",
-        
+
         // Dashboard - Arabic
         "dashboard.welcome": "مرحباً بك في بوابة إدارة تأجير السيارات",
         "dashboard.portalTitle": "بوابة تأجير السيارات",
         "dashboard.carInventory": "مخزون السيارات",
-        "dashboard.carInventoryDesc": "إدارة العلامات التجارية والموديلات والسنوات والتوفر",
+        "dashboard.carInventoryDesc": "إدارة سياراتك وتوفرها",
         "dashboard.officeConfigs": "إعدادات المكتب",
         "dashboard.officeConfigsDesc": "إعداد الخدمات وخيارات التوصيل",
         "dashboard.kuwaitLocations": "مواقع الكويت",
@@ -687,10 +683,6 @@ const resources = {
         "dashboard.addNewCar": "إضافة سيارة جديدة",
         "dashboard.viewReports": "عرض التقارير",
         "dashboard.quickActions": "الإجراءات السريعة",
-        "dashboard.manageBrand": "إدارة العلامة التجارية والموديل",
-        "dashboard.manageSeats": "تكوين السنة والمقاعد",
-        "dashboard.manageColors": "خيارات اللون والتشطيب",
-        "dashboard.manageTransmission": "أنواع ناقل الحركة",
         "dashboard.service24h": "خدمة 24 ساعة",
         "dashboard.fullInsurance": "تأمين شامل",
         "dashboard.roadServices": "خدمات الطريق",
@@ -704,7 +696,7 @@ const resources = {
         "dashboard.paymentMethods": "طرق الدفع",
         "dashboard.preferences": "التفضيلات",
         "dashboard.manage": "إدارة {{item}}",
-        
+
         // Availability Management
         "availability.title": "إدارة توفر السيارات",
         "availability.subtitle": "إدارة فترات توفر السيارات وجداول الصيانة",
@@ -737,7 +729,7 @@ const resources = {
         "availability.errors.loadData": "فشل تحميل بيانات التوفر",
         "availability.errors.save": "فشل حفظ فترة التوفر",
         "availability.errors.delete": "فشل حذف فترة التوفر",
-        
+
         // Quarterly Planning
         "quarterlyPlanning.title": "التخطيط الربع سنوي",
         "quarterlyPlanning.subtitle": "التخطيط وإدارة أهداف التوفر الربع سنوية وجداول الصيانة",
@@ -760,7 +752,7 @@ const resources = {
         "quarterlyPlanning.errors.loadPlans": "فشل تحميل الخطط الربع سنوية",
         "quarterlyPlanning.errors.save": "فشل حفظ الخطة الربع سنوية",
         "quarterlyPlanning.errors.activate": "فشل تفعيل الخطة الربع سنوية",
-        
+
         // Maintenance Schedule
         "maintenance.title": "جدول الصيانة",
         "maintenance.subtitle": "جدولة وتتبع أنشطة صيانة المركبات",
@@ -791,14 +783,14 @@ const resources = {
         "maintenance.errors.loadSchedules": "فشل تحميل جداول الصيانة",
         "maintenance.errors.save": "فشل حفظ جدول الصيانة",
         "maintenance.errors.complete": "فشل إكمال الصيانة",
-        
+
         // Error messages - Arabic
         "error.loginFailed": "فشل تسجيل الدخول. يرجى التحقق من بياناتك.",
         "error.signupFailed": "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.",
         "error.otpFailed": "رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.",
         "error.networkError": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
         "error.resendFailed": "فشل في إعادة إرسال رمز التحقق",
-        
+
         // Car Management - Arabic
         "cars.title": "السيارة",
         "cars.brand": "العلامة",
@@ -834,7 +826,7 @@ const resources = {
         "cars.carType.van": "فان",
         "cars.dailyPrice": "السعر اليومي",
         "cars.priceTier1to7Days": "1-7 أيام",
-        "cars.priceTier8to30Days": "8-30 أيام", 
+        "cars.priceTier8to30Days": "8-30 أيام",
         "cars.priceTier31to90Days": "31-90 أيام",
         "cars.priceTier90PlusDays": "90+ أيام",
         "cars.allowedKilometers": "الكيلومترات المسموحة",
@@ -842,7 +834,7 @@ const resources = {
         "cars.km": "كم",
         "cars.downpayment": "دفعة مقدمة",
         "cars.months36Price": "36 شهر (د.ك/شهر)",
-        "cars.months48Price": "48 شهر (د.ك/شهر)", 
+        "cars.months48Price": "48 شهر (د.ك/شهر)",
         "cars.finalPayment": "دفعة نهائية",
         "cars.months36": "36 شهر",
         "cars.months48": "48 شهر",
@@ -850,7 +842,7 @@ const resources = {
         "cars.finalPaymentLabel": "دفعة نهائية",
         "cars.kdPerMonth": "د.ك/شهر",
         "cars.kd": "د.ك",
-        
+
         // Bulk Upload - Arabic
         "bulkUpload.title": "رفع مجمع للسيارات",
         "bulkUpload.description": "رفع عدة سيارات في مرة واحدة باستخدام قالب Excel",
@@ -875,7 +867,7 @@ const resources = {
         "bulkUpload.fileValidation.invalidFormat": "فقط ملفات .xlsx مدعومة. يرجى اختيار ملف Excel صحيح.",
         "bulkUpload.fileValidation.fileTooLarge": "حجم الملف يجب أن يكون أقل من 10 ميجابايت.",
         "bulkUpload.fileValidation.ready": "الملف \"{{fileName}}\" جاهز للرفع.",
-        
+
         // Office Configurations
         "officeConfigs.title": "إعدادات المكتب",
         "officeConfigs.description": "تكوين إعدادات مكتبك، خيارات الخدمة، وتفضيلات التوصيل",
@@ -883,7 +875,7 @@ const resources = {
         "officeConfigs.saveSuccess": "تم حفظ إعدادات المكتب بنجاح",
         "officeConfigs.loadError": "فشل تحميل إعدادات المكتب",
         "officeConfigs.saveError": "فشل حفظ إعدادات المكتب",
-        
+
         // Categories
         "officeConfigs.locationCoverage": "تغطية الموقع",
         "officeConfigs.locationCoverageDesc": "اختر المناطق التي تكون خدمتك متاحة فيها",
@@ -891,7 +883,7 @@ const resources = {
         "officeConfigs.serviceOptionsDesc": "تكوين الخدمات المتاحة لعملائك",
         "officeConfigs.deliveryPickup": "التوصيل والتجميع",
         "officeConfigs.deliveryPickupDesc": "تعيين خيارات التوصيل والتجميع",
-        
+
         // Kuwait Districts - Al Asimah Governorate
         "officeConfigs.locations.kuwaitCity": "الكويت المدنية",
         "officeConfigs.locations.dasman": "دسمان",
@@ -904,7 +896,7 @@ const resources = {
         "officeConfigs.locations.nuzha": "نزهة",
         "officeConfigs.locations.wattan": "عديلية",
         "officeConfigs.locations.bneid": "بنيد القر",
-        
+
         // Hawalli Governorate
         "officeConfigs.locations.hawalli": "حولي",
         "officeConfigs.locations.salmiya": "سالمية",
@@ -915,7 +907,7 @@ const resources = {
         "officeConfigs.locations.salwa": "سلوى",
         "officeConfigs.locations.jabriiya": "جبرية",
         "officeConfigs.locations.surra": "سرة",
-        
+
         // Farwaniya Governorate
         "officeConfigs.locations.farwaniya": "فروانية",
         "officeConfigs.locations.jleeb": "جليب الشيوخ",
@@ -925,7 +917,7 @@ const resources = {
         "officeConfigs.locations.khairan": "خيران",
         "officeConfigs.locations.sabahiya": "سباحية",
         "officeConfigs.locations.riggae": "رجاج",
-        
+
         // Ahmadi Governorate
         "officeConfigs.locations.ahmadi": "أحمدي",
         "officeConfigs.locations.fahaheel": "فهاهل",
@@ -934,7 +926,7 @@ const resources = {
         "officeConfigs.locations.mahboula": "محبولة",
         "officeConfigs.locations.sabahAlAhmad": "سبح الأحمد",
         "officeConfigs.locations.wafra": "وفرة",
-        
+
         // Mubarak Al-Kabeer Governorate
         "officeConfigs.locations.mubarakAlKabeer": "مبارك الكبير",
         "officeConfigs.locations.qurain": "قرين",
@@ -942,14 +934,14 @@ const resources = {
         "officeConfigs.locations.adan": "عدن",
         "officeConfigs.locations.qusor": "قصور",
         "officeConfigs.locations.sabhan": "سبحان",
-        
+
         // Jahra Governorate
         "officeConfigs.locations.jahra": "جهراء",
         "officeConfigs.locations.qasr": "قصر",
         "officeConfigs.locations.warah": "وراء",
         "officeConfigs.locations.nasseem": "نسيم",
         "officeConfigs.locations.sulaibiya": "سليبية",
-        
+
         // Service Options
         "officeConfigs.services.24hours": "خدمة 24 ساعة",
         "officeConfigs.services.24hoursDesc": "التوفر الدائم للإيجارات والدعم",
@@ -959,7 +951,7 @@ const resources = {
         "officeConfigs.services.roadAssistanceDesc": "مساعدة طريقية مستعجلة ودعم",
         "officeConfigs.services.withDriver": "سائق محترف متاح",
         "officeConfigs.services.withDriverDesc": "خدمة سائق محترف متاح",
-        
+
         // Delivery Options
         "officeConfigs.delivery.airportDelivery": "التوصيل من المطار",
         "officeConfigs.delivery.airportDeliveryDesc": "جلب وإنزال من مطار الكويت الدولي",
@@ -969,7 +961,7 @@ const resources = {
         "officeConfigs.delivery.noConditionsDesc": "إيجار بدون متطلبات إضافية أو تضامن",
         "officeConfigs.delivery.freeCancellation": "إلغاء مجاني",
         "officeConfigs.delivery.freeCancellationDesc": "إلغاء الحجوزات بدون عقوبة",
-        
+
         // Pricing Table - Arabic
         "pricing.allowedKm": "الكيلومترات المسموحة",
         "pricing.kmPerDay": "كم / يوم",
@@ -983,22 +975,22 @@ const resources = {
         "pricing.vehicle": "سيارة",
         "pricing.name": "اسم",
         "pricing.image": "صورة",
-        
+
         // Status Tags - Arabic
         "status.inStock": "في المخزون",
         "status.rented": "في الإيجار",
         "status.available": "متاح",
-        
+
         // Actions Menu - Arabic
         "actions.viewDetails": "عرض التفاصيل",
         "actions.addSpecialPrice": "إضافة سعر خاص لفترة زمنيه معنيه",
         "actions.markRented": "تم حجز سيارة من المكتب",
         "actions.deleteVehicle": "مسح السيارة",
-        
+
         // Pending State - Arabic
         "pendingState.title": "حسابك قيد المراجعة حالياً.",
         "pendingState.subtitle": "يرجى الانتظار حتى يقوم المسؤول بالموافقة على تسجيلك.",
-        
+
         // Security features
         "security.smsVerification": "تحقق الرسالة القصيرة",
         "security.secureAccess": "تأمين علوم الدخول",
@@ -1034,7 +1026,7 @@ const resources = {
         "priceTiers.dayRangeUnlimited": "{{min}}+ أيام",
         "priceTiers.noTiers": "لم يتم تكوين مستويات أسعار",
         "priceTiers.tierNames.1to7Days": "1-7 أيام",
-        "priceTiers.tierNames.8to30Days": "8-30 يوم", 
+        "priceTiers.tierNames.8to30Days": "8-30 يوم",
         "priceTiers.tierNames.31to90Days": "31-90 يوم",
         "priceTiers.tierNames.90plusDays": "90+ يوم",
         "priceTiers.errors.tierNameRequired": "اسم المستوى مطلوب",
@@ -1057,7 +1049,7 @@ const resources = {
         "pricing.tierPrices": "الأسعار المتدرجة",
         "pricing.basePrice": "السعر الأساسي",
         "pricing.tier1to7": "1-7 أيام",
-        "pricing.tier8to30": "8-30 يوم", 
+        "pricing.tier8to30": "8-30 يوم",
         "pricing.tier31to90": "31-90 يوم",
         "pricing.tier90plus": "90+ يوم",
         "pricing.perDay": "في اليوم"
@@ -1073,15 +1065,15 @@ i18n
     resources,
     fallbackLng: 'ar',
     debug: process.env.NODE_ENV === 'development',
-    
+
     interpolation: {
       escapeValue: false,
     },
-    
+
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
     },
   });
 
-export default i18n; 
+export default i18n;

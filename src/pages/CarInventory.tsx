@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
-import { 
-  Button, 
+import {
+  Button,
   Input,
   Modal,
   ModalFooter,
@@ -17,17 +17,7 @@ import {
   CarApiService,
   Car,
   CarFormData,
-  CarOptions,
-  Brand,
-  Model,
-  Color,
-  DropdownOption,
-  getLocalizedBrandName,
-  getLocalizedModelName,
-  getLocalizedColorName,
-  getLocalizedDropdownLabel,
   validateCarForm,
-  formatCarDisplayName,
   TieredPrice,
   BulkUploadResult
 } from '../services/carApi';
@@ -57,19 +47,12 @@ export enum RentalType {
   Leasing = 'leasing'
 }
 
-interface SelectOption {
-  value: string;
-  label: string;
-  labelEn: string;
-  labelAr: string;
-}
-
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { language, isRTL } = useLanguage();
-  
+
   // Get inventory context from outlet
   const inventoryContext = useOutletContext<InventoryContext>();
 
@@ -88,8 +71,6 @@ const CarInventory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCars, setTotalCars] = useState(0);
-  const [carOptions, setCarOptions] = useState<CarOptions | null>(null);
-  const [availableModels, setAvailableModels] = useState<Model[]>([]);
   const [selectedCars, setSelectedCars] = useState<Set<number>>(new Set());
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
   const [attributes, setAttributes] = useState<Attribute[] | null>(null);
@@ -172,7 +153,7 @@ const CarInventory: React.FC = () => {
       if (rentalType === RentalType.Leasing) return 'leasing';
       return 'daily';
     })();
-    
+
     setFormData(prev => ({ ...prev, rental_type: defaultRentalType }));
   }, [rentalType]);
 
@@ -184,16 +165,16 @@ const CarInventory: React.FC = () => {
       if (rentalType === RentalType.Daily) apiRentalType = 'daily';
       if (rentalType === RentalType.LongTerm) apiRentalType = 'long_term';
       if (rentalType === RentalType.Leasing) apiRentalType = 'leasing';
-      
+
       const requestParams = {
         limit: pageSize,
         offset: (currentPage - 1) * pageSize,
         search: searchTerm || undefined,
         rentalType: apiRentalType
       };
-      
+
       const response = await CarApiService.getCars(requestParams);
-      
+
       setCars(response.cars || []);
       setTotalCars(response.total || 0);
       setSelectedCars(new Set()); // Clear selection when loading new data
@@ -206,43 +187,6 @@ const CarInventory: React.FC = () => {
     }
   };
 
-  const loadCarOptions = async () => {
-    try {
-      const response = await CarApiService.getCarOptions();
-      // Defensive: Ensure all nested arrays exist
-      const options = response.options || {};
-      setCarOptions({
-        brands: options.brands || [],
-        colors: options.colors || [],
-        transmissions: options.transmissions || [],
-        car_types: options.car_types || [],
-        trim_levels: options.trim_levels || []
-      });
-    } catch (error) {
-      console.error('Error loading car options:', error);
-      // Defensive: Reset to empty structure on error
-      setCarOptions({
-        brands: [],
-        colors: [],
-        transmissions: [],
-        car_types: [],
-        trim_levels: []
-      });
-    }
-  };
-
-  const loadModelsForBrand = async (brandId: number) => {
-    try {
-      const response = await CarApiService.getModelsByBrand(brandId);
-      // Defensive: Ensure models is always an array
-      setAvailableModels(response.models || []);
-    } catch (error) {
-      console.error('Error loading models:', error);
-      // Defensive: Reset to empty array on error
-      setAvailableModels([]);
-    }
-  };
-
   const loadUserPriceTiers = async () => {
     try {
       const tiers = await getPriceTiers();
@@ -251,20 +195,6 @@ const CarInventory: React.FC = () => {
       console.error('Error loading price tiers:', error);
       setUserPriceTiers([]);
     }
-  };
-
-  // Helper function to find local ID by matching remote attribute label
-  const findLocalIdByLabel = (remoteId: number, remoteOptions: AttributeOption[], localOptions: any[], language: string) => {
-    const remoteOption = remoteOptions.find(opt => opt.id === remoteId);
-    if (!remoteOption) return 0;
-    
-    const remoteLabel = language === 'ar' ? remoteOption.label_ar : remoteOption.label_en;
-    const localOption = localOptions.find(opt => {
-      const localLabel = language === 'ar' ? opt.name_ar || opt.label_ar : opt.name_en || opt.label_en;
-      return localLabel?.toLowerCase() === remoteLabel?.toLowerCase();
-    });
-    
-    return localOption ? localOption.id : 0;
   };
 
   // Convert data to SelectOption format - use dynamic attributes directly
@@ -297,16 +227,6 @@ const CarInventory: React.FC = () => {
     attributes ? getAttributeOptions(attributes, 'Body Type') : [],
     [attributes]
   );
-
-  const trimLevelOptions: SelectOption[] = useMemo(() => {
-    if (!carOptions) return [];
-    return carOptions.trim_levels?.map(trim => ({
-      value: trim.value,
-      label: getLocalizedDropdownLabel(trim, language),
-      labelEn: trim.label_en,
-      labelAr: trim.label_ar
-    })) || [];
-  }, [carOptions, language]);
 
   // Handle search
   const handleSearch = (value: string) => {
@@ -352,13 +272,13 @@ const CarInventory: React.FC = () => {
         // Create new car
         await CarApiService.createCar(formData as CarFormData);
         setIsAddModalOpen(false);
-        
+
         // Refresh inventory status to potentially enable navigation
         if (inventoryContext?.refreshStatus) {
           inventoryContext.refreshStatus();
         }
       }
-      
+
       resetForm();
       loadCars(); // Refresh the list
     } catch (error) {
@@ -378,7 +298,7 @@ const CarInventory: React.FC = () => {
       setIsDeleteDialogOpen(false);
       setCarToDelete(null);
       loadCars(); // Refresh the list
-      
+
       // Refresh inventory status in case this was the last car
       if (inventoryContext?.refreshStatus) {
         inventoryContext.refreshStatus();
@@ -397,7 +317,7 @@ const CarInventory: React.FC = () => {
     if (rentalType === RentalType.Daily) defaultRentalType = 'daily';
     if (rentalType === RentalType.LongTerm) defaultRentalType = 'long_term';
     if (rentalType === RentalType.Leasing) defaultRentalType = 'leasing';
-    
+
     setFormData({
       remote_brand_id: 0,
       remote_model_id: 0,
@@ -418,7 +338,6 @@ const CarInventory: React.FC = () => {
     });
     setFormErrors([]);
     setEditingCar(null);
-    setAvailableModels([]);
   };
 
   const openAddModal = () => {
@@ -467,7 +386,7 @@ const CarInventory: React.FC = () => {
   const handleBulkUploadComplete = () => {
     // Refresh the car list to show newly uploaded cars
     loadCars();
-    
+
     // Refresh inventory status if available
     if (inventoryContext?.refreshStatus) {
       inventoryContext.refreshStatus();
@@ -554,28 +473,13 @@ const CarInventory: React.FC = () => {
               required
             />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.trimLevel')} <span className="text-red-500">*</span>
-              </label>
-              <Select.Root
-                value={typeof formData.trim_level === 'string' ? formData.trim_level : (Array.isArray(formData.trim_level) ? formData.trim_level[0] : '')}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, trim_level: String(value) }))}
-              >
-                <Select.Trigger className="w-full">
-                  <Select.Value placeholder={t('cars.trimLevel')} />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Viewport>
-                    {trimLevelOptions.map(option => (
-                      <Select.Item key={option.value} value={option.value}>
-                        <Select.ItemText>{option.label}</Select.ItemText>
-                      </Select.Item>
-                    ))}
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Root>
-            </div>
+            <Input
+              type="text"
+              label={t('cars.trimLevel')}
+              value={formData.trim_level ?? ''}
+              onChange={e => setFormData(prev => ({ ...prev, trim_level: e.target.value }))}
+            />
+
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -779,7 +683,7 @@ const CarInventory: React.FC = () => {
                 {userPriceTiers.length > 0 && userPriceTiers.map((tier) => {
                   const tierPrice = car.tiered_prices?.find(tp => tp.tier_name === tier.tier_name);
                   const displayPrice = tierPrice ? tierPrice.tier_price : car.price_per_day;
-                  
+
                   return (
                     <p key={tier.tier_name} className="font-sakr text-sm text-gray-600">
                       {tier.tier_name}: {displayPrice} {t('cars.kdPerDay')}
@@ -824,7 +728,7 @@ const CarInventory: React.FC = () => {
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
             <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
-              <DropdownMenu.Item 
+              <DropdownMenu.Item
                 className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                 onClick={() => openDeleteDialog(car)}
               >
@@ -853,24 +757,24 @@ const CarInventory: React.FC = () => {
             {/* Garage/Building Structure */}
             <rect x="30" y="140" width="140" height="40" rx="4" fill="currentColor" opacity="0.2"/>
             <rect x="40" y="130" width="120" height="10" fill="currentColor" opacity="0.3"/>
-            
+
             {/* Garage Door */}
             <rect x="50" y="140" width="100" height="35" rx="2" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.4"/>
             <rect x="55" y="145" width="90" height="25" rx="1" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
-            
+
             {/* Door Handle */}
             <circle cx="140" cy="157" r="2" fill="currentColor" opacity="0.5"/>
-            
+
             {/* Empty Parking Spaces */}
             <rect x="60" y="155" width="25" height="15" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,2" opacity="0.4"/>
             <rect x="87" y="155" width="25" height="15" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,2" opacity="0.4"/>
             <rect x="114" y="155" width="25" height="15" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3,2" opacity="0.4"/>
-            
+
             {/* Plus Icon in Center */}
             <circle cx="100" cy="90" r="25" fill="currentColor" opacity="0.15"/>
             <circle cx="100" cy="90" r="20" fill="none" stroke="currentColor" strokeWidth="2" opacity="0.3"/>
             <path d="M100 80v20M90 90h20" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.6"/>
-            
+
             {/* Small clouds/decoration */}
             <circle cx="60" cy="50" r="8" fill="currentColor" opacity="0.1"/>
             <circle cx="68" cy="47" r="6" fill="currentColor" opacity="0.1"/>
@@ -878,17 +782,17 @@ const CarInventory: React.FC = () => {
             <circle cx="146" cy="52" r="4" fill="currentColor" opacity="0.1"/>
           </svg>
         </div>
-        
+
         {/* Title */}
         <h3 className="font-sakr font-bold text-2xl mb-4 text-on-surface text-center">
           {searchTerm ? t('empty.noSearchResults') : t('empty.noInventory')}
         </h3>
-        
+
         {/* Description */}
         <p className="font-sakr font-normal text-lg text-on-surface-variant mb-8 leading-relaxed text-center">
           {searchTerm ? t('empty.noSearchResultsDesc') : t('empty.noInventoryDesc')}
         </p>
-        
+
         {/* Action Buttons */}
         <div className="flex flex-col gap-4 items-center">
           {searchTerm ? (
@@ -908,7 +812,7 @@ const CarInventory: React.FC = () => {
                   </Button>
                 )}
               </div>
-              
+
               {/* Bulk Upload Section for Empty State */}
               {rentalType === RentalType.Daily && (
                 <div className="mt-6 w-full max-w-2xl">
@@ -1117,8 +1021,8 @@ const CarInventory: React.FC = () => {
                         </td>
                         <td className="px-4 py-4">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                            car.available_count > 0 
-                              ? 'bg-success-100 text-success-800' 
+                            car.available_count > 0
+                              ? 'bg-success-100 text-success-800'
                               : 'bg-error-100 text-error-800'
                           }`}>
                             {car.available_count}
@@ -1138,7 +1042,7 @@ const CarInventory: React.FC = () => {
                               // Find matching tier price from car's tiered_prices
                               const tierPrice = car.tiered_prices?.find(tp => tp.tier_name === tier.tier_name);
                               const displayPrice = tierPrice ? tierPrice.tier_price : car.price_per_day;
-                              
+
                               return (
                                 <td key={tier.tier_name} className="px-4 py-4 font-sakr text-sm text-text-secondary">
                                   <span className="inline-flex px-2 py-1 rounded-full text-xs font-medium bg-primary-50 text-primary-800">
@@ -1199,7 +1103,7 @@ const CarInventory: React.FC = () => {
                             </DropdownMenu.Trigger>
                             <DropdownMenu.Portal>
                               <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
-                                <DropdownMenu.Item 
+                                <DropdownMenu.Item
                                   className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                                   onClick={() => openDeleteDialog(car)}
                                 >
@@ -1260,7 +1164,7 @@ const CarInventory: React.FC = () => {
             <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
               {t('common.cancel')}
             </Button>
-            <Button 
+            <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
@@ -1283,7 +1187,7 @@ const CarInventory: React.FC = () => {
             <Button variant="text" onClick={() => setIsEditModalOpen(false)}>
               {t('common.cancel')}
             </Button>
-            <Button 
+            <Button
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
@@ -1325,13 +1229,13 @@ const CarInventory: React.FC = () => {
         </div>
         <ModalFooter>
           <div className="flex gap-3 justify-end">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
               {t('common.cancel')}
             </Button>
-            <Button 
+            <Button
               variant="destructive"
               onClick={handleDelete}
               disabled={isSubmitting}
@@ -1345,4 +1249,4 @@ const CarInventory: React.FC = () => {
   );
 };
 
-export default CarInventory; 
+export default CarInventory;

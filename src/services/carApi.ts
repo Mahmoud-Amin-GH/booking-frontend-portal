@@ -42,40 +42,6 @@ export interface Car {
   body_type_name?: string;
 }
 
-export interface Brand {
-  id: number;
-  name_en: string;
-  name_ar: string;
-}
-
-export interface Model {
-  id: number;
-  brand_id: number;
-  name_en: string;
-  name_ar: string;
-}
-
-export interface Color {
-  id: number;
-  name_en: string;
-  name_ar: string;
-  hex_code: string;
-}
-
-export interface DropdownOption {
-  value: string;
-  label_en: string;
-  label_ar: string;
-}
-
-export interface CarOptions {
-  brands: Brand[];
-  colors: Color[];
-  transmissions: DropdownOption[];
-  car_types: DropdownOption[];
-  trim_levels: DropdownOption[];
-}
-
 export interface CarsResponse {
   cars: Car[];
   total: number;
@@ -136,7 +102,7 @@ export class CarApiService {
   // Get cars with pagination and search
   static async getCars(params?: GetCarsParams): Promise<CarsResponse> {
     const queryParams = new URLSearchParams();
-    
+
     if (params?.limit) queryParams.append('limit', params.limit.toString());
     if (params?.offset) queryParams.append('offset', params.offset.toString());
     if (params?.search) queryParams.append('search', params.search);
@@ -170,18 +136,6 @@ export class CarApiService {
     return response.data;
   }
 
-  // Get form options (brands, colors, transmissions, car types)
-  static async getCarOptions(): Promise<{ options: CarOptions }> {
-    const response = await api.get('/cars/options');
-    return response.data;
-  }
-
-  // Get models for specific brand
-  static async getModelsByBrand(brandId: number): Promise<{ models: Model[] }> {
-    const response = await api.get(`/brands/${brandId}/models`);
-    return response.data;
-  }
-
   // Bulk upload cars via Excel file
   static async bulkUploadCars(file: File): Promise<BulkUploadResult> {
     const formData = new FormData();
@@ -200,7 +154,7 @@ export class CarApiService {
     const response = await api.get('/cars/template', {
       responseType: 'blob',
     });
-    
+
     // Create download link
     const blob = response.data;
     const url = window.URL.createObjectURL(blob);
@@ -221,8 +175,6 @@ export const carQueryKeys = {
   list: (filters: Record<string, any>) => [...carQueryKeys.lists(), { filters }] as const,
   details: () => [...carQueryKeys.all, 'detail'] as const,
   detail: (id: number) => [...carQueryKeys.details(), id] as const,
-  options: () => [...carQueryKeys.all, 'options'] as const,
-  models: (brandId: number) => [...carQueryKeys.all, 'models', brandId] as const,
 };
 
 // Error handling types
@@ -246,7 +198,7 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
     errors.push('Available count must be 0 or greater');
   }
   if (!data.transmission) errors.push('Transmission is required');
-  
+
   // Conditional validation based on rental type
   if (data.rental_type === 'daily') {
     if (data.price_per_day === undefined || data.price_per_day <= 0) {
@@ -281,25 +233,9 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
 };
 
 // Utility functions for displaying data
-export const getLocalizedBrandName = (brand: Brand, language: string): string => {
-  return language === 'ar' ? brand.name_ar : brand.name_en;
-};
-
-export const getLocalizedModelName = (model: Model, language: string): string => {
-  return language === 'ar' ? model.name_ar : model.name_en;
-};
-
-export const getLocalizedColorName = (color: Color, language: string): string => {
-  return language === 'ar' ? color.name_ar : color.name_en;
-};
-
-export const getLocalizedDropdownLabel = (option: DropdownOption, language: string): string => {
-  return language === 'ar' ? option.label_ar : option.label_en;
-};
-
 export const formatCarDisplayName = (car: Car, language: string = 'en'): string => {
   return `${car.brand_name || ''} ${car.model_name || ''} ${car.year}`.trim();
 };
 
 // Export CarApiService as CarApi for new component compatibility
-export const CarApi = CarApiService; 
+export const CarApi = CarApiService;

@@ -138,7 +138,6 @@ const CustomButton = ({ children }) => (
 - **Car Listing**: Advanced search, pagination, and sorting
 - **Add/Edit Forms**: Complete CRUD operations with validation
 - **Bulk Operations**: Multi-select actions for efficiency
-- **Dependent Dropdowns**: Brand → Model cascade functionality
 - **Rich Validation**: Client-side validation with instant feedback
 
 ### ✅ **Office Configuration (90% Complete)**
