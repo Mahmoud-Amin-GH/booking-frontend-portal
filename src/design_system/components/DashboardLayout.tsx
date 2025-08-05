@@ -118,33 +118,6 @@ const DashboardLayout: React.FC = () => {
       ]
     },
     {
-      id: 'availability',
-      label: t('nav.availability'),
-      children: [
-        {
-          id: 'car-availability',
-          label: t('nav.availability.manage'),
-          href: '/dashboard/availability',
-          active: location.pathname === '/dashboard/availability',
-          onClick: () => navigate('/dashboard/availability')
-        },
-        {
-          id: 'quarterly-planning',
-          label: t('nav.availability.planning'),
-          href: '/dashboard/quarterly-planning',
-          active: location.pathname === '/dashboard/quarterly-planning',
-          onClick: () => navigate('/dashboard/quarterly-planning')
-        },
-        {
-          id: 'maintenance',
-          label: t('nav.availability.maintenance'),
-          href: '/dashboard/maintenance',
-          active: location.pathname === '/dashboard/maintenance',
-          onClick: () => navigate('/dashboard/maintenance')
-        }
-      ]
-    },
-    {
       id: 'price-tiers',
       label: disabledNavItems.includes('price-tiers') ? `${t('nav.priceTiers')}` : t('nav.priceTiers'),
       href: '/dashboard/price-tiers',
