@@ -74,6 +74,37 @@ const CarInventory: React.FC = () => {
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
   const [attributes, setAttributes] = useState<Attribute[] | null>(null);
 
+  // Helper functions to derive brand and model names when backend does not return them
+  const getBrandName = useCallback(
+    (car: Car): string => {
+      // Prefer values returned from backend
+      if (car.brand_name) return car.brand_name;
+      if (!attributes) return '';
+      const brandOpt = getAttributeOptions(attributes, 'brand').find(opt => opt.id === car.remote_brand_id);
+      return brandOpt ? getOptionLabel(brandOpt, language) : '';
+    },
+    [attributes, language]
+  );
+
+  const getModelName = useCallback(
+    (car: Car): string => {
+      if (car.model_name) return car.model_name;
+      if (!attributes) return '';
+      const modelOpt = getModelsForBrand(attributes, car.remote_brand_id).find(opt => opt.id === car.remote_model_id);
+      return modelOpt ? getOptionLabel(modelOpt, language) : '';
+    },
+    [attributes, language]
+  );
+
+  const getCarDisplayName = useCallback(
+    (car: Car): string => {
+      const brand = getBrandName(car);
+      const model = getModelName(car);
+      return `${brand} ${model}`.trim();
+    },
+    [getBrandName, getModelName]
+  );
+
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -545,7 +576,7 @@ const CarInventory: React.FC = () => {
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="font-sakr font-medium text-base">
-            {car.brand_name} {car.model_name}
+            {getCarDisplayName(car)}
           </p>
           <div className="mt-2 space-y-1">
             <p className="font-sakr text-sm text-gray-600">
@@ -896,7 +927,7 @@ const CarInventory: React.FC = () => {
                     {cars.map((car) => (
                       <tr key={car.id} className="hover:bg-neutral-25 transition-colors">
                         <td className="px-4 py-4 font-sakr font-medium text-sm text-text-primary">
-                          {car.brand_name} {car.model_name}
+                          {getCarDisplayName(car)}
                         </td>
                         <td className="px-4 py-4">
                           <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -1094,7 +1125,7 @@ const CarInventory: React.FC = () => {
                 {carToDelete && (
                   <>
                     {t('cars.deleteConfirmMessage', {
-                      carName: `${carToDelete.brand_name} ${carToDelete.model_name}`,
+                      carName: `${getCarDisplayName(carToDelete)}`,
                       year: carToDelete.year
                     })}{' '}
                     {t('cars.deleteWarning')}
