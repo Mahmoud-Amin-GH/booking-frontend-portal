@@ -190,8 +190,8 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
 
   if (!data.remote_brand_id) errors.push('Brand is required');
   if (!data.remote_model_id) errors.push('Model is required');
-  if (!data.year || data.year < 1900 || data.year > 2030) {
-    errors.push('Year must be between 1900 and 2030');
+  if (!data.year) {
+    errors.push('Year is required');
   }
   if (!data.remote_color_id) errors.push('Color is required');
   if (data.available_count === undefined || data.available_count < 0) {
