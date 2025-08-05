@@ -7,9 +7,9 @@ import {
   Modal,
   ModalFooter,
   Alert,
+  Select
 } from '@mo_sami/web-design-system';
-import * as Select from '@radix-ui/react-select';
-import { Plus, Calendar, ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { 
   CarAvailabilityPeriod,
   AvailabilityApi,
@@ -20,7 +20,6 @@ import { DatePicker } from '../design_system/components/DatePicker';
 
 const CarAvailability: React.FC = () => {
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
 
   // State
   const [cars, setCars] = useState<Car[]>([]);
@@ -44,17 +43,13 @@ const CarAvailability: React.FC = () => {
     period_type: 'available' as CarAvailabilityPeriod['period_type'],
     reason: ''
   });
-
-  // Load cars and availability data
-  useEffect(() => {
-    loadCars();
-  }, []);
-
-  useEffect(() => {
-    if (selectedCarId) {
-      loadAvailabilityData();
-    }
-  }, [selectedCarId]);
+  
+  const periodTypeOptions = [
+    { value: 'available', label: t('availability.types.available') },
+    { value: 'maintenance', label: t('availability.types.maintenance') },
+    { value: 'blocked', label: t('availability.types.blocked') },
+    { value: 'booking', label: t('availability.types.booking') },
+  ];
 
   const loadCars = async () => {
     try {
@@ -67,6 +62,11 @@ const CarAvailability: React.FC = () => {
       showError(t('availability.errors.loadCars'));
     }
   };
+
+  // Load cars and availability data
+  useEffect(() => {
+    loadCars();
+  }, [loadCars]);
 
   const loadAvailabilityData = async () => {
     if (!selectedCarId) return;
@@ -82,14 +82,20 @@ const CarAvailability: React.FC = () => {
       const today = new Date();
       const startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
       const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0];
-      const metrics = await AvailabilityApi.getAvailabilityMetrics(selectedCarId, startDate, endDate);
-      setMetrics(metrics);
+      const metricsData = await AvailabilityApi.getAvailabilityMetrics(selectedCarId, startDate, endDate);
+      setMetrics(metricsData);
     } catch (error) {
       showError(t('availability.errors.loadData'));
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (selectedCarId) {
+      loadAvailabilityData();
+    }
+  }, [selectedCarId, loadAvailabilityData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -138,8 +144,9 @@ const CarAvailability: React.FC = () => {
     setEditingPeriod(null);
   };
 
-  const handleCarChange = (carId: number) => {
-    setSelectedCarId(carId);
+  const handleCarChange = (value: string | string[]) => {
+    const carId = Array.isArray(value) ? value[0] : value;
+    setSelectedCarId(Number(carId));
   };
 
   if (loading) {
@@ -196,25 +203,12 @@ const CarAvailability: React.FC = () => {
           <h3 className="font-sakr font-bold text-lg text-on-surface mb-2">
             {t('availability.selectCar')}
           </h3>
-          <Select.Root
+          <Select
             value={selectedCarId?.toString() || ''}
-            onValueChange={(value) => handleCarChange(Number(value))}
-          >
-            <Select.Trigger className="w-full">
-              <Select.Value placeholder={t('availability.selectCar')} />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Viewport>
-                {cars.map((car) => (
-                  <Select.Item key={car.id} value={car.id.toString()}>
-                    <Select.ItemText>
-                      {car.brand_name} {car.model_name} ({car.year})
-                    </Select.ItemText>
-                  </Select.Item>
-                ))}
-              </Select.Viewport>
-            </Select.Content>
-          </Select.Root>
+            onValueChange={(value) => handleCarChange(value)}
+            options={cars.map((car) => ({ value: car.id.toString(), label: `${car.brand_name} ${car.model_name} (${car.year})` }))}
+            placeholder={t('availability.selectCar')}
+          />
         </div>
 
         {/* Metrics */}
@@ -387,30 +381,12 @@ const CarAvailability: React.FC = () => {
             />
           </div>
 
-          <Select.Root
+          <Select
             value={formData.period_type}
             onValueChange={(value) => setFormData({ ...formData, period_type: value as CarAvailabilityPeriod['period_type'] })}
-          >
-            <Select.Trigger className="w-full">
-              <Select.Value placeholder={t('availability.form.type')} />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Viewport>
-                <Select.Item value="available">
-                  <Select.ItemText>{t('availability.types.available')}</Select.ItemText>
-                </Select.Item>
-                <Select.Item value="maintenance">
-                  <Select.ItemText>{t('availability.types.maintenance')}</Select.ItemText>
-                </Select.Item>
-                <Select.Item value="blocked">
-                  <Select.ItemText>{t('availability.types.blocked')}</Select.ItemText>
-                </Select.Item>
-                <Select.Item value="booking">
-                  <Select.ItemText>{t('availability.types.booking')}</Select.ItemText>
-                </Select.Item>
-              </Select.Viewport>
-            </Select.Content>
-          </Select.Root>
+            options={periodTypeOptions}
+            placeholder={t('availability.form.type')}
+          />
 
           <Input
             type="number"
@@ -447,4 +423,4 @@ const CarAvailability: React.FC = () => {
   );
 };
 
-export default CarAvailability; 
+export default CarAvailability;

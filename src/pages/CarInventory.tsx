@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
 import {
@@ -6,10 +6,12 @@ import {
   Input,
   Modal,
   ModalFooter,
-  Alert
+  Select,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
 } from '@mo_sami/web-design-system';
-import * as Select from '@radix-ui/react-select';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { EllipsisVerticalIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
@@ -17,12 +19,9 @@ import {
   CarApiService,
   Car,
   CarFormData,
-  validateCarForm,
-  TieredPrice,
-  BulkUploadResult
+  validateCarForm
 } from '../services/carApi';
 import { PriceTier, getPriceTiers } from '../services/priceTiersApi';
-import { useInventoryStatus } from '../hooks/useInventoryStatus';
 import BulkCarUpload from '../components/BulkCarUpload';
 import {
   getCarAttributes,
@@ -74,8 +73,6 @@ const CarInventory: React.FC = () => {
   const [selectedCars, setSelectedCars] = useState<Set<number>>(new Set());
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
   const [attributes, setAttributes] = useState<Attribute[] | null>(null);
-  const [attrLoading, setAttrLoading] = useState(true);
-  const [attrError, setAttrError] = useState<string | null>(null);
 
   // Modal states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -117,47 +114,7 @@ const CarInventory: React.FC = () => {
 
   const pageSize = 10;
 
-  // Load initial data
-  useEffect(() => {
-    loadCars();
-    setAttrLoading(true);
-    getCarAttributes()
-      .then(attrs => {
-        setAttributes(attrs);
-        setAttrLoading(false);
-      })
-      .catch(err => {
-        setAttrError('Failed to load car attributes');
-        setAttrLoading(false);
-      });
-    if (rentalType === RentalType.Daily) {
-      loadUserPriceTiers();
-    }
-  }, [currentPage, searchTerm, rentalType]);
-
-  // Load models when brand changes
-  useEffect(() => {
-    if (formData.remote_brand_id && formData.remote_brand_id > 0) {
-      // Models are filtered dynamically from attributes
-      setFormData(prev => ({ ...prev, remote_model_id: 0 }));
-    } else {
-      setFormData(prev => ({ ...prev, remote_model_id: 0 }));
-    }
-  }, [formData.remote_brand_id]);
-
-  // Update form rental type when route changes
-  useEffect(() => {
-    const defaultRentalType = (() => {
-      if (rentalType === RentalType.Daily) return 'daily';
-      if (rentalType === RentalType.LongTerm) return 'long_term';
-      if (rentalType === RentalType.Leasing) return 'leasing';
-      return 'daily';
-    })();
-
-    setFormData(prev => ({ ...prev, rental_type: defaultRentalType }));
-  }, [rentalType]);
-
-  const loadCars = async () => {
+  const loadCars = useCallback(async () => {
     try {
       setLoading(true);
       // Convert URL format to API format for rental type
@@ -184,18 +141,33 @@ const CarInventory: React.FC = () => {
       setTotalCars(0);
     } finally {
       setLoading(false);
-    }
-  };
+  }
+}, [currentPage, searchTerm, rentalType]);
 
-  const loadUserPriceTiers = async () => {
+  const loadUserPriceTiers = useCallback(async () => {
     try {
       const tiers = await getPriceTiers();
       setUserPriceTiers(tiers);
     } catch (error) {
       console.error('Error loading price tiers:', error);
       setUserPriceTiers([]);
+  }
+  }, []);
+
+  // Load initial data
+  useEffect(() => {
+    loadCars();
+    getCarAttributes()
+      .then(attrs => {
+        setAttributes(attrs);
+      })
+      .catch(err => {
+        console.error('Failed to load car attributes');
+      });
+    if (rentalType === RentalType.Daily) {
+      loadUserPriceTiers();
     }
-  };
+  }, [currentPage, searchTerm, rentalType, loadCars, loadUserPriceTiers]);
 
   // Convert data to SelectOption format - use dynamic attributes directly
   const brandOptions: AttributeOption[] = useMemo(() =>
@@ -213,18 +185,8 @@ const CarInventory: React.FC = () => {
     [attributes]
   );
 
-  const yearOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'Year') : [],
-    [attributes]
-  );
-
   const transmissionOptions: AttributeOption[] = useMemo(() =>
     attributes ? getAttributeOptions(attributes, 'transmission') : [],
-    [attributes]
-  );
-
-  const bodyTypeOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'Body Type') : [],
     [attributes]
   );
 
@@ -232,25 +194,6 @@ const CarInventory: React.FC = () => {
   const handleSearch = (value: string) => {
     setSearchTerm(value);
     setCurrentPage(1); // Reset to first page when searching
-  };
-
-  // Handle bulk selection
-  const handleSelectCar = (carId: number, checked: boolean) => {
-    const newSelected = new Set(selectedCars);
-    if (checked) {
-      newSelected.add(carId);
-    } else {
-      newSelected.delete(carId);
-    }
-    setSelectedCars(newSelected);
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedCars(new Set(cars.map(car => car.id)));
-    } else {
-      setSelectedCars(new Set());
-    }
   };
 
   // Handle form submission
@@ -345,41 +288,9 @@ const CarInventory: React.FC = () => {
     setIsAddModalOpen(true);
   };
 
-  const openEditModal = (car: Car) => {
-    setEditingCar(car);
-    setFormData({
-      remote_brand_id: car.remote_brand_id,
-      remote_model_id: car.remote_model_id,
-      remote_color_id: car.remote_color_id,
-      remote_body_type_id: car.remote_body_type_id,
-      year: car.year,
-      trim_level: car.trim_level,
-      available_count: car.available_count,
-      transmission: car.transmission,
-      rental_type: car.rental_type,
-      price_per_day: car.price_per_day,
-      allowed_kilometers: car.allowed_kilometers,
-      // Pricing fields
-      downpayment: car.downpayment,
-      months_36_price: car.months_36_price,
-      months_48_price: car.months_48_price,
-      final_payment: car.final_payment
-    });
-    setIsEditModalOpen(true);
-  };
-
   const openDeleteDialog = (car: Car) => {
     setCarToDelete(car);
     setIsDeleteDialogOpen(true);
-  };
-
-  const handleLogout = () => {
-    clearAuthToken();
-    navigate('/login');
-  };
-
-  const handleFormDataChange = (newData: Partial<CarFormData>) => {
-    setFormData(newData);
   };
 
   // Handle bulk upload completion
@@ -417,47 +328,25 @@ const CarInventory: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t('cars.brand')} <span className="text-red-500">*</span>
               </label>
-              <Select.Root
+              <Select
                 value={formData.remote_brand_id ? formData.remote_brand_id.toString() : ''}
                 onValueChange={value => setFormData(prev => ({ ...prev, remote_brand_id: Number(value) || 0 }))}
-              >
-                <Select.Trigger className="w-full">
-                  <Select.Value placeholder={t('cars.brand')} />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Viewport>
-                    {brandOptions.map(option => (
-                      <Select.Item key={option.id} value={option.id.toString()}>
-                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
-                      </Select.Item>
-                    ))}
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Root>
+                options={brandOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.brand')}
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t('cars.model')} <span className="text-red-500">*</span>
               </label>
-              <Select.Root
+              <Select
                 value={formData.remote_model_id ? formData.remote_model_id.toString() : ''}
                 onValueChange={value => setFormData(prev => ({ ...prev, remote_model_id: Number(value) || 0 }))}
+                options={modelOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={!formData.remote_brand_id ? t('form.selectBrandFirst') : t('common.select')}
                 disabled={!formData.remote_brand_id || modelOptions.length === 0}
-              >
-                <Select.Trigger className="w-full">
-                  <Select.Value placeholder={!formData.remote_brand_id ? t('form.selectBrandFirst') : t('common.select')} />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Viewport>
-                    {modelOptions.map(option => (
-                      <Select.Item key={option.id} value={option.id.toString()}>
-                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
-                      </Select.Item>
-                    ))}
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Root>
+              />
             </div>
 
             <Input
@@ -485,46 +374,24 @@ const CarInventory: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t('cars.transmission')} <span className="text-red-500">*</span>
               </label>
-              <Select.Root
+              <Select
                 value={formData.transmission || ''}
                 onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
-              >
-                <Select.Trigger className="w-full">
-                  <Select.Value placeholder={t('cars.transmission')} />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Viewport>
-                    {transmissionOptions.map(option => (
-                      <Select.Item key={option.id} value={option.id.toString()}>
-                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
-                      </Select.Item>
-                    ))}
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Root>
+                options={transmissionOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.transmission')}
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t('cars.color')} <span className="text-red-500">*</span>
               </label>
-              <Select.Root
+              <Select
                 value={formData.remote_color_id ? formData.remote_color_id.toString() : ''}
                 onValueChange={value => setFormData(prev => ({ ...prev, remote_color_id: Number(value) || 0 }))}
-              >
-                <Select.Trigger className="w-full">
-                  <Select.Value placeholder={t('cars.color')} />
-                </Select.Trigger>
-                <Select.Content>
-                  <Select.Viewport>
-                    {colorOptions.map(option => (
-                      <Select.Item key={option.id} value={option.id.toString()}>
-                        <Select.ItemText>{getOptionLabel(option, language)}</Select.ItemText>
-                      </Select.Item>
-                    ))}
-                  </Select.Viewport>
-                </Select.Content>
-              </Select.Root>
+                options={colorOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.color')}
+              />
             </div>
           </div>
         </div>
@@ -720,24 +587,22 @@ const CarInventory: React.FC = () => {
             )}
           </div>
         </div>
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
               <EllipsisVerticalIcon className="w-5 h-5" />
             </Button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
-              <DropdownMenu.Item
-                className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
-                onClick={() => openDeleteDialog(car)}
-              >
-                <TrashIcon className="w-4 h-4" />
-                {t('cars.deleteCar')}
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+              onSelect={() => openDeleteDialog(car)}
+            >
+              <TrashIcon className="w-4 h-4" />
+              {t('cars.deleteCar')}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
@@ -1095,24 +960,22 @@ const CarInventory: React.FC = () => {
                           </>
                         )}
                         <td className="px-4 py-4">
-                          <DropdownMenu.Root>
-                            <DropdownMenu.Trigger asChild>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
                                 <EllipsisVerticalIcon className="w-5 h-5" />
                               </Button>
-                            </DropdownMenu.Trigger>
-                            <DropdownMenu.Portal>
-                              <DropdownMenu.Content className="min-w-[180px] bg-white rounded-lg shadow-lg py-1 border border-gray-200">
-                                <DropdownMenu.Item
-                                  className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
-                                  onClick={() => openDeleteDialog(car)}
-                                >
-                                  <TrashIcon className="w-4 h-4" />
-                                  {t('cars.deleteCar')}
-                                </DropdownMenu.Item>
-                              </DropdownMenu.Content>
-                            </DropdownMenu.Portal>
-                          </DropdownMenu.Root>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem
+                                className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                                onSelect={() => openDeleteDialog(car)}
+                              >
+                                <TrashIcon className="w-4 h-4" />
+                                {t('cars.deleteCar')}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </td>
                       </tr>
                     ))}

@@ -7,18 +7,16 @@ import {
   Modal,
   ModalFooter,
   Alert,
+  Select
 } from '@mo_sami/web-design-system';
-import * as Select from '@radix-ui/react-select';
-import { Plus, Calendar, ChevronDown, CheckCircle } from 'lucide-react';
+import { Plus, CheckCircle } from 'lucide-react';
 import { 
   QuarterlyPlan,
   AvailabilityApi
 } from '../services/availabilityApi';
-import { DatePicker } from '../design_system/components/DatePicker';
 
 const QuarterlyPlanning: React.FC = () => {
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
 
   // State
   const [plans, setPlans] = useState<QuarterlyPlan[]>([]);
@@ -38,6 +36,13 @@ const QuarterlyPlanning: React.FC = () => {
     maintenance_buffer_days: 7,
     status: 'draft' as QuarterlyPlan['status']
   });
+  
+  const quarterOptions = [
+    { value: '1', label: 'Q1' },
+    { value: '2', label: 'Q2' },
+    { value: '3', label: 'Q3' },
+    { value: '4', label: 'Q4' },
+  ];
 
   // Load plans on component mount
   useEffect(() => {
@@ -244,30 +249,15 @@ const QuarterlyPlanning: React.FC = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select.Root
+          <Select
               value={formData.quarter.toString()}
-              onValueChange={(value) => setFormData({ ...formData, quarter: parseInt(value) })}
-            >
-              <Select.Trigger className="w-full">
-                <Select.Value placeholder={t('quarterlyPlanning.form.quarter')} />
-              </Select.Trigger>
-              <Select.Content>
-                <Select.Viewport>
-                  <Select.Item value="1">
-                    <Select.ItemText>Q1</Select.ItemText>
-                  </Select.Item>
-                  <Select.Item value="2">
-                    <Select.ItemText>Q2</Select.ItemText>
-                  </Select.Item>
-                  <Select.Item value="3">
-                    <Select.ItemText>Q3</Select.ItemText>
-                  </Select.Item>
-                  <Select.Item value="4">
-                    <Select.ItemText>Q4</Select.ItemText>
-                  </Select.Item>
-                </Select.Viewport>
-              </Select.Content>
-            </Select.Root>
+              onValueChange={(value) => {
+                const quarter = Array.isArray(value) ? value[0] : value;
+                setFormData({ ...formData, quarter: parseInt(quarter) })
+              }}
+              options={quarterOptions}
+              placeholder={t('quarterlyPlanning.form.quarter')}
+            />
 
             <Input
               type="number"
@@ -317,4 +307,4 @@ const QuarterlyPlanning: React.FC = () => {
   );
 };
 
-export default QuarterlyPlanning; 
+export default QuarterlyPlanning;

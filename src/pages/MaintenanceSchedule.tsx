@@ -7,9 +7,9 @@ import {
   Modal,
   ModalFooter,
   Alert,
+  Select,
 } from '@mo_sami/web-design-system';
-import * as Select from '@radix-ui/react-select';
-import { Plus, Calendar, ChevronDown, CheckCircle, Wrench } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { 
   MaintenanceSchedule as MaintenanceScheduleType,
   AvailabilityApi
@@ -19,7 +19,6 @@ import { DatePicker } from '../design_system/components/DatePicker';
 
 const MaintenanceSchedule: React.FC = () => {
   const { t } = useTranslation();
-  const { isRTL } = useLanguage();
 
   // State
   const [cars, setCars] = useState<Car[]>([]);
@@ -44,17 +43,6 @@ const MaintenanceSchedule: React.FC = () => {
     status: 'scheduled' as MaintenanceScheduleType['status']
   });
 
-  // Load data on component mount
-  useEffect(() => {
-    loadCars();
-  }, []);
-
-  useEffect(() => {
-    if (selectedCarId) {
-      loadSchedules();
-    }
-  }, [selectedCarId]);
-
   const loadCars = async () => {
     try {
       const response = await CarApi.getCars();
@@ -66,6 +54,11 @@ const MaintenanceSchedule: React.FC = () => {
       showError(t('maintenance.errors.loadCars'));
     }
   };
+
+  // Load data on component mount
+  useEffect(() => {
+    loadCars();
+  }, [loadCars]);
 
   const loadSchedules = async () => {
     if (!selectedCarId) return;
@@ -81,6 +74,12 @@ const MaintenanceSchedule: React.FC = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (selectedCarId) {
+      loadSchedules();
+    }
+  }, [selectedCarId, loadSchedules]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,9 +142,17 @@ const MaintenanceSchedule: React.FC = () => {
     setEditingSchedule(null);
   };
 
-  const handleCarChange = (carId: number) => {
-    setSelectedCarId(carId);
+  const handleCarChange = (value: string | string[]) => {
+    const carId = Array.isArray(value) ? value[0] : value;
+    setSelectedCarId(Number(carId));
   };
+  
+  const maintenanceTypeOptions = [
+    { value: 'routine', label: t('maintenance.types.routine') },
+    { value: 'repair', label: t('maintenance.types.repair') },
+    { value: 'inspection', label: t('maintenance.types.inspection') },
+    { value: 'upgrade', label: t('maintenance.types.upgrade') },
+  ];
 
   if (loading) {
     return (
@@ -201,25 +208,12 @@ const MaintenanceSchedule: React.FC = () => {
           <h3 className="font-sakr font-bold text-lg text-on-surface mb-2">
             {t('maintenance.selectCar')}
           </h3>
-          <Select.Root
+          <Select
             value={selectedCarId?.toString() || ''}
-            onValueChange={(value) => handleCarChange(Number(value))}
-          >
-            <Select.Trigger className="w-full">
-              <Select.Value placeholder={t('maintenance.selectCar')} />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Viewport>
-                {cars.map((car) => (
-                  <Select.Item key={car.id} value={car.id.toString()}>
-                    <Select.ItemText>
-                      {car.brand_name} {car.model_name} ({car.year})
-                    </Select.ItemText>
-                  </Select.Item>
-                ))}
-              </Select.Viewport>
-            </Select.Content>
-          </Select.Root>
+            onValueChange={(value) => handleCarChange(value)}
+            options={cars.map((car) => ({ value: car.id.toString(), label: `${car.brand_name} ${car.model_name} (${car.year})` }))}
+            placeholder={t('maintenance.selectCar')}
+          />
         </div>
       </div>
 
@@ -362,30 +356,12 @@ const MaintenanceSchedule: React.FC = () => {
             dateFormat="yyyy-MM-dd"
           />
 
-          <Select.Root
+          <Select
             value={formData.maintenance_type}
             onValueChange={(value) => setFormData({ ...formData, maintenance_type: value as MaintenanceScheduleType['maintenance_type'] })}
-          >
-            <Select.Trigger className="w-full">
-              <Select.Value placeholder={t('maintenance.form.type')} />
-            </Select.Trigger>
-            <Select.Content>
-              <Select.Viewport>
-                <Select.Item value="routine">
-                  <Select.ItemText>{t('maintenance.types.routine')}</Select.ItemText>
-                </Select.Item>
-                <Select.Item value="repair">
-                  <Select.ItemText>{t('maintenance.types.repair')}</Select.ItemText>
-                </Select.Item>
-                <Select.Item value="inspection">
-                  <Select.ItemText>{t('maintenance.types.inspection')}</Select.ItemText>
-                </Select.Item>
-                <Select.Item value="upgrade">
-                  <Select.ItemText>{t('maintenance.types.upgrade')}</Select.ItemText>
-                </Select.Item>
-              </Select.Viewport>
-            </Select.Content>
-          </Select.Root>
+            options={maintenanceTypeOptions}
+            placeholder={t('maintenance.form.type')}
+          />
 
           <Input
             type="number"
@@ -422,4 +398,4 @@ const MaintenanceSchedule: React.FC = () => {
   );
 };
 
-export default MaintenanceSchedule; 
+export default MaintenanceSchedule;
