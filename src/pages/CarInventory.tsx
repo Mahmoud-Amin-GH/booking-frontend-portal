@@ -190,6 +190,16 @@ const CarInventory: React.FC = () => {
     [attributes]
   );
 
+  const bodyTypeOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'Body Type') : [],
+    [attributes]
+  );
+
+  const yearOptions: AttributeOption[] = useMemo(() =>
+    attributes ? getAttributeOptions(attributes, 'Year') : [],
+    [attributes]
+  );
+
   // Handle search
   const handleSearch = (value: string) => {
     setSearchTerm(value);
@@ -349,25 +359,29 @@ const CarInventory: React.FC = () => {
               />
             </div>
 
-            <Input
-              type="number"
-              label={t('cars.year')}
-              value={formData.year ?? ''}
-              onChange={e => {
-                const value = e.target.value;
-                setFormData(prev => ({ ...prev, year: value === '' ? 0 : Number(value) }));
-              }}
-              min={1900}
-              max={2030}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.year')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.year ? formData.year.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
+                options={yearOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.year')}
+              />
+            </div>
 
-            <Input
-              type="text"
-              label={t('cars.trimLevel')}
-              value={formData.trim_level ?? ''}
-              onChange={e => setFormData(prev => ({ ...prev, trim_level: e.target.value }))}
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.bodyType')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.remote_body_type_id ? formData.remote_body_type_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_body_type_id: Number(value) || 0 }))}
+                options={bodyTypeOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.bodyType')}
+              />
+            </div>
 
 
             <div>
