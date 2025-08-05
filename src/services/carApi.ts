@@ -22,7 +22,7 @@ export interface Car {
   year: number;
   trim_level: string;
   available_count: number;
-  transmission: 'manual' | 'automatic';
+  transmission: number;
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
@@ -57,7 +57,7 @@ export interface CarFormData {
   year: number;
   trim_level: string;
   available_count: number;
-  transmission: 'manual' | 'automatic';
+  transmission: number;
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
@@ -197,7 +197,7 @@ export const validateCarForm = (data: Partial<CarFormData>): string[] => {
   if (data.available_count === undefined || data.available_count < 0) {
     errors.push('Available count must be 0 or greater');
   }
-  if (!data.transmission) errors.push('Transmission is required');
+  if (!data.transmission || data.transmission <= 0) errors.push('Transmission is required');
 
   // Conditional validation based on rental type
   if (data.rental_type === 'daily') {

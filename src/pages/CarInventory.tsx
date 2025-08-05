@@ -93,7 +93,7 @@ const CarInventory: React.FC = () => {
     year: new Date().getFullYear(),
     trim_level: '',
     available_count: 1,
-    transmission: 'automatic',
+    transmission: 0,
     rental_type: (() => {
       // Convert URL format to API format for rental type
       if (rentalType === RentalType.Daily) return 'daily';
@@ -269,7 +269,7 @@ const CarInventory: React.FC = () => {
       year: new Date().getFullYear(),
       trim_level: '',
       available_count: 1,
-      transmission: 'automatic',
+      transmission: 0,
       rental_type: defaultRentalType,
       price_per_day: 0,
       allowed_kilometers: 250,
@@ -375,8 +375,8 @@ const CarInventory: React.FC = () => {
                 {t('cars.transmission')} <span className="text-red-500">*</span>
               </label>
               <Select
-                value={formData.transmission || ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value as 'manual' | 'automatic' }))}
+                value={formData.transmission ? formData.transmission.toString() : ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: Number(value) }))}
                 options={transmissionOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
                 placeholder={t('cars.transmission')}
               />
