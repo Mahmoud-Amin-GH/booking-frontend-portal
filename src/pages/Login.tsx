@@ -5,9 +5,7 @@ import { Button, Input, Alert } from '@mo_sami/web-design-system';
 import { authAPI } from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import { 
-  validateKuwaitiPhone, 
   handlePhoneInputChange, 
-  preparePhoneForAPI 
 } from '../business/phoneValidation';
 
 interface LoginForm {
@@ -38,16 +36,16 @@ const Login: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: ValidationErrors = {};
 
-    if (!form.phone.trim()) {
-      newErrors.phone = t('validation.required');
-    } else if (!validateKuwaitiPhone('+965 ' + form.phone)) {
-      newErrors.phone = t('validation.phone');
+    // Simplified validation: check if phone number has at least 8 digits
+    const phoneDigits = form.phone.replace(/\D/g, '');
+    if (phoneDigits.length < 8) {
+      newErrors.phone = t('validation.phone', 'Please enter a valid phone number.');
     }
 
     if (!form.password) {
       newErrors.password = t('validation.required');
     } else if (form.password.length < 6) {
-      newErrors.password = t('validation.password');
+      newErrors.password = t('validation.password', 'Password must be at least 6 characters.');
     }
 
     setErrors(newErrors);
@@ -92,39 +90,32 @@ const Login: React.FC = () => {
       setErrorMessage('');
       setSuccessMessage('');
 
+      // The phone number sent to the API should be in the format "965..."
+      const apiPhone = `965${form.phone.replace(/\s/g, '')}`;
+
       const response = await authAPI.login({
-        phone: preparePhoneForAPI(form.phone),
+        phone: apiPhone,
         password: form.password,
       });
-      console.log("response", response);
-      console.log("response.message", response.message);
       
-      // Login successful - OTP sent, navigate to verification
-      if (!response.token && response.user_id) {
-        setSuccessMessage(t('auth.otpSent', 'Verification code sent successfully!'));
-        // Brief delay to show success message before navigation
-        setTimeout(() => {
-          navigate('/verify-otp', { 
-            state: { 
-              phone: preparePhoneForAPI(form.phone),
-              fromSignup: false 
-            }
-          });
-        }, 1000);
-      } else if (response.token && response.user_id) {
+      // With the remote API, a successful login always returns a token.
+      if (response.token) {
         setSuccessMessage(t('auth.loginSuccess', 'Login successful! Redirecting...'));
-        // set the token in local storage
-        localStorage.setItem('auth_token', response.token);
+        
+        // The token is already set in localStorage by api.ts
+        
         // Brief delay to show success message before navigation
         setTimeout(() => {
           navigate('/dashboard');
         }, 1000);
       } else {
-        setErrorMessage(response.message || t('error.loginFailed'));
+        // This case should ideally not be reached if the API call is successful
+        setErrorMessage(response.message || t('error.loginFailed', 'An unexpected error occurred.'));
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      setErrorMessage(error.response?.data?.error || t('error.loginFailed'));
+      const apiError = error.response?.data?.message || error.response?.data?.error || t('error.loginFailed', 'Invalid credentials or server error.');
+      setErrorMessage(apiError);
     } finally {
       setIsLoading(false);
     }
@@ -132,15 +123,12 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-surface-container-low to-surface-container flex" dir={isRTL ? 'rtl' : 'ltr'}>
-      {/* Hero Section */}
+      {/* Hero Section (no changes here) */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 relative overflow-hidden">
-        {/* Decorative Elements */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-transparent" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-48 translate-x-48 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full translate-y-40 -translate-x-40 blur-3xl" />
-        
         <div className="relative z-10 flex flex-col justify-center items-center text-white p-8">
-          {/* Logo Section */}
           <div className="mb-8">
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
               <img 
@@ -150,8 +138,6 @@ const Login: React.FC = () => {
               />
             </div>
           </div>
-          
-          {/* Typography */}
           <div className="text-center max-w-md">
             <h1 className="font-sakr font-bold text-4xl xl:text-5xl mb-4 text-white">
               {t('auth.welcomeBack')}
@@ -159,8 +145,6 @@ const Login: React.FC = () => {
             <p className="font-sakr font-normal text-lg xl:text-xl text-primary-100 mb-6">
               {t('auth.createAccount')}
             </p>
-            
-            {/* Feature Highlights */}
             <div className="space-y-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-white rounded-full flex-shrink-0" />
@@ -188,26 +172,13 @@ const Login: React.FC = () => {
       {/* Form Section */}
       <div className="flex-1 flex flex-col justify-center p-8">
         <div className="mx-auto w-full max-w-md">
-          {/* Header */}
           <div className="text-center lg:text-left mb-8">
-            {/* Mobile Logo */}
-            {/* <div className="lg:hidden mb-6 flex justify-center">
-              <div className="bg-primary-50 rounded-xl p-4">
-                <img src="/assets/4sale-logo.svg" alt="4Sale" className="h-12 w-auto" />
-              </div>
-            </div> */}
-            
             <h2 className="font-sakr font-bold text-3xl mb-2 text-on-surface">
               {t('auth.login')}
             </h2>
-            {/* <p className="font-sakr font-normal text-lg text-on-surface-variant">
-              {t('auth.loginSubtitle', 'Welcome back! Please sign in to your account')}
-            </p> */}
           </div>
 
-          {/* Form Container */}
           <div className="bg-surface rounded-2xl border border-outline-variant p-6 shadow-sm">
-            {/* Success Alert */}
             {successMessage && (
               <div className="mb-4">
                 <Alert variant="success">
@@ -216,7 +187,6 @@ const Login: React.FC = () => {
               </div>
             )}
 
-            {/* Error Alert */}
             {errorMessage && (
               <div className="mb-4">
                 <Alert variant="error">
@@ -225,9 +195,7 @@ const Login: React.FC = () => {
               </div>
             )}
 
-            {/* Form */}
             <form onSubmit={onSubmit} className="space-y-4">
-              {/* Phone Input */}
               <Input
                 label={t('auth.phone')}
                 type="tel"
@@ -239,7 +207,6 @@ const Login: React.FC = () => {
                 prefix="+965"
               />
 
-              {/* Password Input */}
               <Input
                 label={t('auth.password')}
                 type="password"
@@ -250,7 +217,6 @@ const Login: React.FC = () => {
                 fullWidth
               />
 
-              {/* Submit Button */}
               <div className="pt-2">
                 <Button
                   type="submit"
@@ -264,37 +230,7 @@ const Login: React.FC = () => {
                 </Button>
               </div>
             </form>
-
-            {/* Footer Links */}
-            {/* <div className="mt-6 pt-4 border-t border-outline-variant space-y-4 text-center">
-              <button
-                type="button"
-                onClick={() => navigate('/forgot-password')}
-                className="font-sakr font-medium text-primary-500 hover:text-primary-600 transition-colors duration-200"
-              >
-                {t('auth.forgotPassword')}
-              </button>
-              <div className="text-sm">
-                <span className="font-sakr text-on-surface-variant">
-                  {t('auth.dontHaveAccount')}{' '}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => navigate('/signup')}
-                  className="font-sakr font-medium text-primary-500 hover:text-primary-600 transition-colors duration-200"
-                >
-                  {t('auth.signup')}
-                </button>
-              </div>
-            </div> */}
           </div>
-
-          {/* Trust Indicator */}
-          {/* <div className="mt-6 text-center">
-            <p className="font-sakr text-sm text-on-surface-variant">
-              {t('auth.secureLogin', 'Your information is secured with industry-standard encryption')}
-            </p>
-          </div> */}
         </div>
       </div>
     </div>

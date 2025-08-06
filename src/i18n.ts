@@ -13,45 +13,28 @@ const resources = {
       "auth.password": "Password",
       "auth.displayName": "Display Name",
       "auth.email": "Email",
-      "auth.verifyPhone": "Verify Phone",
-      "auth.enterOTP": "Enter Verification Code",
-      "auth.otp": "Verification Code",
       "auth.submit": "Submit",
       "auth.verify": "Verify",
-      "auth.resendOTP": "Resend Code",
       "auth.switchToSignup": "Don't have an account? Sign up",
       "auth.switchToLogin": "Already have an account? Login",
       "auth.welcomeBack": "Welcome back! Please sign in to your account",
       "auth.createAccount": "Create your account to get started",
       "auth.dontHaveAccount": "Don't have an account?",
       "auth.alreadyHaveAccount": "Already have an account?",
-      "auth.didntReceiveCode": "Didn't receive a code?",
-      "auth.resendAvailable": "Resend available in {{seconds}}s",
       "auth.back": "Back",
       "auth.logout": "Logout",
       "auth.forgotPassword": "Forgot Password?",
-      "auth.almostThere": "Almost There!",
-      "auth.verificationDescription": "We've sent a verification code to secure your account",
-      "auth.enterCode": "Enter verification code",
-      "auth.codeInstructions": "Enter the 6-digit code sent to your phone",
-      "auth.resendCode": "Resend Code",
-      "auth.resendIn": "Resend in",
       "auth.backToLogin": "Back to Login",
-      "auth.troubleReceiving": "Having trouble receiving the code?",
       "auth.contactSupport": "Contact Support",
-      "auth.otpSentTo": "We've sent a 6-digit code to",
 
       // Placeholders
       "placeholders.enterFullName": "Enter your full name",
       "placeholders.emailExample": "user@example.com",
       "placeholders.minimumPassword": "Minimum 6 characters",
-      "placeholders.otpHelper": "Enter the 6-digit code sent to your phone",
-      "placeholders.otpError": "Please enter a valid 6-digit code",
 
       // Validation messages
       "validation.required": "This field is required",
       "validation.email": "Please enter a valid email",
-      "validation.phone": "Please enter a valid Kuwaiti phone number (+965 XXXX XXXX)",
       "validation.password": "Password must be at least 6 characters",
 
       // Common
@@ -262,10 +245,8 @@ const resources = {
       // Error messages
       "error.loginFailed": "Login failed. Please check your credentials.",
       "error.signupFailed": "Sign up failed. Please try again.",
-      "error.otpFailed": "Invalid verification code. Please try again.",
       "error.networkError": "Network error. Please check your connection.",
-      "error.resendFailed": "Failed to resend OTP",
-
+      
       // Car Management
       "cars.title": "Car",
       "cars.brand": "Brand",
@@ -468,7 +449,6 @@ const resources = {
       "pendingState.subtitle": "Please wait while an admin approves your registration.",
 
       // Security features
-      "security.smsVerification": "SMS verification",
       "security.secureAccess": "Secure account access",
       "security.protectedData": "Protected personal data",
 
@@ -539,45 +519,28 @@ const resources = {
         "auth.password": "كلمة المرور",
         "auth.displayName": "الاسم المعروض",
         "auth.email": "البريد الإلكتروني",
-        "auth.verifyPhone": "تأكيد الهاتف",
-        "auth.enterOTP": "أدخل رمز التحقق",
-        "auth.otp": "رمز التحقق",
         "auth.submit": "إرسال",
         "auth.verify": "تأكيد",
-        "auth.resendOTP": "إعادة إرسال الرمز",
         "auth.switchToSignup": "ليس لديك حساب؟ أنشئ حساباً",
         "auth.switchToLogin": "لديك حساب بالفعل؟ سجل دخولك",
         "auth.welcomeBack": "أهلاً بك مرة أخرى! يرجى تسجيل الدخول إلى حسابك",
         "auth.createAccount": "أنشئ حسابك للبدء",
         "auth.dontHaveAccount": "ليس لديك حساب؟",
         "auth.alreadyHaveAccount": "لديك حساب بالفعل؟",
-        "auth.didntReceiveCode": "لم تتلق الرمز؟",
-        "auth.resendAvailable": "إعادة الإرسال متاحة خلال {{seconds}} ثانية",
         "auth.back": "رجوع",
         "auth.logout": "تسجيل الخروج",
         "auth.forgotPassword": "هل نسيت كلمة المرور؟",
-        "auth.almostThere": "تقريباً هناك!",
-        "auth.verificationDescription": "لقد أرسلنا رمز تحقق لضمان حسابك",
-        "auth.enterCode": "أدخل رمز التحقق",
-        "auth.codeInstructions": "أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك",
-        "auth.resendCode": "إعادة إرسال الرمز",
-        "auth.resendIn": "إعادة إرسال في",
         "auth.backToLogin": "العودة إلى تسجيل الدخول",
-        "auth.troubleReceiving": "هل تواجه مشكلة في تلقي الرمز؟",
         "auth.contactSupport": "اتصل بدعم الخدمة",
-        "auth.otpSentTo": "لقد أرسلنا رمزًا مكونًا من 6 أرقام إلى",
 
         // Placeholders
         "placeholders.enterFullName": "أدخل اسمك الكامل",
         "placeholders.emailExample": "user@example.com",
         "placeholders.minimumPassword": "6 أحرف على الأقل",
-        "placeholders.otpHelper": "أدخل الرمز المكون من 6 أرقام المرسل إلى هاتفك",
-        "placeholders.otpError": "يرجى إدخال رمز صحيح مكون من 6 أرقام",
 
         // Validation messages - Arabic
         "validation.required": "هذا الحقل مطلوب",
         "validation.email": "يرجى إدخال بريد إلكتروني صحيح",
-        "validation.phone": "يرجى إدخال رقم هاتف كويتي صحيح (+965 XXXX XXXX)",
         "validation.password": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
 
         // Common - Arabic
@@ -788,9 +751,7 @@ const resources = {
         // Error messages - Arabic
         "error.loginFailed": "فشل تسجيل الدخول. يرجى التحقق من بياناتك.",
         "error.signupFailed": "فشل إنشاء الحساب. يرجى المحاولة مرة أخرى.",
-        "error.otpFailed": "رمز التحقق غير صحيح. يرجى المحاولة مرة أخرى.",
         "error.networkError": "خطأ في الشبكة. يرجى التحقق من اتصالك.",
-        "error.resendFailed": "فشل في إعادة إرسال رمز التحقق",
 
         // Car Management - Arabic
         "cars.title": "السيارة",
@@ -994,7 +955,6 @@ const resources = {
         "pendingState.subtitle": "يرجى الانتظار حتى يقوم المسؤول بالموافقة على تسجيلك.",
 
         // Security features
-        "security.smsVerification": "تحقق الرسالة القصيرة",
         "security.secureAccess": "تأمين علوم الدخول",
         "security.protectedData": "بيانات شخصية حميعة",
 
