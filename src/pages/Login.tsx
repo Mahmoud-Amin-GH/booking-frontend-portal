@@ -101,13 +101,10 @@ const Login: React.FC = () => {
       // With the remote API, a successful login always returns a token.
       if (response.token) {
         setSuccessMessage(t('auth.loginSuccess', 'Login successful! Redirecting...'));
-        
-        // The token is already set in localStorage by api.ts
-        
         // Brief delay to show success message before navigation
         setTimeout(() => {
           navigate('/dashboard');
-        }, 1000);
+        }, 300);
       } else {
         // This case should ideally not be reached if the API call is successful
         setErrorMessage(response.message || t('error.loginFailed', 'An unexpected error occurred.'));

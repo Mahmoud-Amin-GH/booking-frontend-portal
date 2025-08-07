@@ -1,8 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
-import Signup from './pages/Signup';
-import OTPVerification from './pages/OTPVerification';
 import CarInventory from './pages/CarInventory';
 import OfficeConfigs from './pages/OfficeConfigs';
 import { PriceTiers } from './pages/PriceTiers';
@@ -36,8 +34,6 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/login-4sale" replace />} />
             <Route path="/login-4sale" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/verify-otp" element={<OTPVerification />} />
             
             {/* Dashboard routes */}
             <Route path="/dashboard" element={<DashboardLayout />}>
