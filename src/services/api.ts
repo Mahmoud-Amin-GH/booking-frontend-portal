@@ -91,25 +91,31 @@ export interface AuthResponse {
 export const authAPI = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
     // Note: The phone number must be in the format "965..." without '+'
-    const response = await api.post<RemoteAuthResponse>('https://dev-services.q84sale.com/api/v1/users/auth/login', {
+    const response = await api.post('https://dev-services.q84sale.com/api/v1/users/auth/login', {
       ...data,
       phone: data.phone.replace(/\D/g, ''), // Ensure no special characters
     });
 
-    // Adapt the remote response to the format expected by the frontend
+    // Handle services that nest data under a `data` key
+    const raw = response.data as any;
+    const payload = raw?.data ?? raw;
+
+    // Token field may vary
+    const accessToken = payload.access_token || payload.token || payload.accessToken || payload.access;
+
     const adaptedResponse: AuthResponse = {
-      message: response.data.message,
-      token: response.data.access_token,
-      user: {
-        id: response.data.user.id,
-        display_name: response.data.user.name,
-        phone: response.data.user.phone,
-        email: '', // Remote API doesn't provide email, set to empty
-        is_verified: true, // Assume verified if login is successful
-        status: 'active', // Assume active
+      message: payload.message || 'Login successful',
+      token: accessToken,
+      user: payload.user ? {
+        id: payload.user.id,
+        display_name: payload.user.name || payload.user.display_name || '',
+        phone: payload.user.phone,
+        email: payload.user.email || '',
+        is_verified: true,
+        status: 'active',
         created_at: new Date().toISOString(),
-      },
-      user_id: response.data.user.id,
+      } : undefined,
+      user_id: payload.user ? payload.user.id : undefined,
     };
 
     if (adaptedResponse.token) {
