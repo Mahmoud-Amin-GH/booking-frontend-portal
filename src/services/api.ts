@@ -8,7 +8,6 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'Device-Id': '13db23c7d5a166b3', // Static Device-Id as per the curl example
   },
 });
 
@@ -94,6 +93,12 @@ export const authAPI = {
     const response = await api.post('https://dev-services.q84sale.com/api/v1/users/auth/login', {
       ...data,
       phone: data.phone.replace(/\D/g, ''), // Ensure no special characters
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Device-Id': '13db23c7d5a166b3', // TODO: get device id from the user's device
+      },
     });
 
     // Handle services that nest data under a `data` key
@@ -104,7 +109,7 @@ export const authAPI = {
     const accessToken = payload.access_token || payload.token || payload.accessToken || payload.access;
 
     const adaptedResponse: AuthResponse = {
-      message: payload.message || 'Login successful',
+      message: payload.message,
       token: accessToken,
       user: payload.user ? {
         id: payload.user.id,
