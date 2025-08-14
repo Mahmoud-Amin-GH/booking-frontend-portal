@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Sidebar, type SidebarItem as BaseSidebarItem, Button } from '@mo_sami/web-design-system';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useInventoryStatus } from '../../hooks/useInventoryStatus';
-import { clearAuthToken, userAPI } from '../../services/api';
+import { clearAuthToken } from '../../services/api';
 
 // Extend SidebarItem type to support nested items
 interface SidebarItem extends BaseSidebarItem {
@@ -16,16 +16,8 @@ const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language, switchLanguage } = useLanguage();
-  const [userStatus, setUserStatus] = useState<string | null>(null);
-  const [userLoading, setUserLoading] = useState(true);
-
-  // Fetch user status on mount
-  React.useEffect(() => {
-    userAPI.getCurrentUser()
-      .then(user => setUserStatus(user.status))
-      .catch(() => setUserStatus(null))
-      .finally(() => setUserLoading(false));
-  }, []);
+  const [userStatus] = useState<string | null>(null);
+  const [userLoading] = useState(false);
 
   // Only fetch inventory if user is active
   const { isLoading, isEmpty, refreshStatus } = useInventoryStatus(userStatus || undefined);

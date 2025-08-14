@@ -11,16 +11,45 @@ const api = axios.create({
   },
 });
 
+// Normalize various token shapes into a plain string JWT
+const normalizeToken = (raw: any): string | null => {
+  if (!raw) return null;
+  if (typeof raw === 'string') return raw.trim();
+  // Handle cases where token is nested in an object
+  if (typeof raw === 'object') {
+    const possible = raw.access_token || raw.token || raw.accessToken || raw.access;
+    if (typeof possible === 'string') return possible.trim();
+  }
+  return null;
+};
+
 // Add auth token to requests if available
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('auth_token');
+    const stored = localStorage.getItem('auth_token');
+    const token = normalizeToken(stored);
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      (config.headers as any).Authorization = `Bearer ${token}`;
+    } else {
+      // Ensure we don't send a bad header like "Bearer [object Object]"
+      if ((config.headers as any).Authorization) delete (config.headers as any).Authorization;
     }
     return config;
   },
+  (error) => Promise.reject(error)
+);
+
+// Redirect to login on 401 responses
+api.interceptors.response.use(
+  (response) => response,
   (error) => {
+    const status = error?.response?.status;
+    if (status === 401) {
+      try { localStorage.removeItem('auth_token'); } catch {}
+      if (typeof window !== 'undefined' && window.location.pathname !== '/login-4sale') {
+        window.location.href = '/login-4sale';
+      }
+    }
     return Promise.reject(error);
   }
 );
@@ -107,10 +136,11 @@ export const authAPI = {
 
     // Token field may vary
     const accessToken = payload.access_token || payload.token || payload.accessToken || payload.access;
+    const tokenString = normalizeToken(accessToken);
 
     const adaptedResponse: AuthResponse = {
       message: payload.message,
-      token: accessToken,
+      token: tokenString || undefined,
       user: payload.user ? {
         id: payload.user.id,
         display_name: payload.user.name || payload.user.display_name || '',
@@ -123,8 +153,8 @@ export const authAPI = {
       user_id: payload.user ? payload.user.id : undefined,
     };
 
-    if (adaptedResponse.token) {
-      localStorage.setItem('auth_token', adaptedResponse.token);
+    if (tokenString) {
+      localStorage.setItem('auth_token', tokenString);
     }
 
     return adaptedResponse;
@@ -151,25 +181,7 @@ export const authAPI = {
   },
 };
 
-export const userAPI = {
-  getCurrentUser: async (): Promise<User> => {
-    const response = await api.get('/users/auth/me');
-
-    // The remote /me endpoint might return a different structure
-    // Adapt it to the existing `User` type
-    const remoteUser = response.data.user; // Assuming the user object is nested under 'user'
-    
-    return {
-      id: remoteUser.id,
-      display_name: remoteUser.name,
-      phone: remoteUser.phone,
-      email: '', // Or handle if available
-      is_verified: true,
-      status: 'active',
-      created_at: remoteUser.created_at || new Date().toISOString(),
-    };
-  },
-};
+export const userAPI = {} as const;
 
 
 // --- UTILITY FUNCTIONS ---
