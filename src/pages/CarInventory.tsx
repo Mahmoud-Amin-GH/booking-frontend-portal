@@ -122,7 +122,6 @@ const CarInventory: React.FC = () => {
     remote_color_id: 0,
     remote_body_type_id: 0,
     year: new Date().getFullYear(),
-    trim_level: '',
     available_count: 1,
     transmission: 0,
     rental_type: (() => {
@@ -308,7 +307,6 @@ const CarInventory: React.FC = () => {
       remote_color_id: 0,
       remote_body_type_id: 0,
       year: new Date().getFullYear(),
-      trim_level: '',
       available_count: 1,
       transmission: 0,
       rental_type: defaultRentalType,

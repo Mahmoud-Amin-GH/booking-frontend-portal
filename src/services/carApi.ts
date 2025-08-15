@@ -20,7 +20,7 @@ export interface Car {
   remote_color_id: number;
   remote_body_type_id?: number;
   year: number;
-  trim_level: string;
+  // trim level removed
   available_count: number;
   transmission: number;
   rental_type: 'daily' | 'long_term' | 'leasing';
@@ -55,7 +55,7 @@ export interface CarFormData {
   remote_color_id: number;
   remote_body_type_id?: number;
   year: number;
-  trim_level: string;
+  // trim level removed
   available_count: number;
   transmission: number;
   rental_type: 'daily' | 'long_term' | 'leasing';
