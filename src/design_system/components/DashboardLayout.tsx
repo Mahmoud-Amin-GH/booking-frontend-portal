@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Sidebar, type SidebarItem as BaseSidebarItem, Button } from '@mo_sami/web-design-system';
@@ -16,11 +16,9 @@ const DashboardLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language, switchLanguage } = useLanguage();
-  const [userStatus] = useState<string | null>(null);
-  const [userLoading] = useState(false);
 
-  // Only fetch inventory if user is active
-  const { isLoading, isEmpty, refreshStatus } = useInventoryStatus(userStatus || undefined);
+  // Inventory status hook
+  const { isLoading, isEmpty, refreshStatus } = useInventoryStatus();
 
   // Handle conditional navigation based on inventory status
   useEffect(() => {
@@ -40,8 +38,8 @@ const DashboardLayout: React.FC = () => {
     refreshStatus,
   };
 
-  // If user is pending, disable all nav
-  const allNavDisabled = userStatus === 'pending';
+  // Navigation enabled by default; no user status gating
+  const allNavDisabled = false;
   // Only disable overview when inventory is empty, office configs and price tiers should always be available
   const disabledNavItems = allNavDisabled ? ['overview', 'cars', 'office-configs', 'price-tiers'] : (isEmpty ? ['overview', 'office-configs', 'price-tiers'] : []);
 
@@ -160,36 +158,7 @@ const DashboardLayout: React.FC = () => {
     </div>
   );
 
-  // Pending state UI
-  if (!userLoading && userStatus === 'pending') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-50 flex items-center justify-center">
-        <div className="max-w-md w-full flex flex-col items-center p-10 bg-surface rounded-3xl border border-outline-variant shadow-2xl">
-          {/* Illustration */}
-          <svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-10">
-            <circle cx="80" cy="80" r="72" fill="#F3F4F6" stroke="#E5E7EB" strokeWidth="12" />
-            <rect x="56" y="70" width="48" height="36" rx="8" fill="#E0E7FF" />
-            <rect x="72" y="90" width="16" height="8" rx="4" fill="#6366F1" />
-            <circle cx="80" cy="60" r="10" fill="#6366F1" />
-          </svg>
-          <h2 className="font-sakr font-bold text-3xl text-on-surface mb-4 text-center tracking-tight">
-            {t('pendingState.title', 'Your account is currently under review.')}
-          </h2>
-          <p className="font-sakr font-normal text-base text-on-surface-variant mb-10 text-center leading-relaxed max-w-xs">
-            {t('pendingState.subtitle', 'Please wait while an admin approves your registration.')}
-          </p>
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={handleLogout}
-            className="w-full font-sakr font-medium shadow-md"
-          >
-            {t('auth.logout')}
-          </Button>
-        </div>
-      </div>
-    );
-  }
+  // Removed pending state UI; user status no longer applicable
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

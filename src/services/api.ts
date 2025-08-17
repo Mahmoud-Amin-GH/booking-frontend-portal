@@ -98,7 +98,6 @@ export interface User {
   email: string;
   phone: string;
   is_verified: boolean;
-  status: string;
   reason?: string | null;
   created_at: string;
 }
@@ -147,7 +146,6 @@ export const authAPI = {
         phone: payload.user.phone,
         email: payload.user.email || '',
         is_verified: true,
-        status: 'active',
         created_at: new Date().toISOString(),
       } : undefined,
       user_id: payload.user ? payload.user.id : undefined,
