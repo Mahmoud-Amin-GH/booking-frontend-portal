@@ -15,14 +15,9 @@ export interface TieredPrice {
 export interface Car {
   id: number;
   user_id: number;
-  remote_brand_id: number;
-  remote_model_id: number;
-  remote_color_id: number;
-  remote_body_type_id?: number;
   year: number;
   // trim level removed
   available_count: number;
-  transmission: number;
   rental_type: 'daily' | 'long_term' | 'leasing';
   price_per_day: number;
   allowed_kilometers: number;
@@ -36,11 +31,12 @@ export interface Car {
   tiered_prices?: TieredPrice[];
   created_at: string;
   updated_at: string;
-  // Display names populated from remote API
+  // Display names populated from backend
   brand_name?: string;
   model_name?: string;
   color_name?: string;
   body_type_name?: string;
+  transmission_name?: string;
 }
 
 export interface CarsResponse {

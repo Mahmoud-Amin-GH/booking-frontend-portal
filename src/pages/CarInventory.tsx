@@ -74,26 +74,19 @@ const CarInventory: React.FC = () => {
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
   const [attributes, setAttributes] = useState<Attribute[] | null>(null);
 
-  // Helper functions to derive brand and model names when backend does not return them
+  // Helper functions to derive brand and model names - rely on backend display names only
   const getBrandName = useCallback(
     (car: Car): string => {
-      // Prefer values returned from backend
-      if (car.brand_name) return car.brand_name;
-      if (!attributes) return '';
-      const brandOpt = getAttributeOptions(attributes, 'brand').find(opt => opt.id === car.remote_brand_id);
-      return brandOpt ? getOptionLabel(brandOpt, language) : '';
+      return car.brand_name || '';
     },
-    [attributes, language]
+    []
   );
 
   const getModelName = useCallback(
     (car: Car): string => {
-      if (car.model_name) return car.model_name;
-      if (!attributes) return '';
-      const modelOpt = getModelsForBrand(attributes, car.remote_brand_id).find(opt => opt.id === car.remote_model_id);
-      return modelOpt ? getOptionLabel(modelOpt, language) : '';
+      return car.model_name || '';
     },
-    [attributes, language]
+    []
   );
 
   const getCarDisplayName = useCallback(
