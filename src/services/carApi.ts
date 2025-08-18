@@ -31,6 +31,7 @@ export interface Car {
   months_36_price?: number;   // for long-term & leasing
   months_48_price?: number;   // for long-term & leasing
   final_payment?: number;     // for leasing only
+  photo_url?: string;
   // Tiered pricing for daily rentals
   tiered_prices?: TieredPrice[];
   created_at: string;

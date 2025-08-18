@@ -171,8 +171,8 @@ const CarInventory: React.FC = () => {
       setTotalCars(0);
     } finally {
       setLoading(false);
-  }
-}, [currentPage, searchTerm, rentalType]);
+    }
+  }, [currentPage, searchTerm, rentalType]);
 
   const loadUserPriceTiers = useCallback(async () => {
     try {
@@ -181,7 +181,7 @@ const CarInventory: React.FC = () => {
     } catch (error) {
       console.error('Error loading price tiers:', error);
       setUserPriceTiers([]);
-  }
+    }
   }, []);
 
   // Load initial data
@@ -573,9 +573,16 @@ const CarInventory: React.FC = () => {
     <div className="bg-surface rounded-lg border border-outline-variant p-4 md:hidden space-y-3">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="font-sakr font-medium text-base">
-            {getCarDisplayName(car)}
-          </p>
+          <div className="flex items-center gap-3">
+            {car.photo_url ? (
+              <img src={car.photo_url} alt={getCarDisplayName(car)} className="w-16 h-12 object-cover rounded" />
+            ) : (
+              <div className="w-16 h-12 bg-outline rounded" />
+            )}
+            <p className="font-sakr font-medium text-base">
+              {getCarDisplayName(car)}
+            </p>
+          </div>
           <div className="mt-2 space-y-1">
             <p className="font-sakr text-sm text-gray-600">
               {t('cars.availableCount')}: <span className={car.available_count > 0 ? 'text-green-600' : 'text-red-600'}>
@@ -871,6 +878,9 @@ const CarInventory: React.FC = () => {
                   <thead className="bg-neutral-50 border-b border-neutral-200">
                     <tr>
                       <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
+                        {t('common.photo', 'Photo')}
+                      </th>
+                      <th className="px-4 py-3 text-left font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
                         {t('cars.title')}
                       </th>
                       <th className="px-4 py-3 font-sakr font-medium text-sm text-text-primary" style={{ textAlign: isRTL ? 'right' : 'left' }}>
@@ -924,6 +934,13 @@ const CarInventory: React.FC = () => {
                   <tbody className="divide-y divide-neutral-200">
                     {cars.map((car) => (
                       <tr key={car.id} className="hover:bg-neutral-25 transition-colors">
+                        <td className="px-4 py-4">
+                          {car.photo_url ? (
+                            <img src={car.photo_url} alt={getCarDisplayName(car)} className="w-16 h-12 object-cover rounded" />
+                          ) : (
+                            <div className="w-16 h-12 bg-neutral-200 rounded" />
+                          )}
+                        </td>
                         <td className="px-4 py-4 font-sakr font-medium text-sm text-text-primary">
                           {getCarDisplayName(car)}
                         </td>
