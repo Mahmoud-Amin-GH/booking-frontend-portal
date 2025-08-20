@@ -61,6 +61,7 @@ const resources = {
       "common.pageOfTotal": "Page {{current}} of {{total}}",
       "common.actions": "Actions",
       "common.hide": "Hide",
+      "common.photo": "Photo",
 
       // Navigation (new improved labels)
       "nav.overview": "Overview",
@@ -509,9 +510,10 @@ const resources = {
       "pricing.tier31to90": "31-90 Days",
       "pricing.tier90plus": "90+ Days",
       "pricing.perDay": "per day"
-    },
-    ar: {
-      translation: {
+    }
+  },
+  ar: {
+    translation: {
         // Authentication - Arabic translations
         "auth.login": "تسجيل الدخول",
         "auth.signup": "إنشاء حساب",
@@ -567,6 +569,7 @@ const resources = {
         "common.pageOfTotal": "الصفحة {{current}} من {{total}}",
         "common.actions": "الإجراءات",
         "common.hide": "إخفاء",
+        "common.photo": "صورة",
 
         // Navigation - Arabic
         "nav.overview": "نظرة عامة",
@@ -1017,15 +1020,14 @@ const resources = {
         "pricing.perDay": "في اليوم"
       }
     }
-  }
-};
+  };
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'ar',
+    fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
 
     interpolation: {
