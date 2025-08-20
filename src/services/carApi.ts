@@ -133,8 +133,8 @@ export class CarApiService {
     return response.data;
   }
 
-  // Create unavailability period (rented through the office)
-  static async markUnavailable(params: { car_id: number; start_date: string; end_date: string; period_type?: 'booking' | 'maintenance' | 'blocked' | 'available' }): Promise<{ message: string; id: number }>{
+  // Create unavailability period (rented through the office or blocked)
+  static async markUnavailable(params: { car_id: number; start_date: string; end_date: string; period_type?: 'booking' | 'blocked' }): Promise<{ message: string; id: number }>{
     const payload = {
       car_id: params.car_id,
       start_date: params.start_date,
