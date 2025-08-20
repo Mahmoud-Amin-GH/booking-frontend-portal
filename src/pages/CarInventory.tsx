@@ -104,6 +104,10 @@ const CarInventory: React.FC = () => {
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [carToDelete, setCarToDelete] = useState<Car | null>(null);
+  const [isUnavailableModalOpen, setIsUnavailableModalOpen] = useState(false);
+  const [carToMarkUnavailable, setCarToMarkUnavailable] = useState<Car | null>(null);
+  const [unavailableStartDate, setUnavailableStartDate] = useState<string>('');
+  const [unavailableEndDate, setUnavailableEndDate] = useState<string>('');
 
   // Bulk upload state
   const [showBulkUpload, setShowBulkUpload] = useState(false);
@@ -323,6 +327,33 @@ const CarInventory: React.FC = () => {
   const openDeleteDialog = (car: Car) => {
     setCarToDelete(car);
     setIsDeleteDialogOpen(true);
+  };
+
+  const openUnavailableModal = (car: Car) => {
+    setCarToMarkUnavailable(car);
+    setUnavailableStartDate('');
+    setUnavailableEndDate('');
+    setIsUnavailableModalOpen(true);
+  };
+
+  const handleSaveUnavailable = async () => {
+    if (!carToMarkUnavailable || !unavailableStartDate || !unavailableEndDate) return;
+    setIsSubmitting(true);
+    try {
+      await CarApiService.markUnavailable({
+        car_id: carToMarkUnavailable.id,
+        start_date: unavailableStartDate,
+        end_date: unavailableEndDate,
+        period_type: 'booking',
+      });
+      setIsUnavailableModalOpen(false);
+      setCarToMarkUnavailable(null);
+      await loadCars();
+    } catch (error) {
+      console.error('Error marking unavailable:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Handle bulk upload completion
@@ -637,6 +668,12 @@ const CarInventory: React.FC = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
+            <DropdownMenuItem
+              className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer"
+              onSelect={() => openUnavailableModal(car)}
+            >
+              {t('actions.markRented')}
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
               onSelect={() => openDeleteDialog(car)}
@@ -1021,6 +1058,12 @@ const CarInventory: React.FC = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                               <DropdownMenuItem
+                                className="flex gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer"
+                                onSelect={() => openUnavailableModal(car)}
+                              >
+                                {t('actions.markRented')}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
                                 className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
                                 onSelect={() => openDeleteDialog(car)}
                               >
@@ -1157,6 +1200,44 @@ const CarInventory: React.FC = () => {
               disabled={isSubmitting}
             >
               {isSubmitting ? t('common.loading') : t('common.delete')}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
+
+      {/* Mark Unavailable Modal */}
+      <Modal
+        open={isUnavailableModalOpen}
+        onOpenChange={(open) => setIsUnavailableModalOpen(open)}
+        title={t('actions.markRented')}
+        size="md"
+      >
+        <div className="p-6">
+          <p className="font-sakr font-normal text-sm text-on-surface-variant mb-4">
+            {t('availability.subtitle')}
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              type="date"
+              label={t('availability.form.startDate')}
+              value={unavailableStartDate}
+              onChange={(e) => setUnavailableStartDate(e.target.value)}
+            />
+            <Input
+              type="date"
+              label={t('availability.form.endDate')}
+              value={unavailableEndDate}
+              onChange={(e) => setUnavailableEndDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <ModalFooter>
+          <div className="flex gap-3 justify-end">
+            <Button variant="text" onClick={() => setIsUnavailableModalOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleSaveUnavailable} disabled={isSubmitting || !unavailableStartDate || !unavailableEndDate}>
+              {isSubmitting ? t('common.loading') : t('common.save')}
             </Button>
           </div>
         </ModalFooter>

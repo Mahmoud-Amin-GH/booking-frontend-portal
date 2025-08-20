@@ -442,7 +442,7 @@ const resources = {
       // Actions Menu
       "actions.viewDetails": "View Details",
       "actions.addSpecialPrice": "Add Special Price for Period",
-      "actions.markRented": "Mark as Rented from Office",
+      "actions.markRented": "Rented from the office",
       "actions.deleteVehicle": "Delete Vehicle",
 
       // Pending State

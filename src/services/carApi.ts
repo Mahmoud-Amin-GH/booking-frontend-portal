@@ -133,6 +133,18 @@ export class CarApiService {
     return response.data;
   }
 
+  // Create unavailability period (rented through the office)
+  static async markUnavailable(params: { car_id: number; start_date: string; end_date: string; period_type?: 'booking' | 'maintenance' | 'blocked' | 'available' }): Promise<{ message: string; id: number }>{
+    const payload = {
+      car_id: params.car_id,
+      start_date: params.start_date,
+      end_date: params.end_date,
+      period_type: params.period_type || 'booking',
+    };
+    const response = await api.post('/cars/unavailable', payload);
+    return response.data;
+  }
+
   // Bulk upload cars via Excel file
   static async bulkUploadCars(file: File): Promise<BulkUploadResult> {
     const formData = new FormData();
