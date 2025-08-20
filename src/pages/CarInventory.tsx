@@ -150,17 +150,32 @@ const CarInventory: React.FC = () => {
       if (rentalType === RentalType.LongTerm) apiRentalType = 'long_term';
       if (rentalType === RentalType.Leasing) apiRentalType = 'leasing';
 
+      // When searching, fetch a larger batch and filter client-side because backend does not apply search filtering.
+      const isSearching = Boolean(searchTerm && searchTerm.trim().length > 0);
       const requestParams = {
-        limit: pageSize,
-        offset: (currentPage - 1) * pageSize,
+        limit: isSearching ? 1000 : pageSize,
+        offset: isSearching ? 0 : (currentPage - 1) * pageSize,
         search: searchTerm || undefined,
         rentalType: apiRentalType
-      };
+      } as const;
 
       const response = await CarApiService.getCars(requestParams);
 
-      setCars(response.cars || []);
-      setTotalCars(response.total || 0);
+      if (isSearching) {
+        const term = searchTerm.trim().toLowerCase();
+        const filtered = (response.cars || []).filter((car) => {
+          const name = getCarDisplayName(car).toLowerCase();
+          const yearStr = String(car.year || '').toLowerCase();
+          return name.includes(term) || yearStr.includes(term);
+        });
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+        setCars(filtered.slice(start, end));
+        setTotalCars(filtered.length);
+      } else {
+        setCars(response.cars || []);
+        setTotalCars(response.total || 0);
+      }
       setSelectedCars(new Set()); // Clear selection when loading new data
     } catch (error) {
       console.error('Error loading cars:', error);
@@ -169,7 +184,7 @@ const CarInventory: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchTerm, rentalType]);
+  }, [currentPage, searchTerm, rentalType, getCarDisplayName]);
 
   const loadUserPriceTiers = useCallback(async () => {
     try {
