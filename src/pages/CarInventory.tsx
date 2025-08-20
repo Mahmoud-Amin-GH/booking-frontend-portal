@@ -667,15 +667,15 @@ const CarInventory: React.FC = () => {
               <EllipsisVerticalIcon className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="z-50 min-w-max">
             <DropdownMenuItem
-              className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer"
+              className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer whitespace-nowrap"
               onSelect={() => openUnavailableModal(car)}
             >
               {t('actions.markRented')}
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+              className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer whitespace-nowrap"
               onSelect={() => openDeleteDialog(car)}
             >
               <TrashIcon className="w-4 h-4" />
@@ -902,7 +902,7 @@ const CarInventory: React.FC = () => {
           ) : cars.length === 0 ? (
             <EmptyInventoryState />
           ) : (
-            <div className="bg-white rounded-lg border border-neutral-200 overflow-hidden">
+            <div className="bg-white rounded-lg border border-neutral-200">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-neutral-50 border-b border-neutral-200">
@@ -1056,15 +1056,15 @@ const CarInventory: React.FC = () => {
                                 <EllipsisVerticalIcon className="w-5 h-5" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent>
+                            <DropdownMenuContent className="z-50 min-w-max">
                               <DropdownMenuItem
-                                className="flex gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer"
+                                className="flex gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer whitespace-nowrap"
                                 onSelect={() => openUnavailableModal(car)}
                               >
                                 {t('actions.markRented')}
                               </DropdownMenuItem>
                               <DropdownMenuItem
-                                className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer"
+                                className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer whitespace-nowrap"
                                 onSelect={() => openDeleteDialog(car)}
                               >
                                 <TrashIcon className="w-4 h-4" />
