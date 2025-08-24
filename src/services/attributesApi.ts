@@ -26,7 +26,7 @@ export interface AttributesResponse {
 // Fetch attributes from remote API
 export async function fetchCarAttributes(): Promise<Attribute[]> {
   const response = await axios.post<AttributesResponse>(
-    'https://dev-services.q84sale.com/api/v1/integrations/attributes/fetch',
+    process.env.REACT_APP_FORSALE_API_BASE_URL + '/v1/integrations/attributes/fetch',
     {
       sys_names: [
         'brand',
