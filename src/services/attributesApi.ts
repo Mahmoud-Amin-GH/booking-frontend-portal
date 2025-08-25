@@ -25,8 +25,11 @@ export interface AttributesResponse {
 
 // Fetch attributes from remote API
 export async function fetchCarAttributes(): Promise<Attribute[]> {
+  const attributesApiBaseUrl = process.env.REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL;
+  const apiKey = process.env.REACT_APP_FORSALE_API_KEY;
+  const apiSecret = process.env.REACT_APP_FORSALE_API_SECRET;
   const response = await axios.post<AttributesResponse>(
-    process.env.REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL + '/v1/integrations/attributes/fetch',
+    attributesApiBaseUrl + '/v1/integrations/attributes/fetch',
     {
       sys_names: [
         'brand',
@@ -39,8 +42,8 @@ export async function fetchCarAttributes(): Promise<Attribute[]> {
     },
     {
       headers: {
-        'Api-Key': 'd80a1c81-3723-4fe1-8ff3-874bfe9fbbf2',
-        'Api-Secret': 'HQZTS8f2c5nlCKwf1uc9oFK23921ENabRQfqoDvJWBzsMYC1Hr0WYiBxVVR9HtB8',
+        'Api-Key': apiKey,
+        'Api-Secret': apiSecret,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },

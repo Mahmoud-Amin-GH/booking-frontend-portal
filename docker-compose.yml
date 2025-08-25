@@ -7,6 +7,8 @@ services:
         REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL:-https://booking-api.q84sale.com/api}
         REACT_APP_FORSALE_API_BASE_URL: ${REACT_APP_FORSALE_API_BASE_URL:-https://services.q84sale.com/api}
         REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL: ${REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL:-https://dev-services.q84sale.com/api}
+        REACT_APP_FORSALE_API_KEY: ${REACT_APP_FORSALE_API_KEY:-d80a1c81-3723-4fe1-8ff3-874bfe9fbbf2}
+        REACT_APP_FORSALE_API_SECRET: ${REACT_APP_FORSALE_API_SECRET:-HQZTS8f2c5nlCKwf1uc9oFK23921ENabRQfqoDvJWBzsMYC1Hr0WYiBxVVR9HtB8}
         REACT_APP_ENV: ${REACT_APP_ENV:-production}
     image: mahmoudamin4sale/portal-booking-frontend:latest
     container_name: frontend-portal
@@ -26,6 +28,8 @@ services:
         REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL:-http://localhost:8080/api}
         REACT_APP_FORSALE_API_BASE_URL: ${REACT_APP_FORSALE_API_BASE_URL:-https://dev-services.q84sale.com/api}
         REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL: ${REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL:-https://dev-services.q84sale.com/api}
+        REACT_APP_FORSALE_API_KEY: ${REACT_APP_FORSALE_API_KEY:-d80a1c81-3723-4fe1-8ff3-874bfe9fbbf2}
+        REACT_APP_FORSALE_API_SECRET: ${REACT_APP_FORSALE_API_SECRET:-HQZTS8f2c5nlCKwf1uc9oFK23921ENabRQfqoDvJWBzsMYC1Hr0WYiBxVVR9HtB8}
         REACT_APP_ENV: ${REACT_APP_ENV:-development}
     image: mahmoudamin4sale/portal-booking-frontend:dev
     container_name: frontend-portal-dev
