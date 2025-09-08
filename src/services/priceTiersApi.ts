@@ -1,4 +1,5 @@
 import api from './api';
+import { basePath } from './api';
 
 export interface PriceTier {
   id: number;
@@ -55,7 +56,7 @@ interface ResetPriceTiersResponse {
 // Get all price tiers for the authenticated user
 export const getPriceTiers = async (): Promise<PriceTier[]> => {
   try {
-    const response = await api.get<GetPriceTiersResponse>('/price-tiers');
+    const response = await api.get<GetPriceTiersResponse>(`${basePath}/price-tiers`);
     return response.data.tiers || [];
   } catch (error) {
     console.error('Error fetching price tiers:', error);
@@ -66,7 +67,7 @@ export const getPriceTiers = async (): Promise<PriceTier[]> => {
 // Create a new price tier
 export const createPriceTier = async (priceTierData: PriceTierFormData): Promise<PriceTier> => {
   try {
-    const response = await api.post<CreatePriceTierResponse>('/price-tiers', priceTierData);
+    const response = await api.post<CreatePriceTierResponse>(`${basePath}/price-tiers`, priceTierData);
     return response.data.tier;
   } catch (error) {
     console.error('Error creating price tier:', error);
@@ -77,7 +78,7 @@ export const createPriceTier = async (priceTierData: PriceTierFormData): Promise
 // Update an existing price tier
 export const updatePriceTier = async (id: number, priceTierData: PriceTierFormData): Promise<PriceTier> => {
   try {
-    const response = await api.put<UpdatePriceTierResponse>(`/price-tiers/${id}`, priceTierData);
+    const response = await api.put<UpdatePriceTierResponse>(`${basePath}/price-tiers/${id}`, priceTierData);
     return response.data.tier;
   } catch (error) {
     console.error('Error updating price tier:', error);
@@ -88,7 +89,7 @@ export const updatePriceTier = async (id: number, priceTierData: PriceTierFormDa
 // Delete a price tier
 export const deletePriceTier = async (id: number): Promise<void> => {
   try {
-    await api.delete<DeletePriceTierResponse>(`/price-tiers/${id}`);
+    await api.delete<DeletePriceTierResponse>(`${basePath}/price-tiers/${id}`);
   } catch (error) {
     console.error('Error deleting price tier:', error);
     throw error;
@@ -98,7 +99,7 @@ export const deletePriceTier = async (id: number): Promise<void> => {
 // Reset price tiers to defaults
 export const resetPriceTiersToDefaults = async (): Promise<PriceTier[]> => {
   try {
-    const response = await api.post<ResetPriceTiersResponse>('/price-tiers/reset-defaults');
+    const response = await api.post<ResetPriceTiersResponse>(`${basePath}/price-tiers/reset-defaults`);
     return response.data.tiers || [];
   } catch (error) {
     console.error('Error resetting price tiers to defaults:', error);

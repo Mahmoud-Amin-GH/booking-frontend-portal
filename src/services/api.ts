@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://booking-api.q84sale.com/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://apis.q84sale.com/api';
 const FORSALE_API_BASE_URL = process.env.REACT_APP_FORSALE_API_BASE_URL || 'https://services.q84sale.com/api';
+const basePath = '/v1/booking';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -193,3 +194,4 @@ export const getAuthToken = () => {
 };
 
 export default api;
+export { basePath };

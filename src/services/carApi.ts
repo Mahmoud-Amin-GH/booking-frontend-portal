@@ -1,5 +1,7 @@
 import api from './api';
 
+import { basePath } from './api';
+
 // TieredPrice interface from price tiers API
 export interface TieredPrice {
   tier_name: string;
@@ -105,31 +107,31 @@ export class CarApiService {
     if (params?.search) queryParams.append('search', params.search);
     if (params?.rentalType) queryParams.append('rental_type', params.rentalType);
 
-    const response = await api.get(`/cars?${queryParams.toString()}`);
+    const response = await api.get(`${basePath}/cars?${queryParams.toString()}`);
     return response.data;
   }
 
   // Get specific car by ID
   static async getCarById(id: number): Promise<{ car: Car }> {
-    const response = await api.get(`/cars/${id}`);
+    const response = await api.get(`${basePath}/cars/${id}`);
     return response.data;
   }
 
   // Create new car
   static async createCar(carData: CarFormData): Promise<{ message: string; car: Car }> {
-    const response = await api.post('/cars', carData);
+    const response = await api.post(`${basePath}/cars`, carData);
     return response.data;
   }
 
   // Update existing car
   static async updateCar(id: number, carData: CarFormData): Promise<{ message: string; car: Car }> {
-    const response = await api.put(`/cars/${id}`, carData);
+    const response = await api.put(`${basePath}/cars/${id}`, carData);
     return response.data;
   }
 
   // Delete car
   static async deleteCar(id: number): Promise<{ message: string }> {
-    const response = await api.delete(`/cars/${id}`);
+    const response = await api.delete(`${basePath}/cars/${id}`);
     return response.data;
   }
 
@@ -141,7 +143,7 @@ export class CarApiService {
       end_date: params.end_date,
       period_type: params.period_type || 'booking',
     };
-    const response = await api.post('/cars/unavailable', payload);
+    const response = await api.post(`${basePath}/cars/unavailable`, payload);
     return response.data;
   }
 
@@ -150,7 +152,7 @@ export class CarApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await api.post('/cars/bulk-upload', formData, {
+    const response = await api.post(`${basePath}/cars/bulk-upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -160,7 +162,7 @@ export class CarApiService {
 
   // Download Excel template
   static async downloadTemplate(): Promise<void> {
-    const response = await api.get('/cars/template', {
+      const response = await api.get(`${basePath}/cars/template`, {
       responseType: 'blob',
     });
 

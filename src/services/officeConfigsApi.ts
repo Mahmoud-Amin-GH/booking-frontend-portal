@@ -1,5 +1,7 @@
 import api from './api';
 
+import { basePath } from './api';
+
 export interface OfficeConfigData {
   id?: number;
   user_id?: number;
@@ -31,7 +33,7 @@ export class OfficeConfigsApiService {
    */
   static async getOfficeConfigs(): Promise<OfficeConfigData> {
     try {
-      const response = await api.get<OfficeConfigsResponse>('/office-configs');
+      const response = await api.get<OfficeConfigsResponse>(`${basePath}/office-configs`);
       return response.data.configs;
     } catch (error: any) {
       console.error('Error fetching office configurations:', error);
@@ -50,7 +52,7 @@ export class OfficeConfigsApiService {
   ): Promise<OfficeConfigData> {
     try {
       const response = await api.put<UpdateOfficeConfigsResponse>(
-        '/office-configs',
+        `${basePath}/office-configs`,
         configData
       );
       return response.data.configs;
@@ -68,7 +70,7 @@ export class OfficeConfigsApiService {
    */
   static async deleteOfficeConfigs(): Promise<void> {
     try {
-      await api.delete('/office-configs');
+      await api.delete(`${basePath}/office-configs`);
     } catch (error: any) {
       console.error('Error deleting office configurations:', error);
       throw new Error(
