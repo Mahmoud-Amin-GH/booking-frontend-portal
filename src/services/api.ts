@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://apis.q84sale.com/api';
-const FORSALE_API_BASE_URL = process.env.REACT_APP_FORSALE_API_BASE_URL || 'https://services.q84sale.com/api';
+const FORSALE_INTEGRATIONS_API_BASE_URL = process.env.REACT_APP_FORSALE_INTEGRATIONS_API_BASE_URL || 'https://services.q84sale.com/api';
 const basePath = '/v1/booking';
 
 const api = axios.create({
@@ -119,7 +119,7 @@ export interface AuthResponse {
 export const authAPI = {
   login: async (data: LoginRequest): Promise<AuthResponse> => {
     // Note: The phone number must be in the format "965..." without '+'
-    const response = await api.post(FORSALE_API_BASE_URL + '/v1/users/auth/login', {
+    const response = await api.post(FORSALE_INTEGRATIONS_API_BASE_URL + '/v1/users/auth/login', {
       ...data,
       phone: data.phone.replace(/\D/g, ''), // Ensure no special characters
     }, {
@@ -194,4 +194,4 @@ export const getAuthToken = () => {
 };
 
 export default api;
-export { basePath };
+export { basePath, FORSALE_INTEGRATIONS_API_BASE_URL };

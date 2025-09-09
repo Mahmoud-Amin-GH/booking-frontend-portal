@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { FORSALE_INTEGRATIONS_API_BASE_URL } from './api';
 
 // Attribute and option types based on remote API
 export interface AttributeOption {
@@ -25,7 +26,7 @@ export interface AttributesResponse {
 
 // Fetch attributes from remote API
 export async function fetchCarAttributes(): Promise<Attribute[]> {
-  const attributesApiBaseUrl = process.env.REACT_APP_FORSALE_DEVELOPMENT_API_BASE_URL;
+  const attributesApiBaseUrl = FORSALE_INTEGRATIONS_API_BASE_URL;
   const apiKey = process.env.REACT_APP_FORSALE_API_KEY;
   const apiSecret = process.env.REACT_APP_FORSALE_API_SECRET;
   const response = await axios.post<AttributesResponse>(
