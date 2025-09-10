@@ -8,10 +8,14 @@ import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
-  AccordionContent
+  AccordionContent,
+  Input,
+  Modal,
+  ModalFooter
 } from '@mo_sami/web-design-system';
 
 interface OfficeConfigState {
+  address: string;
   locations: Record<string, boolean>;
   services: Record<string, boolean>;
   delivery: Record<string, boolean>;
@@ -27,10 +31,14 @@ const OfficeConfigs: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [configs, setConfigs] = useState<OfficeConfigState>({
+    address: '',
     locations: {},
     services: {},
     delivery: {},
   });
+
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [addressInput, setAddressInput] = useState('');
 
   // Define configuration options - Main Districts Only
   const locationOptions = [
@@ -97,6 +105,7 @@ const OfficeConfigs: React.FC = () => {
         
         // Convert API response to local state format
         setConfigs({
+          address: apiConfigs.address || '',
           locations: apiConfigs.location_configs || {},
           services: apiConfigs.service_configs || {},
           delivery: apiConfigs.delivery_configs || {},
@@ -106,6 +115,7 @@ const OfficeConfigs: React.FC = () => {
         
         // Initialize with empty configs on error
         const initialConfigs: OfficeConfigState = {
+          address: '',
           locations: {},
           services: {},
           delivery: {},
@@ -174,11 +184,27 @@ const OfficeConfigs: React.FC = () => {
     }));
   };
 
+  const handleInlineAddressChange = (value: string) => {
+    // Keep editing state, do not switch views
+    setConfigs(prev => ({ ...prev, address: value }));
+  };
+
+  const openAddressModal = () => {
+    setAddressInput(configs.address || '');
+    setAddressModalOpen(true);
+  };
+
+  const handleSaveAddressModal = () => {
+    setConfigs(prev => ({ ...prev, address: addressInput.trim() }));
+    setAddressModalOpen(false);
+  };
+
   // Save configurations
   const handleSave = async () => {
     setIsSaving(true);
     try {
       const request: UpdateOfficeConfigsRequest = {
+        address: configs.address || '',
         location_configs: configs.locations,
         service_configs: configs.services,
         delivery_configs: configs.delivery,
@@ -198,7 +224,7 @@ const OfficeConfigs: React.FC = () => {
   const formatOptionsForSection = (options: Array<{ key: string; labelKey: string; descriptionKey?: string }>, configType: keyof OfficeConfigState) => {
     return options.map(option => ({
       ...option,
-      enabled: configs[configType][option.key] || false,
+      enabled: (configs[configType] as Record<string, boolean>)[option.key] || false,
     }));
   };
 
@@ -232,7 +258,7 @@ const OfficeConfigs: React.FC = () => {
     },
   ];
 
-  const [openSection, setOpenSection] = useState('locations');
+  const [openSection, setOpenSection] = useState('address');
 
   if (isLoading) {
     return (
@@ -287,6 +313,48 @@ const OfficeConfigs: React.FC = () => {
         onValueChange={v => setOpenSection(typeof v === 'string' ? v : '')}
         className="w-full space-y-4"
       >
+        {/* Address Section - FIRST */}
+        <AccordionItem value="address" key="address">
+          <AccordionTrigger className={`flex items-center justify-between w-full px-6 py-5 bg-gradient-to-r from-primary-400 to-primary-600 rounded-2xl focus:outline-none`}>
+            <div className="flex items-center gap-4">
+              <div className="bg-white/20 rounded-xl p-2 flex items-center justify-center">
+                <MapIcon className="w-7 h-7 text-primary-600" />
+              </div>
+              <div>
+                <div className={`flex flex-col items-start text-start`}>
+                  <h3 className="font-sakr font-bold text-lg text-on-surface mb-1">{t('officeConfigs.address.title')}</h3>
+                  <p className="font-sakr font-medium text-xs text-on-surface-variant">{t('officeConfigs.address.desc')}</p>
+                </div>
+              </div>
+            </div>
+            <ChevronDownIcon className={`w-6 h-6 text-white ml-2 transition-transform duration-200 ${openSection === 'address' ? 'rotate-180' : ''}`} />
+          </AccordionTrigger>
+          <AccordionContent className="bg-white px-6 py-6">
+            <div className="flex items-start gap-4">
+              <div className="flex-1">
+                <label className="block font-sakr font-medium text-sm text-gray-700 mb-2">
+                  {t('officeConfigs.address.inputLabel')}
+                </label>
+                <Input
+                  value={configs.address}
+                  onChange={(e: any) => handleInlineAddressChange(e.target.value)}
+                  placeholder={t('officeConfigs.address.placeholder')}
+                />
+                <p className="font-sakr text-xs text-on-surface-variant mt-2">
+                  {t('officeConfigs.address.helper')}
+                </p>
+              </div>
+              {configs.address && (
+                <div className="pt-6">
+                  <Button variant="text" size="small" onClick={openAddressModal}>
+                    {t('common.edit')}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
         {ACCORDION_SECTIONS.map(section => {
           const options = section.optionsKey === 'locationOptions' ? locationOptions : section.optionsKey === 'serviceOptions' ? serviceOptions : deliveryOptions;
           const onChange = section.onChange === 'handleLocationChange' ? handleLocationChange : section.onChange === 'handleServiceChange' ? handleServiceChange : handleDeliveryChange;
@@ -346,6 +414,40 @@ const OfficeConfigs: React.FC = () => {
           {isSaving ? t('common.loading') : t('common.save')}
         </Button>
       </div>
+
+      {/* Address Edit Modal */}
+      <Modal
+        open={addressModalOpen}
+        onOpenChange={(open) => setAddressModalOpen(open)}
+        title={t('officeConfigs.address.editTitle')}
+        size="lg"
+      >
+        <div className="space-y-4 pb-4">
+          <div>
+            <label className="block font-sakr font-medium text-sm text-gray-700 mb-2">
+              {t('officeConfigs.address.inputLabel')}
+            </label>
+            <Input
+              value={addressInput}
+              onChange={(e: any) => setAddressInput(e.target.value)}
+              placeholder={t('officeConfigs.address.placeholder')}
+            />
+          </div>
+        </div>
+        <ModalFooter>
+          <div className="flex gap-3 justify-end">
+            <Button
+              variant="text"
+              onClick={() => setAddressModalOpen(false)}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleSaveAddressModal}>
+              {t('common.save')}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
     </div>
   );
 };

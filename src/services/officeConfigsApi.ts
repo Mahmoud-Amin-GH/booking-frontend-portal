@@ -5,6 +5,7 @@ import { basePath } from './api';
 export interface OfficeConfigData {
   id?: number;
   user_id?: number;
+  address?: string;
   location_configs: Record<string, boolean>;
   service_configs: Record<string, boolean>;
   delivery_configs: Record<string, boolean>;
@@ -17,6 +18,7 @@ export interface OfficeConfigsResponse {
 }
 
 export interface UpdateOfficeConfigsRequest {
+  address?: string;
   location_configs: Record<string, boolean>;
   service_configs: Record<string, boolean>;
   delivery_configs: Record<string, boolean>;
@@ -85,6 +87,7 @@ export class OfficeConfigsApiService {
    */
   static async resetOfficeConfigs(): Promise<OfficeConfigData> {
     const defaultConfigs: UpdateOfficeConfigsRequest = {
+      address: '',
       location_configs: {},
       service_configs: {},
       delivery_configs: {},

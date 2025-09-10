@@ -284,6 +284,14 @@ const resources = {
       "officeConfigs.deliveryPickup": "Delivery & Pickup",
       "officeConfigs.deliveryPickupDesc": "Set delivery and pickup options",
 
+      // Address (new)
+      "officeConfigs.address.title": "Office address",
+      "officeConfigs.address.desc": "Set your rental office pickup address",
+      "officeConfigs.address.inputLabel": "Office address",
+      "officeConfigs.address.placeholder": "e.g., Kuwait City, Street 1, Building 2",
+      "officeConfigs.address.helper": "Customers will see this as the office pickup location.",
+      "officeConfigs.address.editTitle": "Edit office address",
+
       // Kuwait Districts - Al Asimah Governorate
       "officeConfigs.locations.kuwaitCity": "Kuwait City",
       "officeConfigs.locations.dasman": "Dasman",
@@ -733,6 +741,14 @@ const resources = {
         "officeConfigs.serviceOptionsDesc": "تكوين الخدمات المتاحة لعملائك",
         "officeConfigs.deliveryPickup": "التوصيل والتجميع",
         "officeConfigs.deliveryPickupDesc": "تعيين خيارات التوصيل والتجميع",
+
+        // Address (new)
+        "officeConfigs.address.title": "عنوان المكتب",
+        "officeConfigs.address.desc": "حدد عنوان استلام المركبة من مكتبك",
+        "officeConfigs.address.inputLabel": "عنوان المكتب",
+        "officeConfigs.address.placeholder": "مثال: مدينة الكويت، شارع 1، مبنى 2",
+        "officeConfigs.address.helper": "سيظهر هذا العنوان للعملاء كنقطة استلام المكتب.",
+        "officeConfigs.address.editTitle": "تعديل عنوان المكتب",
 
         // Kuwait Districts - Al Asimah Governorate
         "officeConfigs.locations.kuwaitCity": "الكويت المدنية",
