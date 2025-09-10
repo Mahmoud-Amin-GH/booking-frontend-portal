@@ -9,9 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-  Input,
-  Modal,
-  ModalFooter
+  Input
 } from '@mo_sami/web-design-system';
 
 interface OfficeConfigState {
@@ -37,8 +35,7 @@ const OfficeConfigs: React.FC = () => {
     delivery: {},
   });
 
-  const [addressModalOpen, setAddressModalOpen] = useState(false);
-  const [addressInput, setAddressInput] = useState('');
+  const [isEditingAddress, setIsEditingAddress] = useState(true);
 
   // Define configuration options - Main Districts Only
   const locationOptions = [
@@ -104,12 +101,14 @@ const OfficeConfigs: React.FC = () => {
         const apiConfigs = await OfficeConfigsApiService.getOfficeConfigs();
         
         // Convert API response to local state format
-        setConfigs({
+        const nextConfigs: OfficeConfigState = {
           address: apiConfigs.address || '',
           locations: apiConfigs.location_configs || {},
           services: apiConfigs.service_configs || {},
           delivery: apiConfigs.delivery_configs || {},
-        });
+        };
+        setConfigs(nextConfigs);
+        setIsEditingAddress(!(nextConfigs.address && nextConfigs.address.trim().length > 0));
       } catch (error) {
         console.error('Error loading office configurations:', error);
         
@@ -137,6 +136,7 @@ const OfficeConfigs: React.FC = () => {
         });
 
         setConfigs(initialConfigs);
+        setIsEditingAddress(true);
       } finally {
         setIsLoading(false);
       }
@@ -185,18 +185,7 @@ const OfficeConfigs: React.FC = () => {
   };
 
   const handleInlineAddressChange = (value: string) => {
-    // Keep editing state, do not switch views
     setConfigs(prev => ({ ...prev, address: value }));
-  };
-
-  const openAddressModal = () => {
-    setAddressInput(configs.address || '');
-    setAddressModalOpen(true);
-  };
-
-  const handleSaveAddressModal = () => {
-    setConfigs(prev => ({ ...prev, address: addressInput.trim() }));
-    setAddressModalOpen(false);
   };
 
   // Save configurations
@@ -212,6 +201,9 @@ const OfficeConfigs: React.FC = () => {
       
       await OfficeConfigsApiService.updateOfficeConfigs(request);
       showAlertMessage(t('officeConfigs.saveSuccess'), 'success');
+      if (configs.address && configs.address.trim().length > 0) {
+        setIsEditingAddress(false);
+      }
     } catch (error) {
       console.error('Error saving office configurations:', error);
       showAlertMessage(t('officeConfigs.saveError'), 'error');
@@ -330,8 +322,8 @@ const OfficeConfigs: React.FC = () => {
             <ChevronDownIcon className={`w-6 h-6 text-white ml-2 transition-transform duration-200 ${openSection === 'address' ? 'rotate-180' : ''}`} />
           </AccordionTrigger>
           <AccordionContent className="bg-white px-6 py-6">
-            <div className="flex items-start gap-4">
-              <div className="flex-1">
+            {isEditingAddress ? (
+              <div>
                 <label className="block font-sakr font-medium text-sm text-gray-700 mb-2">
                   {t('officeConfigs.address.inputLabel')}
                 </label>
@@ -344,14 +336,18 @@ const OfficeConfigs: React.FC = () => {
                   {t('officeConfigs.address.helper')}
                 </p>
               </div>
-              {configs.address && (
-                <div className="pt-6">
-                  <Button variant="text" size="small" onClick={openAddressModal}>
-                    {t('common.edit')}
-                  </Button>
+            ) : (
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <p className="font-sakr font-medium text-base text-on-surface break-words">
+                    {configs.address}
+                  </p>
                 </div>
-              )}
-            </div>
+                <Button variant="text" size="small" onClick={() => setIsEditingAddress(true)}>
+                  {t('common.edit')}
+                </Button>
+              </div>
+            )}
           </AccordionContent>
         </AccordionItem>
 
@@ -414,40 +410,6 @@ const OfficeConfigs: React.FC = () => {
           {isSaving ? t('common.loading') : t('common.save')}
         </Button>
       </div>
-
-      {/* Address Edit Modal */}
-      <Modal
-        open={addressModalOpen}
-        onOpenChange={(open) => setAddressModalOpen(open)}
-        title={t('officeConfigs.address.editTitle')}
-        size="lg"
-      >
-        <div className="space-y-4 pb-4">
-          <div>
-            <label className="block font-sakr font-medium text-sm text-gray-700 mb-2">
-              {t('officeConfigs.address.inputLabel')}
-            </label>
-            <Input
-              value={addressInput}
-              onChange={(e: any) => setAddressInput(e.target.value)}
-              placeholder={t('officeConfigs.address.placeholder')}
-            />
-          </div>
-        </div>
-        <ModalFooter>
-          <div className="flex gap-3 justify-end">
-            <Button
-              variant="text"
-              onClick={() => setAddressModalOpen(false)}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button onClick={handleSaveAddressModal}>
-              {t('common.save')}
-            </Button>
-          </div>
-        </ModalFooter>
-      </Modal>
     </div>
   );
 };
