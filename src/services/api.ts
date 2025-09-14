@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://apis.q84sale.com/api';
 const FORSALE_SERVICES_API_BASE_URL = process.env.REACT_APP_FORSALE_SERVICES_API_BASE_URL || 'https://services.q84sale.com/api';
+const FORSALE_INTEGRATIONS_API_BASE_URL = process.env.REACT_APP_FORSALE_INTEGRATIONS_API_BASE_URL || 'https://integrations.q84sale.com/api';
 const basePath = '/v1/booking';
 
 const api = axios.create({
@@ -194,4 +195,4 @@ export const getAuthToken = () => {
 };
 
 export default api;
-export { basePath, FORSALE_SERVICES_API_BASE_URL };
+export { basePath, FORSALE_SERVICES_API_BASE_URL, FORSALE_INTEGRATIONS_API_BASE_URL };
