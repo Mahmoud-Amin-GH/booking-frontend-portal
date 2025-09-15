@@ -46,12 +46,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error?.response?.status;
-    if (status === 401) {
-      try { localStorage.removeItem('auth_token'); } catch {}
-      if (typeof window !== 'undefined' && window.location.pathname !== '/login-4sale') {
-        window.location.href = '/login-4sale';
-      }
-    }
+    // if (status === 401) {
+    //   try { localStorage.removeItem('auth_token'); } catch {}
+    //   if (typeof window !== 'undefined' && window.location.pathname !== '/login-4sale') {
+    //     window.location.href = '/login-4sale';
+    //   }
+    // }
     return Promise.reject(error);
   }
 );

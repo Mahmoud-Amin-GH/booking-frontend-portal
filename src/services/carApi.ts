@@ -129,6 +129,12 @@ export class CarApiService {
     return response.data;
   }
 
+  // Update basic fields only: price_per_day, allowed_kilometers, available_count
+  static async updateCarBasic(id: number, payload: { price_per_day: number; allowed_kilometers: number; available_count: number }): Promise<{ car: Car }> {
+    const response = await api.patch(`${basePath}/cars/${id}/basic`, payload);
+    return response.data;
+  }
+
   // Delete car
   static async deleteCar(id: number): Promise<{ message: string }> {
     const response = await api.delete(`${basePath}/cars/${id}`);

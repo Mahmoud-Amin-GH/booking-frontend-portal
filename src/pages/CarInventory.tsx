@@ -109,6 +109,14 @@ const CarInventory: React.FC = () => {
   const [unavailableStartDate, setUnavailableStartDate] = useState<string>('');
   const [unavailableEndDate, setUnavailableEndDate] = useState<string>('');
 
+  // Quick Edit Modal state (price, allowed_kilometers, available_count)
+  const [isQuickEditOpen, setIsQuickEditOpen] = useState(false);
+  const [quickEditCar, setQuickEditCar] = useState<Car | null>(null);
+  const [quickPrice, setQuickPrice] = useState<number>(0);
+  const [quickAllowedKm, setQuickAllowedKm] = useState<number>(0);
+  const [quickAvailable, setQuickAvailable] = useState<number>(0);
+  const [isQuickSubmitting, setIsQuickSubmitting] = useState(false);
+
   // Bulk upload state
   const [showBulkUpload, setShowBulkUpload] = useState(false);
 
@@ -349,6 +357,33 @@ const CarInventory: React.FC = () => {
     setUnavailableStartDate('');
     setUnavailableEndDate('');
     setIsUnavailableModalOpen(true);
+  };
+
+  const openQuickEdit = (car: Car) => {
+    setQuickEditCar(car);
+    setQuickPrice(car.price_per_day || 0);
+    setQuickAllowedKm(car.allowed_kilometers || 0);
+    setQuickAvailable(car.available_count || 0);
+    setIsQuickEditOpen(true);
+  };
+
+  const handleQuickEditSave = async () => {
+    if (!quickEditCar) return;
+    setIsQuickSubmitting(true);
+    try {
+      await CarApiService.updateCarBasic(quickEditCar.id, {
+        price_per_day: quickPrice,
+        allowed_kilometers: quickAllowedKm,
+        available_count: quickAvailable,
+      });
+      setIsQuickEditOpen(false);
+      setQuickEditCar(null);
+      await loadCars();
+    } catch (error) {
+      console.error('Error updating car basic fields:', error);
+    } finally {
+      setIsQuickSubmitting(false);
+    }
   };
 
   const handleSaveUnavailable = async () => {
@@ -689,6 +724,12 @@ const CarInventory: React.FC = () => {
             >
               <ClipboardDocumentCheckIcon className="w-4 h-4" />
               {t('actions.markRented')}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer whitespace-nowrap"
+              onSelect={() => openQuickEdit(car)}
+            >
+              {t('cars.updateCar')}
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer whitespace-nowrap"
@@ -1081,6 +1122,12 @@ const CarInventory: React.FC = () => {
                                 {t('actions.markRented')}
                               </DropdownMenuItem>
                               <DropdownMenuItem
+                                className="flex gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer whitespace-nowrap"
+                                onSelect={() => openQuickEdit(car)}
+                              >
+                                {t('cars.updateCar')}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
                                 className="flex gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer whitespace-nowrap"
                                 onSelect={() => openDeleteDialog(car)}
                               >
@@ -1255,6 +1302,54 @@ const CarInventory: React.FC = () => {
             </Button>
             <Button onClick={handleSaveUnavailable} disabled={isSubmitting || !unavailableStartDate || !unavailableEndDate}>
               {isSubmitting ? t('common.loading') : t('common.save')}
+            </Button>
+          </div>
+        </ModalFooter>
+      </Modal>
+
+      {/* Quick Edit Modal */}
+      <Modal
+        open={isQuickEditOpen}
+        onOpenChange={(open) => setIsQuickEditOpen(open)}
+        title={t('cars.updateCar')}
+        size="md"
+      >
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {rentalType === RentalType.Daily && (
+              <Input
+                type="number"
+                label={t('cars.dailyPrice')}
+                value={Number.isNaN(quickPrice) ? '' : quickPrice}
+                onChange={(e) => setQuickPrice(e.target.value === '' ? 0 : Number(e.target.value))}
+                min={0}
+              />
+            )}
+            {rentalType === RentalType.Daily && (
+              <Input
+                type="number"
+                label={t('cars.allowedKilometers')}
+                value={Number.isNaN(quickAllowedKm) ? '' : quickAllowedKm}
+                onChange={(e) => setQuickAllowedKm(e.target.value === '' ? 0 : Number(e.target.value))}
+                min={0}
+              />
+            )}
+            <Input
+              type="number"
+              label={t('cars.availableCount')}
+              value={Number.isNaN(quickAvailable) ? '' : quickAvailable}
+              onChange={(e) => setQuickAvailable(e.target.value === '' ? 0 : Number(e.target.value))}
+              min={0}
+            />
+          </div>
+        </div>
+        <ModalFooter>
+          <div className="flex gap-3 justify-end">
+            <Button variant="text" onClick={() => setIsQuickEditOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button onClick={handleQuickEditSave} disabled={isQuickSubmitting}>
+              {isQuickSubmitting ? t('common.loading') : t('common.save')}
             </Button>
           </div>
         </ModalFooter>
