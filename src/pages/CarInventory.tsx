@@ -12,7 +12,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem
 } from '@mo_sami/web-design-system';
-import { EllipsisVerticalIcon, TrashIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon, TrashIcon, ClipboardDocumentCheckIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../contexts/LanguageContext';
 import { clearAuthToken } from '../services/api';
 import {
@@ -729,6 +729,7 @@ const CarInventory: React.FC = () => {
               className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer whitespace-nowrap"
               onSelect={() => openQuickEdit(car)}
             >
+              <PencilSquareIcon className="w-4 h-4" />
               {t('cars.updateCar')}
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -1125,6 +1126,7 @@ const CarInventory: React.FC = () => {
                                 className="flex gap-2 px-3 py-2 text-sm hover:bg-neutral-50 cursor-pointer whitespace-nowrap"
                                 onSelect={() => openQuickEdit(car)}
                               >
+                                <PencilSquareIcon className="w-4 h-4" />
                                 {t('cars.updateCar')}
                               </DropdownMenuItem>
                               <DropdownMenuItem
