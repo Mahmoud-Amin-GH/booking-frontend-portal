@@ -20,6 +20,7 @@ const ReceivedBookings: React.FC = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsData, setDetailsData] = useState<any | null>(null);
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
 
@@ -49,6 +50,7 @@ const ReceivedBookings: React.FC = () => {
       setDetailsOpen(true);
       setDetailsLoading(true);
       setDetailsData(null);
+      setSelectedBooking(booking);
       const d = await BookingsApi.getDetails(booking.id, (language === 'ar' ? 'ar' : 'en'));
       setDetailsData(d);
     } catch (e) {
@@ -126,21 +128,25 @@ const ReceivedBookings: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-neutral-200">
                 {bookings.map((b) => (
-                  <tr key={String(b.id)} className="hover:bg-neutral-25 transition-colors cursor-pointer" onClick={() => openDetails(b)}>
-                    <td className="px-4 py-4 font-sakr text-sm text-text-primary flex items-center gap-2">
-                      <span>{(b as any).listing_details?.title || b.car_title || '-'}</span>
-                      <span className="text-neutral-400">→</span>
+                  <tr key={String(b.id)} className="hover:bg-neutral-25 transition-colors">
+                    <td className="px-4 py-4 font-sakr text-sm text-text-primary">
+                      {(b as any).listing_details?.title || b.car_title || '-'}
                     </td>
                     <td className="px-4 py-4 font-sakr text-sm text-text-secondary">{formatDateTime((b as any).schedule?.date_from)}</td>
                     <td className="px-4 py-4 font-sakr text-sm text-text-secondary">{formatDateTime((b as any).schedule?.date_to)}</td>
                     <td className="px-4 py-4 font-sakr text-sm text-text-secondary">{(b as any).total_price ?? '-'}</td>
                     <td className="px-4 py-4 font-sakr text-sm text-text-secondary">{(b as any).address ?? '-'}</td>
-                    <td className="px-4 py-4" onClick={(e) => e.stopPropagation()}>
-                      {String(b.status || (b as any).state || '').toLowerCase() === 'accepted' && (
-                        <Button variant="destructive" size="sm" onClick={() => openCancelConfirm(b)}>
-                          {t('bookings.cancel')}
+                    <td className="px-4 py-4">
+                      <div className="flex gap-2">
+                        <Button variant="outlined" size="sm" onClick={() => openDetails(b)}>
+                          {t('bookings.details')}
                         </Button>
-                      )}
+                        {String(b.status || (b as any).state || '').toLowerCase() === 'accepted' && (
+                          <Button variant="destructive" size="sm" onClick={() => openCancelConfirm(b)}>
+                            {t('bookings.cancel')}
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -151,35 +157,75 @@ const ReceivedBookings: React.FC = () => {
       </div>
 
       {/* Details Modal */}
-      <Modal open={detailsOpen} onOpenChange={(open) => setDetailsOpen(open)} title={t('bookings.details', 'Details')} size="md">
-        <div className="p-6 space-y-4">
+      <Modal open={detailsOpen} onOpenChange={(open) => setDetailsOpen(open)} title={t('bookings.details', 'Details')} size="lg">
+        <div className="p-6 space-y-6">
           {detailsLoading ? (
             <div className="text-center">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
               <p className="mt-2 font-sakr text-text-secondary">{t('common.loading')}...</p>
             </div>
           ) : detailsData ? (
-            <div className="space-y-3">
+            <div className="space-y-6">
+              {/* Car Details */}
               <div>
-                <p className="font-sakr text-xs text-neutral-500">{t('bookings.customer')}</p>
-                <p className="font-sakr text-sm">{detailsData?.user?.name || '-'}</p>
+                <h4 className="font-sakr font-medium text-sm text-neutral-600 mb-2">{t('bookings.sections.car', 'Car Details')}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.car')}</p>
+                    <p className="font-sakr text-sm">{(selectedBooking as any)?.listing_details?.title || (selectedBooking as any)?.car_title || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.totalPrice')}</p>
+                    <p className="font-sakr text-sm">{(selectedBooking as any)?.total_price ?? '-'}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.pickupAddress')}</p>
+                    <p className="font-sakr text-sm">{(selectedBooking as any)?.address ?? '-'}</p>
+                  </div>
+                </div>
               </div>
+
+              {/* Booking Details */}
               <div>
-                <p className="font-sakr text-xs text-neutral-500">{t('bookings.phone')}</p>
-                <p className="font-sakr text-sm">
-                  {Array.isArray(detailsData?.contact_details?.contacts) && detailsData.contact_details.contacts.length > 0
-                    ? detailsData.contact_details.contacts.map((c: any, idx: number) => (
-                        <span key={`details-phone-${idx}`}>
-                          <a href={`tel:${c}`} className="text-primary-700 hover:underline">{c}</a>
-                          {idx < detailsData.contact_details.contacts.length - 1 ? ', ' : ''}
-                        </span>
-                      ))
-                    : '-'}
-                </p>
+                <h4 className="font-sakr font-medium text-sm text-neutral-600 mb-2">{t('bookings.sections.booking', 'Booking Details')}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.dateFrom')}</p>
+                    <p className="font-sakr text-sm">{formatDateTime((selectedBooking as any)?.schedule?.date_from)}</p>
+                  </div>
+                  <div>
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.dateTo')}</p>
+                    <p className="font-sakr text-sm">{formatDateTime((selectedBooking as any)?.schedule?.date_to)}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.details')}</p>
+                    <p className="font-sakr text-sm whitespace-pre-wrap">{detailsData?.details || '-'}</p>
+                  </div>
+                </div>
               </div>
+
+              {/* Contact Details */}
               <div>
-                <p className="font-sakr text-xs text-neutral-500">{t('bookings.details', 'Details')}</p>
-                <p className="font-sakr text-sm whitespace-pre-wrap">{detailsData?.details || '-'}</p>
+                <h4 className="font-sakr font-medium text-sm text-neutral-600 mb-2">{t('bookings.sections.contact', 'Contact Details')}</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.customer')}</p>
+                    <p className="font-sakr text-sm">{detailsData?.user?.name || '-'}</p>
+                  </div>
+                  <div>
+                    <p className="font-sakr text-xs text-neutral-500">{t('bookings.phone')}</p>
+                    <p className="font-sakr text-sm">
+                      {Array.isArray(detailsData?.contact_details?.contacts) && detailsData.contact_details.contacts.length > 0
+                        ? detailsData.contact_details.contacts.map((c: any, idx: number) => (
+                            <span key={`details-phone-${idx}`}>
+                              <a href={`tel:${c}`} className="text-primary-700 hover:underline">{c}</a>
+                              {idx < detailsData.contact_details.contacts.length - 1 ? ', ' : ''}
+                            </span>
+                          ))
+                        : '-'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (

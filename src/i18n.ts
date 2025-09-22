@@ -481,7 +481,10 @@ const resources = {
       "bookings.loadError": "Failed to load bookings",
       "bookings.cancelSuccess": "Booking canceled successfully",
       "bookings.cancelError": "Failed to cancel booking",
-      "bookings.details": "Details"
+      "bookings.details": "Details",
+      "bookings.sections.car": "Car Details",
+      "bookings.sections.booking": "Booking Details",
+      "bookings.sections.contact": "Contact Details"
     }
   },
   ar: {
@@ -961,7 +964,10 @@ const resources = {
         "bookings.loadError": "فشل في تحميل الحجوزات",
         "bookings.cancelSuccess": "تم إلغاء الحجز بنجاح",
         "bookings.cancelError": "فشل في إلغاء الحجز",
-        "bookings.details": "تفاصيل"
+        "bookings.details": "تفاصيل",
+        "bookings.sections.car": "تفاصيل السيارة",
+        "bookings.sections.booking": "تفاصيل الحجز",
+        "bookings.sections.contact": "تفاصيل التواصل"
       }
     }
   };
