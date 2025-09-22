@@ -75,6 +75,7 @@ const resources = {
       "nav.dashboard": "Dashboard",
       "nav.officeConfigs": "Office Configurations",
       "nav.priceTiers": "Price Tiers",
+      "nav.receivedBookings": "Received Bookings",
 
       // Onboarding
       "onboarding.welcome": "Welcome to Car Rental Portal",
@@ -460,7 +461,27 @@ const resources = {
       "pricing.tier8to30": "8-30 Days",
       "pricing.tier31to90": "31-90 Days",
       "pricing.tier90plus": "90+ Days",
-      "pricing.perDay": "per day"
+      "pricing.perDay": "per day",
+
+      // Bookings
+      "bookings.title": "Received Bookings",
+      "bookings.subtitle": "View and manage incoming bookings from 4Sale",
+      "bookings.customer": "Customer",
+      "bookings.phone": "Phone",
+      "bookings.car": "Car",
+      "bookings.dateFrom": "Date from",
+      "bookings.dateTo": "Date to",
+      "bookings.totalPrice": "Total price",
+      "bookings.pickupAddress": "Pickup",
+      "bookings.actions": "Actions",
+      "bookings.cancel": "Cancel",
+      "bookings.cancel.confirmTitle": "Cancel booking",
+      "bookings.cancel.confirm": "Are you sure you want to cancel this booking?",
+      "bookings.empty": "No bookings received yet",
+      "bookings.loadError": "Failed to load bookings",
+      "bookings.cancelSuccess": "Booking canceled successfully",
+      "bookings.cancelError": "Failed to cancel booking",
+      "bookings.details": "Details"
     }
   },
   ar: {
@@ -534,6 +555,7 @@ const resources = {
         "nav.dashboard": "لوحة التحكم",
         "nav.officeConfigs": "إعدادات المكتب",
         "nav.priceTiers": "مستويات الأسعار",
+        "nav.receivedBookings": "الحجوزات المستلمة",
 
         // Onboarding - Arabic
         "onboarding.welcome": "مرحباً ببوابة تأجير السيارات",
@@ -919,7 +941,27 @@ const resources = {
         "pricing.tier8to30": "8-30 يوم",
         "pricing.tier31to90": "31-90 يوم",
         "pricing.tier90plus": "90+ يوم",
-        "pricing.perDay": "في اليوم"
+        "pricing.perDay": "في اليوم",
+
+        // Bookings - Arabic
+        "bookings.title": "الحجوزات المستلمة",
+        "bookings.subtitle": "عرض وإدارة الحجوزات الواردة من فورسيل",
+        "bookings.customer": "العميل",
+        "bookings.phone": "الهاتف",
+        "bookings.car": "السيارة",
+        "bookings.dateFrom": "تاريخ البدء",
+        "bookings.dateTo": "تاريخ الانتهاء",
+        "bookings.totalPrice": "السعر الإجمالي",
+        "bookings.pickupAddress": "موقع الاستلام",
+        "bookings.actions": "الإجراءات",
+        "bookings.cancel": "إلغاء",
+        "bookings.cancel.confirmTitle": "إلغاء الحجز",
+        "bookings.cancel.confirm": "هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟",
+        "bookings.empty": "لا توجد حجوزات مستلمة حالياً",
+        "bookings.loadError": "فشل في تحميل الحجوزات",
+        "bookings.cancelSuccess": "تم إلغاء الحجز بنجاح",
+        "bookings.cancelError": "فشل في إلغاء الحجز",
+        "bookings.details": "تفاصيل"
       }
     }
   };

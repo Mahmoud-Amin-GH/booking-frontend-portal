@@ -108,6 +108,15 @@ const DashboardLayout: React.FC = () => {
       ]
     },
     {
+      id: 'received-bookings',
+      label: t('nav.receivedBookings', 'Received Bookings'),
+      href: '/dashboard/received-bookings',
+      active: location.pathname === '/dashboard/received-bookings',
+      onClick: () => {
+        navigate('/dashboard/received-bookings');
+      }
+    },
+    {
       id: 'price-tiers',
       label: disabledNavItems.includes('price-tiers') ? `${t('nav.priceTiers')}` : t('nav.priceTiers'),
       href: '/dashboard/price-tiers',

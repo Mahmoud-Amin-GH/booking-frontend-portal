@@ -8,6 +8,7 @@ import { DashboardLayout } from './design_system';
 import '@mo_sami/web-design-system/dist/style.css';
 import './i18n';
 import Login from './pages/Login';
+import ReceivedBookings from './pages/ReceivedBookings';
 
 
 
@@ -44,6 +45,7 @@ function App() {
               <Route path="cars/leasing" element={<CarInventory />} />
               <Route path="office-configs" element={<OfficeConfigs />} />
               <Route path="price-tiers" element={<PriceTiers />} />
+              <Route path="received-bookings" element={<ReceivedBookings />} />
               
               {/* Availability Management Routes */}
               
