@@ -16,14 +16,17 @@ export interface IncomingBookingsResponse {
   total: number;
   page: number;
   size: number;
+  hasNext: boolean;
 }
 
 const coerceBookingsPayload = (raw: any, pageArg: number, sizeArg: number): IncomingBookingsResponse => {
   const payload = raw?.data ?? raw;
   const items = payload?.items || payload?.bookings || payload?.results || payload?.data || [];
-  const total = payload?.total || payload?.count || payload?.totalItems || payload?.total_elements || items.length || 0;
-  const page = payload?.page || payload?.current_page || payload?.pageNumber || pageArg;
-  const size = payload?.size || payload?.page_size || payload?.pageSize || payload?.limit || sizeArg;
+  const pagination = payload?.pagination || payload?.meta?.pagination || null;
+  const total = pagination?.total ?? payload?.total ?? payload?.count ?? payload?.totalItems ?? payload?.total_elements ?? 0;
+  const page = pagination?.page ?? payload?.page ?? payload?.current_page ?? payload?.pageNumber ?? pageArg;
+  const size = pagination?.size ?? payload?.size ?? payload?.page_size ?? payload?.pageSize ?? payload?.limit ?? sizeArg;
+  const hasNext = Boolean(pagination?.has_next ?? pagination?.hasNext ?? (total > 0 ? page * size < total : items.length === size));
   const normalized: Booking[] = items.map((b: any) => ({
     id: b.id ?? b.booking_id ?? b.uuid ?? b._id ?? Math.random().toString(36).slice(2),
     customer_name: b.customer_name ?? b.customer?.name ?? b.user?.name,
@@ -34,7 +37,7 @@ const coerceBookingsPayload = (raw: any, pageArg: number, sizeArg: number): Inco
     status: b.status,
     ...b,
   }));
-  return { bookings: normalized, total, page, size };
+  return { bookings: normalized, total, page, size, hasNext };
 };
 
 export const BookingsApi = {

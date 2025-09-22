@@ -30,7 +30,8 @@ const ReceivedBookings: React.FC = () => {
     return Math.max(1, page + (bookings.length === pageSize ? 1 : 0));
   }, [total, page, bookings.length]);
   const hasPrev = page > 1;
-  const hasNext = (total && total > 0) ? (page < Math.ceil(total / pageSize)) : (bookings.length === pageSize);
+  const hasNextRef = React.useRef<boolean>(false);
+  const hasNext = (total && total > 0) ? (page < Math.ceil(total / pageSize)) : hasNextRef.current;
 
   const load = async () => {
     try {
@@ -39,6 +40,7 @@ const ReceivedBookings: React.FC = () => {
       const resp = await BookingsApi.getIncoming({ page, size: pageSize, language: (language === 'ar' ? 'ar' : 'en') });
       setBookings(resp.bookings);
       setTotal(resp.total);
+      hasNextRef.current = resp.hasNext;
     } catch (e) {
       setError(t('bookings.loadError'));
       setBookings([]);

@@ -10,7 +10,7 @@ services:
         REACT_APP_FORSALE_API_KEY: ${REACT_APP_FORSALE_API_KEY:-70918e3e-f16e-4ed6-a6b5-f1b94a0d54de}
         REACT_APP_FORSALE_API_SECRET: ${REACT_APP_FORSALE_API_SECRET:-hyrVSg05wTzMlTcmD9bTlwhbTaONpPXSxPtQ38u1Gvbj9E6giyneuG2cKSRdPsA0}
         REACT_APP_ENV: ${REACT_APP_ENV:-production}
-    image: mahmoudamin4sale/portal-booking-frontend:1.5.0
+    image: mahmoudamin4sale/portal-booking-frontend:1.6.0
     container_name: frontend-portal-prod
     platform: linux/amd64
     ports:
@@ -30,7 +30,7 @@ services:
         REACT_APP_FORSALE_API_KEY: ${REACT_APP_FORSALE_API_KEY:-70918e3e-f16e-4ed6-a6b5-f1b94a0d54de}
         REACT_APP_FORSALE_API_SECRET: ${REACT_APP_FORSALE_API_SECRET:-hyrVSg05wTzMlTcmD9bTlwhbTaONpPXSxPtQ38u1Gvbj9E6giyneuG2cKSRdPsA0}
         REACT_APP_ENV: ${REACT_APP_ENV:-staging}
-    image: mahmoudamin4sale/portal-booking-frontend:1.5.0-staging
+    image: mahmoudamin4sale/portal-booking-frontend:1.6.0-staging
     container_name: frontend-portal-staging
     platform: linux/amd64
     ports:
@@ -51,7 +51,7 @@ services:
         REACT_APP_FORSALE_API_KEY: ${REACT_APP_FORSALE_API_KEY:-70918e3e-f16e-4ed6-a6b5-f1b94a0d54de}
         REACT_APP_FORSALE_API_SECRET: ${REACT_APP_FORSALE_API_SECRET:-hyrVSg05wTzMlTcmD9bTlwhbTaONpPXSxPtQ38u1Gvbj9E6giyneuG2cKSRdPsA0}
         REACT_APP_ENV: ${REACT_APP_ENV:-development}
-    image: mahmoudamin4sale/portal-booking-frontend:1.5.0-dev
+    image: mahmoudamin4sale/portal-booking-frontend:1.6.0-dev
     container_name: frontend-portal-dev
     platform: linux/amd64
     ports:
