@@ -22,7 +22,15 @@ const ReceivedBookings: React.FC = () => {
   const [detailsData, setDetailsData] = useState<any | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
-  const totalPages = useMemo(() => Math.max(1, Math.ceil(total / pageSize)), [total]);
+  const totalPages = useMemo(() => {
+    if (total && total > 0) {
+      return Math.max(1, Math.ceil(total / pageSize));
+    }
+    // Fallback when API does not provide total: infer potential next page
+    return Math.max(1, page + (bookings.length === pageSize ? 1 : 0));
+  }, [total, page, bookings.length]);
+  const hasPrev = page > 1;
+  const hasNext = (total && total > 0) ? (page < Math.ceil(total / pageSize)) : (bookings.length === pageSize);
 
   const load = async () => {
     try {
@@ -138,7 +146,7 @@ const ReceivedBookings: React.FC = () => {
                     <td className="px-4 py-4 font-sakr text-sm text-text-secondary">{(b as any).address ?? '-'}</td>
                     <td className="px-4 py-4">
                       <div className="flex gap-2">
-                        <Button variant="outlined" size="sm" onClick={() => openDetails(b)}>
+                        <Button size="sm" onClick={() => openDetails(b)}>
                           {t('bookings.details')}
                         </Button>
                         {String(b.status || (b as any).state || '').toLowerCase() === 'accepted' && (
@@ -242,16 +250,16 @@ const ReceivedBookings: React.FC = () => {
       </Modal>
 
       {/* Pagination */}
-      {totalPages > 1 && (
+      {(bookings.length > 0 || hasPrev) && (
         <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
           <p className="font-sakr font-normal text-sm text-gray-600">
             {t('common.pageOfTotal', { current: page, total: totalPages })}
           </p>
           <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <Button variant="outlined" size="small" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
+            <Button variant="outlined" size="small" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={!hasPrev}>
               {t('common.previous')}
             </Button>
-            <Button variant="outlined" size="small" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
+            <Button variant="outlined" size="small" onClick={() => setPage((p) => p + 1)} disabled={!hasNext}>
               {t('common.next')}
             </Button>
           </div>

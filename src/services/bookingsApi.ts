@@ -18,10 +18,12 @@ export interface IncomingBookingsResponse {
   size: number;
 }
 
-const coerceBookingsPayload = (raw: any, page: number, size: number): IncomingBookingsResponse => {
+const coerceBookingsPayload = (raw: any, pageArg: number, sizeArg: number): IncomingBookingsResponse => {
   const payload = raw?.data ?? raw;
   const items = payload?.items || payload?.bookings || payload?.results || payload?.data || [];
-  const total = payload?.total || payload?.count || payload?.totalItems || items.length || 0;
+  const total = payload?.total || payload?.count || payload?.totalItems || payload?.total_elements || items.length || 0;
+  const page = payload?.page || payload?.current_page || payload?.pageNumber || pageArg;
+  const size = payload?.size || payload?.page_size || payload?.pageSize || payload?.limit || sizeArg;
   const normalized: Booking[] = items.map((b: any) => ({
     id: b.id ?? b.booking_id ?? b.uuid ?? b._id ?? Math.random().toString(36).slice(2),
     customer_name: b.customer_name ?? b.customer?.name ?? b.user?.name,
