@@ -6,6 +6,8 @@ import { BookingsApi, type Booking } from '../services/bookingsApi';
 
 const pageSize = 10;
 
+type BookingActionType = 'accept' | 'reject';
+
 const ReceivedBookings: React.FC = () => {
   const { t } = useTranslation();
   const { language, isRTL } = useLanguage();
@@ -21,6 +23,7 @@ const ReceivedBookings: React.FC = () => {
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [detailsData, setDetailsData] = useState<any | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [actionProcessing, setActionProcessing] = useState<{ id: Booking['id'] | null; type: BookingActionType | null }>({ id: null, type: null });
 
   const totalPages = useMemo(() => {
     if (total && total > 0) {
@@ -73,6 +76,25 @@ const ReceivedBookings: React.FC = () => {
   const openCancelConfirm = (b: Booking) => {
     setBookingToCancel(b);
     setConfirmOpen(true);
+  };
+
+  const handleStatusAction = async (booking: Booking, action: BookingActionType) => {
+    setActionProcessing({ id: booking.id, type: action });
+    setError(null);
+    try {
+      if (action === 'accept') {
+        await BookingsApi.accept(booking.id);
+      } else {
+        await BookingsApi.reject(booking.id);
+      }
+      await load();
+    } catch (e) {
+      const errorKey = action === 'accept' ? 'bookings.acceptError' : 'bookings.rejectError';
+      const fallback = action === 'accept' ? 'Failed to accept booking.' : 'Failed to reject booking.';
+      setError(t(errorKey, fallback));
+    } finally {
+      setActionProcessing({ id: null, type: null });
+    }
   };
 
   const handleCancel = async () => {
@@ -137,8 +159,11 @@ const ReceivedBookings: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-200">
-                {bookings.map((b) => (
-                  <tr key={String(b.id)} className="hover:bg-neutral-25 transition-colors">
+                {bookings.map((b) => {
+                  const normalizedStatus = String(b.status || (b as any).state || '').toLowerCase();
+                  const isProcessing = actionProcessing.id === b.id;
+                  return (
+                    <tr key={String(b.id)} className="hover:bg-neutral-25 transition-colors">
                     <td className="px-4 py-4 font-sakr text-sm text-text-primary">
                       {(b as any).listing_details?.title || b.car_title || '-'}
                     </td>
@@ -151,15 +176,35 @@ const ReceivedBookings: React.FC = () => {
                         <Button size="sm" onClick={() => openDetails(b)}>
                           {t('bookings.details')}
                         </Button>
-                        {String(b.status || (b as any).state || '').toLowerCase() === 'accepted' && (
-                          <Button variant="destructive" size="sm" onClick={() => openCancelConfirm(b)}>
+                        {normalizedStatus === 'pending_your_approval' && (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => handleStatusAction(b, 'accept')}
+                              disabled={isProcessing && actionProcessing.type === 'accept'}
+                            >
+                              {isProcessing && actionProcessing.type === 'accept' ? t('common.loading') : t('bookings.accept')}
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => handleStatusAction(b, 'reject')}
+                              disabled={isProcessing && actionProcessing.type === 'reject'}
+                            >
+                              {isProcessing && actionProcessing.type === 'reject' ? t('common.loading') : t('bookings.reject')}
+                            </Button>
+                          </>
+                        )}
+                        {normalizedStatus === 'accepted' && (
+                          <Button variant="destructive"  size="sm" onClick={() => openCancelConfirm(b)}>
                             {t('bookings.cancel')}
                           </Button>
                         )}
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>

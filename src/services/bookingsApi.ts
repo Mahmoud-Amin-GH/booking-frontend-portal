@@ -67,6 +67,30 @@ export const BookingsApi = {
     return response.data?.data ?? response.data;
   },
 
+  accept: async (bookingId: string | number): Promise<void> => {
+    await api.post(
+      `${FORSALE_SERVICES_API_BASE_URL}/v1/listing-service/bookings/${bookingId}/action`,
+      { action: 'accept' },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  },
+
+  reject: async (bookingId: string | number): Promise<void> => {
+    await api.post(
+      `${FORSALE_SERVICES_API_BASE_URL}/v1/listing-service/bookings/${bookingId}/action`,
+      { action: 'reject' },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  },
+
   cancel: async (bookingId: string | number): Promise<void> => {
     await api.post(
       `${FORSALE_SERVICES_API_BASE_URL}/v1/listing-service/bookings/${bookingId}/action`,
