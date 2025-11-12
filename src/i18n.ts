@@ -486,7 +486,13 @@ const resources = {
       "bookings.details": "Details",
       "bookings.sections.car": "Car Details",
       "bookings.sections.booking": "Booking Details",
-      "bookings.sections.contact": "Contact Details"
+      "bookings.sections.contact": "Contact Details",
+      "bookings.toggle.enableNow": "Enable the booking now",
+      "bookings.toggle.loading": "Checking booking availability...",
+      "bookings.toggle.enabled": "Bookings are currently enabled",
+      "bookings.toggle.disabled": "Bookings are currently disabled",
+      "bookings.toggle.loadError": "Failed to load booking availability",
+      "bookings.toggle.updateError": "Failed to update booking availability"
     }
   },
   ar: {
@@ -971,7 +977,13 @@ const resources = {
         "bookings.details": "تفاصيل",
         "bookings.sections.car": "تفاصيل السيارة",
         "bookings.sections.booking": "تفاصيل الحجز",
-        "bookings.sections.contact": "تفاصيل التواصل"
+        "bookings.sections.contact": "تفاصيل التواصل",
+        "bookings.toggle.enableNow": "فعّل استقبال الحجوزات الآن",
+        "bookings.toggle.loading": "جارٍ التحقق من حالة استقبال الحجوزات...",
+        "bookings.toggle.enabled": "استقبال الحجوزات مفعل حالياً",
+        "bookings.toggle.disabled": "استقبال الحجوزات معطل حالياً",
+        "bookings.toggle.loadError": "تعذر جلب حالة استقبال الحجوزات",
+        "bookings.toggle.updateError": "تعذر تحديث حالة استقبال الحجوزات"
       }
     }
   };

@@ -67,6 +67,63 @@ export const BookingsApi = {
     return response.data?.data ?? response.data;
   },
 
+  getBookingEnabledStatus: async (): Promise<boolean> => {
+    const response = await api.get('/v1/listing-service/bookings/booking-enabled');
+    const payload = response.data?.data ?? response.data;
+    const rawValue =
+      payload?.enabled ??
+      payload?.isEnabled ??
+      payload?.bookingEnabled ??
+      payload?.booking_enabled ??
+      payload?.enable ??
+      payload?.status;
+
+    if (typeof rawValue === 'boolean') return rawValue;
+    if (typeof rawValue === 'number') return rawValue === 1;
+    if (typeof rawValue === 'string') {
+      const normalized = rawValue.trim().toLowerCase();
+      if (normalized === 'true') return true;
+      if (normalized === 'false') return false;
+      if (normalized === '1' || normalized === 'enabled' || normalized === 'on') return true;
+      if (normalized === '0' || normalized === 'disabled' || normalized === 'off') return false;
+    }
+
+    return Boolean(rawValue);
+  },
+
+  toggleBookingEnabled: async (enable: boolean): Promise<boolean> => {
+    const response = await api.post(
+      `${FORSALE_SERVICES_API_BASE_URL}/v1/listing-service/bookings/toggle-booking`,
+      { enable },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const payload = response.data?.data ?? response.data;
+    const rawValue =
+      payload?.enabled ??
+      payload?.isEnabled ??
+      payload?.bookingEnabled ??
+      payload?.booking_enabled ??
+      payload?.enable ??
+      payload?.status;
+
+    if (typeof rawValue === 'boolean') return rawValue;
+    if (typeof rawValue === 'number') return rawValue === 1;
+    if (typeof rawValue === 'string') {
+      const normalized = rawValue.trim().toLowerCase();
+      if (normalized === 'true') return true;
+      if (normalized === 'false') return false;
+      if (normalized === '1' || normalized === 'enabled' || normalized === 'on') return true;
+      if (normalized === '0' || normalized === 'disabled' || normalized === 'off') return false;
+    }
+
+    return enable;
+  },
+
   accept: async (bookingId: string | number): Promise<void> => {
     await api.post(
       `${FORSALE_SERVICES_API_BASE_URL}/v1/listing-service/bookings/${bookingId}/action`,

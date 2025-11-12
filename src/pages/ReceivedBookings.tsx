@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Modal, ModalFooter } from '@mo_sami/web-design-system';
+import { Button, Modal, ModalFooter, Switch } from '@mo_sami/web-design-system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { BookingsApi, type Booking } from '../services/bookingsApi';
 
@@ -24,6 +24,10 @@ const ReceivedBookings: React.FC = () => {
   const [detailsData, setDetailsData] = useState<any | null>(null);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [actionProcessing, setActionProcessing] = useState<{ id: Booking['id'] | null; type: BookingActionType | null }>({ id: null, type: null });
+  const [bookingEnabled, setBookingEnabled] = useState<boolean | null>(null);
+  const [bookingEnabledLoading, setBookingEnabledLoading] = useState(true);
+  const [toggleSubmitting, setToggleSubmitting] = useState(false);
+  const [toggleError, setToggleError] = useState<string | null>(null);
 
   const totalPages = useMemo(() => {
     if (total && total > 0) {
@@ -97,6 +101,47 @@ const ReceivedBookings: React.FC = () => {
     }
   };
 
+  const loadBookingEnabledStatus = React.useCallback(async () => {
+    try {
+      setBookingEnabledLoading(true);
+      setToggleError(null);
+      const enabled = await BookingsApi.getBookingEnabledStatus();
+      setBookingEnabled(Boolean(enabled));
+    } catch (e) {
+      setToggleError(t('bookings.toggle.loadError'));
+    } finally {
+      setBookingEnabledLoading(false);
+    }
+  }, [t]);
+
+  useEffect(() => {
+    void loadBookingEnabledStatus();
+  }, [loadBookingEnabledStatus]);
+
+  const handleToggleChange = async (nextChecked: boolean) => {
+    if (bookingEnabledLoading || toggleSubmitting) return;
+
+    const previousValue = bookingEnabled;
+    setBookingEnabled(nextChecked);
+    setToggleError(null);
+    setToggleSubmitting(true);
+    try {
+      const result = await BookingsApi.toggleBookingEnabled(nextChecked);
+      if (typeof result === 'boolean') {
+        setBookingEnabled(result);
+      } else {
+        setBookingEnabled(nextChecked);
+      }
+    } catch (e) {
+      setToggleError(t('bookings.toggle.updateError'));
+      setBookingEnabled(previousValue ?? false);
+    } finally {
+      setToggleSubmitting(false);
+    }
+  };
+
+  const isToggleBusy = bookingEnabledLoading || toggleSubmitting;
+
   const handleCancel = async () => {
     if (!bookingToCancel) return;
     setSubmitting(true);
@@ -131,6 +176,34 @@ const ReceivedBookings: React.FC = () => {
           <p className="font-sakr font-normal text-lg text-gray-600">
             {t('bookings.subtitle')}
           </p>
+        </div>
+      </div>
+
+      {/* Booking toggle */}
+      <div className="bg-white rounded-lg border border-neutral-200 p-4">
+        <div className={`flex items-center justify-between gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`font-sakr text-base text-gray-900 ${isRTL ? 'text-right' : 'text-left'}`}>
+            <p>{t('bookings.toggle.enableNow')}</p>
+            <div className="mt-1 text-sm">
+              {toggleError ? (
+                <span className="text-error-600">{toggleError}</span>
+              ) : bookingEnabledLoading ? (
+                <span className="text-text-secondary">{t('bookings.toggle.loading')}</span>
+              ) : (
+                <span className="text-text-secondary">
+                  {bookingEnabled ? t('bookings.toggle.enabled') : t('bookings.toggle.disabled')}
+                </span>
+              )}
+            </div>
+          </div>
+          <Switch
+            id="booking-enabled"
+            checked={Boolean(bookingEnabled)}
+            onCheckedChange={handleToggleChange}
+            disabled={isToggleBusy}
+            aria-label={t('bookings.toggle.enableNow')}
+            className="shrink-0"
+          />
         </div>
       </div>
 
