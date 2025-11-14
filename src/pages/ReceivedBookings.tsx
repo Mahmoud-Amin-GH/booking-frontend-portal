@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Modal, ModalFooter, Switch } from '@mo_sami/web-design-system';
 import { useLanguage } from '../contexts/LanguageContext';
 import { BookingsApi, type Booking } from '../services/bookingsApi';
+import './ReceivedBookings.css';
 
 const pageSize = 10;
 
@@ -202,7 +203,7 @@ const ReceivedBookings: React.FC = () => {
             onCheckedChange={handleToggleChange}
             disabled={isToggleBusy}
             aria-label={t('bookings.toggle.enableNow')}
-            className="shrink-0"
+            className={`${isRTL ? 'rtl-switch ' : ''}`}
           />
         </div>
       </div>
