@@ -15,7 +15,6 @@ import {
 } from '@mo_sami/web-design-system';
 import { EllipsisVerticalIcon, TrashIcon, ClipboardDocumentCheckIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../contexts/LanguageContext';
-import { clearAuthToken } from '../services/api';
 import {
   CarApiService,
   Car,
@@ -180,18 +179,17 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.dailyPrice')}
-                value={formData.price_per_day ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, price_per_day: value === '' ? 0 : Number(value) }));
                 }}
-                placeholder='0'
                 required
               />
               <Input
                 type="number"
                 label={t('cars.allowedKilometers')}
-                value={formData.allowed_kilometers ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, allowed_kilometers: value === '' ? 0 : Number(value) }));
@@ -207,7 +205,7 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.months36Price')}
-                value={formData.months_36_price ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
@@ -218,7 +216,7 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.months48Price')}
-                value={formData.months_48_price ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
@@ -234,7 +232,7 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.downpayment')}
-                value={formData.downpayment ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, downpayment: value === '' ? 0 : Number(value) }));
@@ -245,7 +243,7 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.months36Price')}
-                value={formData.months_36_price ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
@@ -256,7 +254,7 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.months48Price')}
-                value={formData.months_48_price ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
@@ -267,7 +265,7 @@ const CarForm: React.FC<CarFormProps> = ({
               <Input
                 type="number"
                 label={t('cars.finalPayment')}
-                value={formData.final_payment ?? ''}
+                placeholder='0'
                 onChange={e => {
                   const value = e.target.value;
                   setFormData(prev => ({ ...prev, final_payment: value === '' ? 0 : Number(value) }));
@@ -281,7 +279,7 @@ const CarForm: React.FC<CarFormProps> = ({
           <Input
             type="number"
             label={t('cars.availableCount')}
-            value={formData.available_count ?? ''}
+            placeholder='0'
             onChange={e => {
               const value = e.target.value;
               setFormData(prev => ({ ...prev, available_count: value === '' ? 0 : Number(value) }));
@@ -423,27 +421,13 @@ const CarInventory: React.FC = () => {
 
   // Form state
   const [formData, setFormData] = useState<Partial<CarFormData>>({
-    remote_brand_id: 0,
-    remote_model_id: 0,
-    remote_color_id: 0,
-    remote_body_type_id: 0,
-    year: new Date().getFullYear(),
-    available_count: 1,
-    transmission: 0,
     rental_type: (() => {
       // Convert URL format to API format for rental type
       if (rentalType === RentalType.Daily) return 'daily';
       if (rentalType === RentalType.LongTerm) return 'long_term';
       if (rentalType === RentalType.Leasing) return 'leasing';
       return 'daily';
-    })(),
-    price_per_day: 0,
-    allowed_kilometers: 250,
-    // New pricing fields
-    downpayment: 0,
-    months_36_price: 0,
-    months_48_price: 0,
-    final_payment: 0
+    })()
   });
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
