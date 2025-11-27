@@ -74,6 +74,51 @@ const CarInventory: React.FC = () => {
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
   const [attributes, setAttributes] = useState<Attribute[] | null>(null);
 
+  const sortOptionsDescending = useCallback(
+    (options: AttributeOption[]) => {
+      const locale = language === 'ar' ? 'ar' : 'en';
+      return [...options].sort((a, b) => {
+        const labelA = getOptionLabel(a, language) || '';
+        const labelB = getOptionLabel(b, language) || '';
+        const valueA = Number(labelA);
+        const valueB = Number(labelB);
+
+        if (!Number.isNaN(valueA) && !Number.isNaN(valueB)) {
+          return valueB - valueA;
+        }
+
+        return labelB.localeCompare(labelA, locale, {
+          sensitivity: 'base',
+          numeric: true,
+        });
+      });
+    },
+    [language]
+  );
+
+  const sortOptionsAscending = useCallback(
+    (options: AttributeOption[]) => {
+      const locale = language === 'ar' ? 'ar' : 'en';
+      return [...options].sort((a, b) => {
+        const labelA = getOptionLabel(a, language) || '';
+        const labelB = getOptionLabel(b, language) || '';
+        const valueA = Number(labelA);
+        const valueB = Number(labelB);
+  
+        // If both labels are numeric, sort numerically (ascending)
+        if (!Number.isNaN(valueA) && !Number.isNaN(valueB)) {
+          return valueA - valueB;
+        }
+  
+        // Otherwise, sort lexicographically (ascending)
+        return labelA.localeCompare(labelB, locale, {
+          sensitivity: 'base',
+          numeric: true,
+        });
+      });
+    },
+    [language]
+  );
   // Helper functions to derive brand and model names - rely on backend display names only
   const getBrandName = useCallback(
     (car: Car): string => {
@@ -220,35 +265,35 @@ const CarInventory: React.FC = () => {
   }, [currentPage, searchTerm, rentalType, loadCars, loadUserPriceTiers]);
 
   // Convert data to SelectOption format - use dynamic attributes directly
-  const brandOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'brand') : [],
-    [attributes]
-  );
+  const brandOptions: AttributeOption[] = useMemo(() => {
+    if (!attributes) return [];
+    return sortOptionsAscending(getAttributeOptions(attributes, 'brand'));
+  }, [attributes, sortOptionsDescending]);
 
-  const modelOptions: AttributeOption[] = useMemo(() =>
-    attributes && formData.remote_brand_id ? getModelsForBrand(attributes, formData.remote_brand_id) : [],
-    [attributes, formData.remote_brand_id]
-  );
+  const modelOptions: AttributeOption[] = useMemo(() => {
+    if (!attributes || !formData.remote_brand_id) return [];
+    return sortOptionsAscending(getModelsForBrand(attributes, formData.remote_brand_id));
+  }, [attributes, formData.remote_brand_id, sortOptionsDescending]);
 
-  const colorOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'Color-Exterior') : [],
-    [attributes]
-  );
+  const colorOptions: AttributeOption[] = useMemo(() => {
+    if (!attributes) return [];
+    return sortOptionsAscending(getAttributeOptions(attributes, 'Color-Exterior'));
+  }, [attributes, sortOptionsDescending]);
 
-  const transmissionOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'transmission') : [],
-    [attributes]
-  );
+  const transmissionOptions: AttributeOption[] = useMemo(() => {
+    if (!attributes) return [];
+    return sortOptionsAscending(getAttributeOptions(attributes, 'transmission'));
+  }, [attributes, sortOptionsDescending]);
 
-  const bodyTypeOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'Body Type') : [],
-    [attributes]
-  );
+  const bodyTypeOptions: AttributeOption[] = useMemo(() => {
+    if (!attributes) return [];
+    return sortOptionsAscending(getAttributeOptions(attributes, 'Body Type'));
+  }, [attributes, sortOptionsDescending]);
 
-  const yearOptions: AttributeOption[] = useMemo(() =>
-    attributes ? getAttributeOptions(attributes, 'Year') : [],
-    [attributes]
-  );
+  const yearOptions: AttributeOption[] = useMemo(() => {
+    if (!attributes) return [];
+    return sortOptionsDescending(getAttributeOptions(attributes, 'Year'));
+  }, [attributes, sortOptionsDescending]);
 
   // Handle search
   const handleSearch = (value: string) => {
