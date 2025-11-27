@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
 import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
 import {
   Button,
@@ -45,6 +46,254 @@ export enum RentalType {
   LongTerm = 'long_term',
   Leasing = 'leasing'
 }
+
+type CarFormProps = {
+  t: TFunction;
+  language: string;
+  formData: Partial<CarFormData>;
+  formErrors: string[];
+  setFormData: Dispatch<SetStateAction<Partial<CarFormData>>>;
+  brandOptions: AttributeOption[];
+  modelOptions: AttributeOption[];
+  yearOptions: AttributeOption[];
+  bodyTypeOptions: AttributeOption[];
+  transmissionOptions: AttributeOption[];
+  colorOptions: AttributeOption[];
+  showCarSpecs: boolean;
+};
+
+const CarForm: React.FC<CarFormProps> = ({
+  t,
+  language,
+  formData,
+  formErrors,
+  setFormData,
+  brandOptions,
+  modelOptions,
+  yearOptions,
+  bodyTypeOptions,
+  transmissionOptions,
+  colorOptions,
+  showCarSpecs,
+}) => {
+  return (
+    <div className="space-y-6 pb-4">
+      {formErrors.length > 0 && (
+        <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+          <ul className="list-disc list-inside space-y-1">
+            {formErrors.map((error, index) => (
+              <li key={index} className="text-sm">{error}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {showCarSpecs && (
+        <div>
+          <h3 className="font-sakr font-medium text-lg text-gray-900 mb-4">
+            {t('form.carSpecs')}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.brand')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.remote_brand_id ? formData.remote_brand_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_brand_id: Number(value) || 0 }))}
+                options={brandOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.brand')}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.model')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.remote_model_id ? formData.remote_model_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_model_id: Number(value) || 0 }))}
+                options={modelOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={!formData.remote_brand_id ? t('form.selectBrandFirst') : t('common.select')}
+                disabled={!formData.remote_brand_id || modelOptions.length === 0}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.year')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.year ? formData.year.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
+                options={yearOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.year')}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.bodyType')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.remote_body_type_id ? formData.remote_body_type_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_body_type_id: Number(value) || 0 }))}
+                options={bodyTypeOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.bodyType')}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.transmission')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.transmission ? formData.transmission.toString() : ''}
+                onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: Number(value) }))}
+                options={transmissionOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.transmission')}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('cars.color')} <span className="text-red-500">*</span>
+              </label>
+              <Select
+                value={formData.remote_color_id ? formData.remote_color_id.toString() : ''}
+                onValueChange={value => setFormData(prev => ({ ...prev, remote_color_id: Number(value) || 0 }))}
+                options={colorOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
+                placeholder={t('cars.color')}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div>
+        <h3 className="font-sakr font-medium text-lg text-gray-900 mb-4">
+          {t('form.rentalSpecs')}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          {formData.rental_type === 'daily' && (
+            <>
+              <Input
+                type="number"
+                label={t('cars.dailyPrice')}
+                value={formData.price_per_day ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, price_per_day: value === '' ? 0 : Number(value) }));
+                }}
+                placeholder='0'
+                required
+              />
+              <Input
+                type="number"
+                label={t('cars.allowedKilometers')}
+                value={formData.allowed_kilometers ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, allowed_kilometers: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+            </>
+          )}
+
+          {formData.rental_type === 'long_term' && (
+            <>
+              <Input
+                type="number"
+                label={t('cars.months36Price')}
+                value={formData.months_36_price ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+              <Input
+                type="number"
+                label={t('cars.months48Price')}
+                value={formData.months_48_price ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+            </>
+          )}
+
+          {formData.rental_type === 'leasing' && (
+            <>
+              <Input
+                type="number"
+                label={t('cars.downpayment')}
+                value={formData.downpayment ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, downpayment: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+              <Input
+                type="number"
+                label={t('cars.months36Price')}
+                value={formData.months_36_price ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+              <Input
+                type="number"
+                label={t('cars.months48Price')}
+                value={formData.months_48_price ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+              <Input
+                type="number"
+                label={t('cars.finalPayment')}
+                value={formData.final_payment ?? ''}
+                onChange={e => {
+                  const value = e.target.value;
+                  setFormData(prev => ({ ...prev, final_payment: value === '' ? 0 : Number(value) }));
+                }}
+                min={0}
+                required
+              />
+            </>
+          )}
+
+          <Input
+            type="number"
+            label={t('cars.availableCount')}
+            value={formData.available_count ?? ''}
+            onChange={e => {
+              const value = e.target.value;
+              setFormData(prev => ({ ...prev, available_count: value === '' ? 0 : Number(value) }));
+            }}
+            min={0}
+            required
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
@@ -469,230 +718,6 @@ const CarInventory: React.FC = () => {
     }
   };
 
-  // Original single-step form component
-  const CarForm = () => {
-    return (
-      <div className="space-y-6 pb-4">
-        {formErrors.length > 0 && (
-          <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
-            <ul className="list-disc list-inside space-y-1">
-              {formErrors.map((error, index) => (
-                <li key={index} className="text-sm">{error}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Car Specs Section */}
-        <div>
-          <h3 className="font-sakr font-medium text-lg text-gray-900 mb-4">
-            {t('form.carSpecs')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.brand')} <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.remote_brand_id ? formData.remote_brand_id.toString() : ''}
-                onValueChange={value => setFormData(prev => ({ ...prev, remote_brand_id: Number(value) || 0 }))}
-                options={brandOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
-                placeholder={t('cars.brand')}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.model')} <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.remote_model_id ? formData.remote_model_id.toString() : ''}
-                onValueChange={value => setFormData(prev => ({ ...prev, remote_model_id: Number(value) || 0 }))}
-                options={modelOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
-                placeholder={!formData.remote_brand_id ? t('form.selectBrandFirst') : t('common.select')}
-                disabled={!formData.remote_brand_id || modelOptions.length === 0}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.year')} <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.year ? formData.year.toString() : ''}
-                onValueChange={value => setFormData(prev => ({ ...prev, year: Number(value) || 0 }))}
-                options={yearOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
-                placeholder={t('cars.year')}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.bodyType')} <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.remote_body_type_id ? formData.remote_body_type_id.toString() : ''}
-                onValueChange={value => setFormData(prev => ({ ...prev, remote_body_type_id: Number(value) || 0 }))}
-                options={bodyTypeOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
-                placeholder={t('cars.bodyType')}
-              />
-            </div>
-
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.transmission')} <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.transmission ? formData.transmission.toString() : ''}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: Number(value) }))}
-                options={transmissionOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
-                placeholder={t('cars.transmission')}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('cars.color')} <span className="text-red-500">*</span>
-              </label>
-              <Select
-                value={formData.remote_color_id ? formData.remote_color_id.toString() : ''}
-                onValueChange={value => setFormData(prev => ({ ...prev, remote_color_id: Number(value) || 0 }))}
-                options={colorOptions.map(option => ({ value: option.id.toString(), label: getOptionLabel(option, language) }))}
-                placeholder={t('cars.color')}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Rental Specs Section */}
-        <div>
-          <h3 className="font-sakr font-medium text-lg text-gray-900 mb-4">
-            {t('form.rentalSpecs')}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-            {/* Daily Rental Pricing */}
-            {formData.rental_type === 'daily' && (
-              <>
-                <Input
-                  type="number"
-                  label={t('cars.dailyPrice')}
-                  value={formData.price_per_day ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, price_per_day: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-                <Input
-                  type="number"
-                  label={t('cars.allowedKilometers')}
-                  value={formData.allowed_kilometers ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, allowed_kilometers: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-              </>
-            )}
-
-            {/* Long-term Rental Pricing */}
-            {formData.rental_type === 'long_term' && (
-              <>
-                <Input
-                  type="number"
-                  label={t('cars.months36Price')}
-                  value={formData.months_36_price ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-                <Input
-                  type="number"
-                  label={t('cars.months48Price')}
-                  value={formData.months_48_price ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-              </>
-            )}
-
-            {/* Leasing Pricing */}
-            {formData.rental_type === 'leasing' && (
-              <>
-                <Input
-                  type="number"
-                  label={t('cars.downpayment')}
-                  value={formData.downpayment ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, downpayment: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-                <Input
-                  type="number"
-                  label={t('cars.months36Price')}
-                  value={formData.months_36_price ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, months_36_price: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-                <Input
-                  type="number"
-                  label={t('cars.months48Price')}
-                  value={formData.months_48_price ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, months_48_price: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-                <Input
-                  type="number"
-                  label={t('cars.finalPayment')}
-                  value={formData.final_payment ?? ''}
-                  onChange={e => {
-                    const value = e.target.value;
-                    setFormData(prev => ({ ...prev, final_payment: value === '' ? 0 : Number(value) }));
-                  }}
-                  min={0}
-                  required
-                />
-              </>
-            )}
-
-            <Input
-              type="number"
-              label={t('cars.availableCount')}
-              value={formData.available_count ?? ''}
-              onChange={e => {
-                const value = e.target.value;
-                setFormData(prev => ({ ...prev, available_count: value === '' ? 0 : Number(value) }));
-              }}
-              min={0}
-              required
-            />
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   // Mobile Card Component
   const CarCard = ({ car }: { car: Car }) => (
@@ -1235,7 +1260,20 @@ const CarInventory: React.FC = () => {
         title={t('cars.addNewCar')}
         size="lg"
       >
-        <CarForm />
+        <CarForm
+          t={t}
+          language={language}
+          formData={formData}
+          formErrors={formErrors}
+          setFormData={setFormData}
+          brandOptions={brandOptions}
+          modelOptions={modelOptions}
+          yearOptions={yearOptions}
+          bodyTypeOptions={bodyTypeOptions}
+          transmissionOptions={transmissionOptions}
+          colorOptions={colorOptions}
+          showCarSpecs
+        />
         <ModalFooter>
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsAddModalOpen(false)}>
@@ -1258,7 +1296,20 @@ const CarInventory: React.FC = () => {
         title={t('cars.editCar')}
         size="lg"
       >
-        <CarForm />
+        <CarForm
+          t={t}
+          language={language}
+          formData={formData}
+          formErrors={formErrors}
+          setFormData={setFormData}
+          brandOptions={brandOptions}
+          modelOptions={modelOptions}
+          yearOptions={yearOptions}
+          bodyTypeOptions={bodyTypeOptions}
+          transmissionOptions={transmissionOptions}
+          colorOptions={colorOptions}
+          showCarSpecs={false}
+        />
         <ModalFooter>
           <div className="flex gap-3 justify-end">
             <Button variant="text" onClick={() => setIsEditModalOpen(false)}>
