@@ -83,6 +83,13 @@ const CarInventory: React.FC = () => {
         const valueA = Number(labelA);
         const valueB = Number(labelB);
 
+        // Before 1980 should be at the end
+        const isA_Before_1980 = a.label_en === 'Before 1980';
+        const isB_Before_1980 = b.label_en === 'Before 1980';
+
+        if (isA_Before_1980 && !isB_Before_1980) return 1;
+        if (isB_Before_1980 && !isA_Before_1980) return -1;
+
         if (!Number.isNaN(valueA) && !Number.isNaN(valueB)) {
           return valueB - valueA;
         }
