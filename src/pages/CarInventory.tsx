@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, Dispatch, SetStateAction } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Dispatch, SetStateAction, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import { useNavigate, useOutletContext, useLocation } from 'react-router-dom';
@@ -293,6 +293,9 @@ const CarForm: React.FC<CarFormProps> = ({
   );
 };
 
+const MAX_IMAGE_REFRESH_ATTEMPTS = 10;
+const IMAGE_REFRESH_INTERVAL_MS = 3000; // 3 seconds
+
 const CarInventory: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -320,6 +323,9 @@ const CarInventory: React.FC = () => {
   const [selectedCars, setSelectedCars] = useState<Set<number>>(new Set());
   const [userPriceTiers, setUserPriceTiers] = useState<PriceTier[]>([]);
   const [attributes, setAttributes] = useState<Attribute[] | null>(null);
+  const [shouldPollImages, setShouldPollImages] = useState(false);
+  const [imageRefreshAttempts, setImageRefreshAttempts] = useState(0);
+  const lastMissingCarIdsRef = useRef<string>('');
 
   const sortOptionsDescending = useCallback(
     (options: AttributeOption[]) => {
@@ -434,9 +440,12 @@ const CarInventory: React.FC = () => {
 
   const pageSize = 10;
 
-  const loadCars = useCallback(async () => {
+  const loadCars = useCallback(async (options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
     try {
-      setLoading(true);
+      if (!silent) {
+        setLoading(true);
+      }
       // Convert URL format to API format for rental type
       let apiRentalType: string | undefined = undefined;
       if (rentalType === RentalType.Daily) apiRentalType = 'daily';
@@ -454,6 +463,9 @@ const CarInventory: React.FC = () => {
 
       const response = await CarApiService.getCars(requestParams);
 
+      const incomingCars = response.cars || [];
+      let nextCars: Car[] = incomingCars;
+
       if (isSearching) {
         const term = searchTerm.trim().toLowerCase();
         const filtered = (response.cars || []).filter((car) => {
@@ -463,19 +475,22 @@ const CarInventory: React.FC = () => {
         });
         const start = (currentPage - 1) * pageSize;
         const end = start + pageSize;
-        setCars(filtered.slice(start, end));
+        nextCars = filtered.slice(start, end);
         setTotalCars(filtered.length);
       } else {
-        setCars(response.cars || []);
+        nextCars = incomingCars;
         setTotalCars(response.total || 0);
       }
+      setCars(nextCars);
       setSelectedCars(new Set()); // Clear selection when loading new data
     } catch (error) {
       console.error('Error loading cars:', error);
       setCars([]);
       setTotalCars(0);
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   }, [currentPage, searchTerm, rentalType, getCarDisplayName]);
 
@@ -503,6 +518,58 @@ const CarInventory: React.FC = () => {
       loadUserPriceTiers();
     }
   }, [currentPage, searchTerm, rentalType, loadCars, loadUserPriceTiers]);
+
+  useEffect(() => {
+    const missingIds = cars
+      .filter((car) => !car.photo_url)
+      .map((car) => car.id)
+      .join(',');
+
+    if (!missingIds) {
+      lastMissingCarIdsRef.current = '';
+      if (shouldPollImages) {
+        setShouldPollImages(false);
+      }
+      if (imageRefreshAttempts !== 0) {
+        setImageRefreshAttempts(0);
+      }
+      return;
+    }
+
+    if (missingIds !== lastMissingCarIdsRef.current) {
+      lastMissingCarIdsRef.current = missingIds;
+      if (imageRefreshAttempts !== 0) {
+        setImageRefreshAttempts(0);
+      }
+    }
+
+    if (imageRefreshAttempts >= MAX_IMAGE_REFRESH_ATTEMPTS) {
+      if (shouldPollImages) {
+        setShouldPollImages(false);
+      }
+      return;
+    }
+
+    if (!shouldPollImages) {
+      setShouldPollImages(true);
+    }
+  }, [cars, imageRefreshAttempts, shouldPollImages]);
+
+  useEffect(() => {
+    if (!shouldPollImages) {
+      return;
+    }
+    if (imageRefreshAttempts >= MAX_IMAGE_REFRESH_ATTEMPTS) {
+      setShouldPollImages(false);
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setImageRefreshAttempts((prev) => prev + 1);
+      loadCars({ silent: true });
+    }, IMAGE_REFRESH_INTERVAL_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [shouldPollImages, imageRefreshAttempts, loadCars]);
 
   // Convert data to SelectOption format - use dynamic attributes directly
   const brandOptions: AttributeOption[] = useMemo(() => {
